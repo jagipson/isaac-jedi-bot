@@ -1,3 +1,5 @@
+# TODO: Cleanup Rakefile, set Default task to Test
+
 file "TODO" do
   # remove old TODO file
   todo_file = Dir['TODO']
