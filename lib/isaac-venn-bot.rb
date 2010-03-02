@@ -8,8 +8,6 @@ exit(1) unless defined?(RUBY_VERSION) and RUBY_VERSION =~ /1\.9\.*/
 
 # require libraries required in core
 require 'isaac'
-# TODO: Not sure of date library should really be required
-require 'date'
 require 'yaml'
 # TODO: Refactor,relocate 'wx_alert' require to wx_alert presentation layer code.
 require 'wx_alert.rb'
@@ -43,7 +41,7 @@ configure do |c|
   c.ssl       = true
   c.nick      = BOT_NICK
   c.realname  = "John Adams"
-  c.version   = DateTime.now
+  c.version   = Time.now.to_s
   c.verbose   = false
 end
 
