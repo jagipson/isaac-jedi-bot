@@ -1,3 +1,4 @@
+# part of the isaac-jedi-bot irc bot
 #!/usr/bin/env ruby
 require 'rexml/document'
 require 'rexml/xpath'
