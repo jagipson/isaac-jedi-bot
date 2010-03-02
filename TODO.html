@@ -1,0 +1,235 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+  "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+  <title>TODO</title>
+  
+    <link rel="stylesheet" href="file:///Applications/TextMate.app/Contents/SharedSupport/Support/themes/default/style.css"   type="text/css" charset="utf-8" media="screen">
+  
+    <link rel="stylesheet" href="file:///Applications/TextMate.app/Contents/SharedSupport/Support/themes/bright/style.css"   type="text/css" charset="utf-8" media="screen">
+  
+    <link rel="stylesheet" href="file:///Applications/TextMate.app/Contents/SharedSupport/Support/themes/dark/style.css"   type="text/css" charset="utf-8" media="screen">
+  
+    <link rel="stylesheet" href="file:///Applications/TextMate.app/Contents/SharedSupport/Support/themes/halloween/style.css"   type="text/css" charset="utf-8" media="screen">
+  
+    <link rel="stylesheet" href="file:///Applications/TextMate.app/Contents/SharedSupport/Support/themes/night/style.css"   type="text/css" charset="utf-8" media="screen">
+  
+    <link rel="stylesheet" href="file:///Applications/TextMate.app/Contents/SharedSupport/Support/themes/shiny/style.css"   type="text/css" charset="utf-8" media="screen">
+  
+  
+    <link rel="stylesheet" href="file:///Applications/TextMate.app/Contents/SharedSupport/Bundles/TODO.tmbundle/Support/css/default/style.css"   type="text/css" charset="utf-8" media="screen">
+    <link rel="stylesheet" href="file:///Applications/TextMate.app/Contents/SharedSupport/Bundles/TODO.tmbundle/Support/css/default/print.css"   type="text/css" charset="utf-8" media="print">
+  
+  <link rel="stylesheet" href="file:///Applications/TextMate.app/Contents/SharedSupport/Support/themes/default/print.css"   type="text/css" charset="utf-8" media="print">
+  <link rel="stylesheet" href="file:///Users/jubesz/Library/Application%20Support/TextMate/Themes/Webpreview/print.css"   type="text/css" charset="utf-8" media="print">
+  
+  <script src="file:///Applications/TextMate.app/Contents/SharedSupport/Support/script/default.js"    type="text/javascript" charset="utf-8"></script>
+  <script src="file:///Applications/TextMate.app/Contents/SharedSupport/Support/script/webpreview.js" type="text/javascript" charset="utf-8"></script>
+  <script src="file:///Applications/TextMate.app/Contents/SharedSupport/Support/script/sortable.js" type="text/javascript" charset="utf-8"></script>
+  <script type="text/javascript" charset="utf-8">
+    var image_path = "file:///Applications/TextMate.app/Contents/SharedSupport/Support/images/";
+  </script>
+  <style type="text/css">
+  .bg_FIXME {background-color: #A00000; color: #FFF; padding: 0.5ex;}
+  #jump_to_FIXME {color: #A00000;}
+  .color_FIXME {color: #A00000}
+  .bg_TODO {background-color: #CF830D; color: #FFF; padding: 0.5ex;}
+  #jump_to_TODO {color: #CF830D;}
+  .color_TODO {color: #CF830D}
+  .bg_CHANGED {background-color: #008000; color: #FFF; padding: 0.5ex;}
+  #jump_to_CHANGED {color: #008000;}
+  .color_CHANGED {color: #008000}
+  .bg_RADAR {background-color: #0090C8; color: #FFF; padding: 0.5ex;}
+  #jump_to_RADAR {color: #0090C8;}
+  .color_RADAR {color: #0090C8}
+</style>
+
+</head>
+<body id="tm_webpreview_body" class="bright">
+  <div id="tm_webpreview_header">
+    <img id="gradient" src="file:///Applications/TextMate.app/Contents/SharedSupport/Support/themes/bright/images/header.png" alt="header">
+    <p class="headline">TODO List</p>
+    <p class="type">/Users/jubesz/bin/isaac-jedi-bot</p>
+    <img id="teaser" src="file:///Applications/TextMate.app/Contents/SharedSupport/Support/themes/bright/images/teaser.png" alt="teaser">
+    <div id="theme_switcher">
+      <form action="#" onsubmit="return false;">
+        <div>
+          Theme:        
+          <select onchange="selectTheme(event);" id="theme_selector">
+            <optgroup label="TextMate">
+            
+              <option value="default" title="/Applications/TextMate.app/Contents/SharedSupport/Support/themes/">default</option>
+            
+              <option value="bright" title="/Applications/TextMate.app/Contents/SharedSupport/Support/themes/">bright</option>
+            
+              <option value="dark" title="/Applications/TextMate.app/Contents/SharedSupport/Support/themes/">dark</option>
+            
+              <option value="halloween" title="/Applications/TextMate.app/Contents/SharedSupport/Support/themes/">halloween</option>
+            
+              <option value="night" title="/Applications/TextMate.app/Contents/SharedSupport/Support/themes/">night</option>
+            
+              <option value="shiny" title="/Applications/TextMate.app/Contents/SharedSupport/Support/themes/">shiny</option>
+            
+            </optgroup>
+            <optgroup label="User">
+            
+            </optgroup>
+          </select>
+        </div>
+        <script type="text/javascript" charset="utf-8">
+          document.getElementById('theme_selector').value = 'bright';
+        </script>
+      </form>
+    </div>
+  </div>
+	<div id="tm_webpreview_content" class="bright">
+<script type="text/javascript" charset="utf-8">
+	function goTo(id) {
+	  document.body.scrollTop = document.getElementById(id).offsetTop + 8;
+	}
+</script>
+
+<div id="todo_list">
+
+	<ul class="counters">
+		
+			<li id="counter_tab_FIXME" class="bg_FIXME" ><a onclick="goTo('jump_to_FIXME'); return false;" href="#jump_to_FIXME" accesskey="F">FIXME</a>: <span id="count_FIXME">0</span></li>
+		
+			<li id="counter_tab_TODO" class="bg_TODO" ><a onclick="goTo('jump_to_TODO'); return false;" href="#jump_to_TODO" accesskey="T">TODO</a>: <span id="count_TODO">0</span></li>
+		
+			<li id="counter_tab_CHANGED" class="bg_CHANGED" ><a onclick="goTo('jump_to_CHANGED'); return false;" href="#jump_to_CHANGED" accesskey="C">CHANGED</a>: <span id="count_CHANGED">0</span></li>
+		
+			<li id="counter_tab_RADAR" class="bg_RADAR" style="display: none;"><a onclick="goTo('jump_to_RADAR'); return false;" href="#jump_to_RADAR" accesskey="R">RADAR</a>: <span id="count_RADAR">0</span></li>
+		
+		<li id="counter_tab_total" class="bg_total %>"><a href="#" onclick="return false;">Total</a>: <span id="total_count">counting…</span></li>
+	</ul>
+	<p id="current_dir_container" style="clear: both;">Scanning directory: <span id="current_dir"></span></p>
+<script type="text/javascript" charset="utf-8">
+  document.getElementById("current_dir").innerHTML = "~/bin/isaac-jedi-bot/doc";
+</script>
+<script type="text/javascript" charset="utf-8">
+  document.getElementById("current_dir").innerHTML = "~/bin/isaac-jedi-bot/doc/files/lib";
+</script>
+<script type="text/javascript" charset="utf-8">
+  document.getElementById("current_dir").innerHTML = "~/bin/isaac-jedi-bot/doc/files/lib";
+</script>
+<script type="text/javascript" charset="utf-8">
+  document.getElementById("current_dir").innerHTML = "~/bin/isaac-jedi-bot/doc/files";
+</script>
+<script type="text/javascript" charset="utf-8">
+  document.getElementById("current_dir").innerHTML = "~/bin/isaac-jedi-bot/doc/files";
+</script>
+<script type="text/javascript" charset="utf-8">
+  document.getElementById("current_dir").innerHTML = "~/bin/isaac-jedi-bot/doc/files/test";
+</script>
+<script type="text/javascript" charset="utf-8">
+  document.getElementById("current_dir").innerHTML = "~/bin/isaac-jedi-bot/doc";
+</script>
+<script type="text/javascript" charset="utf-8">
+  document.getElementById("current_dir").innerHTML = "~/bin/isaac-jedi-bot/doc";
+</script>
+<script type="text/javascript" charset="utf-8">
+  document.getElementById("current_dir").innerHTML = "~/bin/isaac-jedi-bot/doc";
+</script>
+<script type="text/javascript" charset="utf-8">
+  document.getElementById("current_dir").innerHTML = "~/bin/isaac-jedi-bot/doc";
+</script>
+<script type="text/javascript" charset="utf-8">
+  document.getElementById("current_dir").innerHTML = "~/bin/isaac-jedi-bot/doc";
+</script>
+<script type="text/javascript" charset="utf-8">
+  document.getElementById("current_dir").innerHTML = "~/bin/isaac-jedi-bot";
+</script>
+<script type="text/javascript" charset="utf-8">
+  document.getElementById("current_dir").innerHTML = "~/bin/isaac-jedi-bot/lib";
+</script>
+<script type="text/javascript" charset="utf-8">
+	document.getElementById("count_TODO").innerHTML = "1";
+	document.getElementById("counter_tab_TODO").style.display = "block";
+</script>
+<script type="text/javascript" charset="utf-8">
+	document.getElementById("count_TODO").innerHTML = "2";
+	document.getElementById("counter_tab_TODO").style.display = "block";
+</script>
+<script type="text/javascript" charset="utf-8">
+	document.getElementById("count_TODO").innerHTML = "3";
+	document.getElementById("counter_tab_TODO").style.display = "block";
+</script>
+<script type="text/javascript" charset="utf-8">
+	document.getElementById("count_TODO").innerHTML = "4";
+	document.getElementById("counter_tab_TODO").style.display = "block";
+</script>
+<script type="text/javascript" charset="utf-8">
+  document.getElementById("current_dir").innerHTML = "~/bin/isaac-jedi-bot/lib";
+</script>
+<script type="text/javascript" charset="utf-8">
+  document.getElementById("current_dir").innerHTML = "~/bin/isaac-jedi-bot/lib";
+</script>
+<script type="text/javascript" charset="utf-8">
+  document.getElementById("current_dir").innerHTML = "~/bin/isaac-jedi-bot";
+</script>
+<script type="text/javascript" charset="utf-8">
+  document.getElementById("current_dir").innerHTML = "~/bin/isaac-jedi-bot/test";
+</script>
+	<script type="text/javascript" charset="utf-8">
+		document.getElementById("current_dir_container").style.display = "none";
+		var box = document.getElementById("total_count");
+		box.innerHTML = "4";
+	</script>
+
+	
+	
+	
+		<h3><a id="jump_to_TODO">TODO</a></h3>
+		<table class="sortable" id="table_TODO">
+			<tr>
+				<th>File</th>
+				<th>Comment</th>
+			</tr>
+			<tr >
+	<td class="file">
+		<a title="# TODO: Not sure of date library should really be required" href="txmt://open/?url=file:///Users/jubesz/bin/isaac%2Djedi%2Dbot/lib/isaac%2Dvenn%2Dbot.rb&amp;line=11">
+		isaac-venn-bot.rb</a> (11)
+	</td>
+	<td class="comment">
+		Not sure of date library should really be required
+	</td>
+</tr>
+<tr  class="alternate" >
+	<td class="file">
+		<a title="# TODO: Refactor,relocate 'wx_alert' require to wx_alert presentation layer code." href="txmt://open/?url=file:///Users/jubesz/bin/isaac%2Djedi%2Dbot/lib/isaac%2Dvenn%2Dbot.rb&amp;line=14">
+		isaac-venn-bot.rb</a> (14)
+	</td>
+	<td class="comment">
+		Refactor,relocate 'wx_alert' require to wx_alert presentation layer code.
+	</td>
+</tr>
+<tr >
+	<td class="file">
+		<a title="# TODO: Refactor,relocate 'uri' require to wx_alert presentation layer code." href="txmt://open/?url=file:///Users/jubesz/bin/isaac%2Djedi%2Dbot/lib/isaac%2Dvenn%2Dbot.rb&amp;line=16">
+		isaac-venn-bot.rb</a> (16)
+	</td>
+	<td class="comment">
+		Refactor,relocate 'uri' require to wx_alert presentation layer code.
+	</td>
+</tr>
+<tr  class="alternate" >
+	<td class="file">
+		<a title="#  TODO: These don't belong here, they are initializers, nothing to do with connection" href="txmt://open/?url=file:///Users/jubesz/bin/isaac%2Djedi%2Dbot/lib/isaac%2Dvenn%2Dbot.rb&amp;line=57">
+		isaac-venn-bot.rb</a> (57)
+	</td>
+	<td class="comment">
+		These don't belong here, they are initializers, nothing to do with connection
+	</td>
+</tr>
+
+		</table>
+	
+	
+	
+	<a href="#todo_list" id="toplink">↑ top</a>
+</div>
+	</div>
+</body>
+</html>

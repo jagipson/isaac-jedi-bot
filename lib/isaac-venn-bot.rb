@@ -53,7 +53,8 @@ $secret_help = {}
 on :connect do
   #msg "NickServ", "IDENTIFY #{BOT_NICK} Sekret"
   puts "Connected."
-  
+
+#  TODO: These don't belong here, they are initializers, nothing to do with connection
   connect_owner_controls
   connect_wx_alerts
   connect_dictionary
