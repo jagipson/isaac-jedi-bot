@@ -2,3 +2,5 @@ This is an IRC Bot implemented in Ruby using the excellent isaac library
 available at http://github.com/ichverstehe/isaac. Where isaac is a library
 for creating an IRC BOT, this project implements the library to create one.
 It may be more useful as an example than anything else.
+
+The name is just a nod to a classic movie franchise.
