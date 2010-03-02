@@ -44,6 +44,7 @@ module Wunderground
         
         # Also, lets assume there's XML in there.
         # For format, consult Wunderground API
+        # TODO: This crashes when quering large sets, e.g. all of Canada
         rex = REXML::Document.new(@raw)
         rex.elements.each("//AlertItem") do |alertml|
           alert_data = AlertData.new

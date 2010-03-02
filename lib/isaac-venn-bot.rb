@@ -34,7 +34,7 @@ class Hash
   end
 end
 
-BOT_NICK = "UnnamedBot_#{(rand * 10000).to_i}"
+BOT_NICK = "UnnamedBot_#{(rand * 10000).to_i}" unless defined?(BOT_NICK)
 $SAFE = 1
 
 configure do |c|
