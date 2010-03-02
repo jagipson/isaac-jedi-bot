@@ -10,9 +10,58 @@ exit(1) unless defined?(RUBY_VERSION) and RUBY_VERSION =~ /1\.9\.*/
 require 'isaac'
 require 'yaml'
 # TODO: Refactor,relocate 'wx_alert' require to wx_alert presentation layer code.
-require 'wx_alert.rb'
+require 'lib/wx_alert.rb'
 # TODO: Refactor,relocate 'uri' require to wx_alert presentation layer code.
 require 'uri'
+
+# Read the configuration file
+def read_configuration(config_root, config_file=DEFAULT_CONF)
+  
+  fatal_errors_occured = false
+  
+  if (File.exist?(config_file)) then
+    config_root = YAML.load_file(config_file)
+    # ensure that yaml represented a hash
+    if (not config_root.kind_of?(Hash)) then
+      fatal_errors_occured = true
+      warn "Fatal: Corrupt configuration (#{config_file})"
+      exit #immediately, really.  nothing else to examine
+    end
+  end  
+  
+  # Make sure initial nick is set
+  if (not config_root[:bot_nick]) then
+    config_root[:bot_nick] = "UnnamedBot_#{(rand * 10000).to_i}"
+    warn "No setting for $bot_config[:bot_nick].  Using #{config_root[:bot_nick]}"
+  end
+  
+  # Make sure owner nick is set
+  if (not config_root[:owner_nick]) then
+    config_root[:owner_nick] = ENV["USER"]
+    warn "No setting for $bot_config[:bot_nick].  Using #{config_root[:owner_nick]}"
+  end
+   
+  # Make sure required connection settings are set
+  # connection parameters is a hash
+  config_root[:connection_parameters] ||= {}
+  if not config_root[:connection_parameters].kind_of?(Hash) then
+    fatal_errors_occured = true
+    warn "Fatal: Corrupt configuration (connection_parameters)"
+  end
+  %w(server port ssl realname verbose).each do |setting|
+    if (not config_root[:connection_parameters][setting.to_sym]) then
+      config_root[:connection_parameters][setting.to_sym] = "#{setting}"
+      warn "No #{setting} setting for $bot_config[:bot_nick]. Please check #{config_file}"
+      fatal_errors_occured = true
+    end
+  end
+  write_configuration(config_root, config_file)
+  exit if fatal_errors_occured
+end
+
+def write_configuration(config_root, config_file=DEFAULT_CONF)
+  File.open(config_file, "w") { |f| YAML.dump(config_root, f) }
+end
 
 # For now, the << operator has been defined on Hash to insert an array of 2
 # elements into the hash object.  This was laziness, because I had allready coded
@@ -32,14 +81,20 @@ class Hash
   end
 end
 
-BOT_NICK = "UnnamedBot_#{(rand * 10000).to_i}" unless defined?(BOT_NICK)
+
 $SAFE = 1
+
+# Define config structure for saving as YAML as a HASH
+$bot_config = {}
+DEFAULT_CONF="jedbotcnf.yaml"
+
+read_configuration($bot_config)
 
 configure do |c|
   c.server    = "irc.freenode.net"
   c.port      = 7000
   c.ssl       = true
-  c.nick      = BOT_NICK
+  c.nick      = $bot_config[:bot_nick]
   c.realname  = "John Adams"
   c.version   = Time.now.to_s
   c.verbose   = false
@@ -49,7 +104,7 @@ end
 $help = {} # Hash for help.
 $secret_help = {}
 on :connect do
-  #msg "NickServ", "IDENTIFY #{BOT_NICK} Sekret"
+  #msg "NickServ", "IDENTIFY #{$bot_config[:bot_nick]} Sekret"
   puts "Connected."
 
 #  TODO: These don't belong here, they are initializers, nothing to do with connection
@@ -60,12 +115,11 @@ end
 #####
 
 ##### OWNER CONTROLS #####
-OWNER_NICK = "Nobody"
+
 
 # Recall the room shoud should be in
 def connect_owner_controls
   @sticky_rooms ||= []
-  @sticky_rooms << "#Braincloud".upcase.to_sym 
   if (File.exist?("isaac-rooms.yaml")) then
     @sticky_rooms = YAML.load_file("isaac-rooms.yaml")
     @sticky_rooms.each { |room| join room }
@@ -77,7 +131,7 @@ help_prefix = "(Owner Only/private)"
 $secret_help << [:join, "#{help_prefix} join <#room1> [#room2] [#room3]... :: Join IRC Room(s)"]
 on :private, /\s*join\s+(.*)$/i do |roomlist|
   roomlist.split(" ").each do |room|
-    if (nick =~ /^#{OWNER_NICK}$/i) and (room =~ /#[\w-]+/)
+    if (nick =~ /^#{$bot_config[:owner_nick]}$/i) and (room =~ /#[\w-]+/)
       join room
       @sticky_rooms << room.upcase.to_sym
       @sticky_rooms.uniq!
@@ -90,7 +144,7 @@ end
 $secret_help << [:part, "#{help_prefix} join <#room1> [#room2] [#room3]... :: Leaves IRC Room(s)"]
 on :private, /\s*part\s+(.*)$/i do |roomlist|
     roomlist.split(" ").each do |room|
-    if (nick =~ /^#{OWNER_NICK}$/i) and (room =~ /#[\w-]+/)
+    if (nick =~ /^#{$bot_config[:owner_nick]}$/i) and (room =~ /#[\w-]+/)
       part room
       @sticky_rooms.delete(room.upcase.to_sym)
       puts "Leaving #{room}, remaining in #{@sticky_rooms}"
@@ -110,7 +164,7 @@ end
 # sync when I say
 $secret_help << [:sync, "#{help_prefix} sync :: persist joined room list to disk - \n\twill be rejoined when bot is launched"]
 on :private, /sync/i do 
-  if (nick =~ /^#{OWNER_NICK}$/i)
+  if (nick =~ /^#{$bot_config[:owner_nick]}$/i)
     sync
   end
 end
@@ -118,7 +172,7 @@ end
 # Die when I say
 $secret_help << [:hangup, "#{help_prefix} :: perform sync, then disconnect"]
 on :private, /hangup/i do 
-  if (nick =~ /^#{OWNER_NICK}$/i)
+  if (nick =~ /^#{$bot_config[:owner_nick]}$/i)
     sync
     quit("Owner demanded hangup")
   end
@@ -127,7 +181,7 @@ end
 # toggle verbosity
 $secret_help << [:"toggle verbosity", "#{help_prefix} :: toggle verbosity"]
 on :private, /toggle verbosity/i do 
-  if (nick =~ /^#{OWNER_NICK}$/i)
+  if (nick =~ /^#{$bot_config[:owner_nick]}$/i)
     configure do |c|
       c.verbose   = ! c.verbose
     end
@@ -137,8 +191,8 @@ end
 
 ##### HELP / DOCUMENTATION #####
 help_prefix = "(private)"
-$help << [:"help", "#{help_prefix}  #{BOT_NICK} [!]help :: display help"]
-on :channel, /\s*(#{BOT_NICK})+.+!?help/i do
+$help << [:"help", "#{help_prefix}  #{$bot_config[:bot_nick]} [!]help :: display help"]
+on :channel, /\s*(#{$bot_config[:bot_nick]})+.+!?help/i do
   show_help(nick)
 end
 on :private, /help/ do
@@ -202,7 +256,7 @@ end
 
 # Handle a room query result
 on :"354", // do
-  @userrooms[mesg.params[1].upcase.to_sym] << mesg.params[2] if mesg.params[2] !~ /#{BOT_NICK}/i
+  @userrooms[mesg.params[1].upcase.to_sym] << mesg.params[2] if mesg.params[2] !~ /#{$bot_config[:bot_nick]}/i
 end
 
 # Handle an end of query message
@@ -349,7 +403,7 @@ on :private, /\s*!define\s+([\#\w\-\_0-9]+)\s+in\s+([a-z]+)\s+as\s(.*)/i do |ter
   end
   
   nicktag = ""
-  nicktag = " (#{nick})" if nick != OWNER_NICK
+  nicktag = " (#{nick})" if nick != $bot_config[:owner_nick]
   
   # Autocreate new dictionary in dictionaries
   @dictionaries[dict.upcase.to_sym] ||= {}
@@ -382,8 +436,8 @@ end
 # Fortune
 
 help_prefix = "(public)"
-$help << [:"!fortune", "#{help_prefix} #{BOT_NICK} !fortune :: Displays random quotes"]
-on :channel, /\s*(#{BOT_NICK})+.+!fortune/i do
+$help << [:"!fortune", "#{help_prefix} #{$bot_config[:bot_nick]} !fortune :: Displays random quotes"]
+on :channel, /\s*(#{$bot_config[:bot_nick]})+.+!fortune/i do
   fortune_command = "fortune -s"
   fortune_result = `#{fortune_command}`
   fortune_result.chomp!
@@ -393,16 +447,16 @@ on :channel, /\s*(#{BOT_NICK})+.+!fortune/i do
 end
 
 # Vending machine (if a user asks me a question)
-on :channel, /.*(#{BOT_NICK})+.*\?/i do
+on :channel, /.*(#{$bot_config[:bot_nick]})+.*\?/i do
   msg channel, "Before I answer your questions, please swipe your credit card."
   puts "declined answering question: #{message} for: #{nick} in room: #{channel}"
 end
 
 # ways to say hello :
-on :channel, /.*(hi|hello|greetings|hey)+\s+.*(#{BOT_NICK})+.*/i do
+on :channel, /.*(hi|hello|greetings|hey)+\s+.*(#{$bot_config[:bot_nick]})+.*/i do
   greet(channel, nick)
 end
-on :channel, /.*(#{BOT_NICK})+.*(hi|hello|greetings|hey)+\s?/i do
+on :channel, /.*(#{$bot_config[:bot_nick]})+.*(hi|hello|greetings|hey)+\s?/i do
   greet(channel, nick)
 end
 on :private, /(hi|hello|greetings|hey)+\s?/i do
