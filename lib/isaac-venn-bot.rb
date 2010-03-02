@@ -27,6 +27,8 @@ def read_configuration(config_root, config_file=DEFAULT_CONF)
       warn "Fatal: Corrupt configuration (#{config_file})"
       exit #immediately, really.  nothing else to examine
     end
+    # Testing cruft:
+    #puts "Did read config:\n#{config_root.inspect}"
   end  
   
   # Make sure initial nick is set
@@ -55,6 +57,9 @@ def read_configuration(config_root, config_file=DEFAULT_CONF)
       fatal_errors_occured = true
     end
   end
+  
+  config_root[:nickserv_secret] ||= ""
+  
   write_configuration(config_root, config_file)
   exit if fatal_errors_occured
 end
@@ -85,17 +90,20 @@ end
 $SAFE = 1
 
 # Define config structure for saving as YAML as a HASH
+puts "init bot_config"
 $bot_config = {}
 DEFAULT_CONF="jedbotcnf.yaml"
-
+puts "load bot_config"
 read_configuration($bot_config)
+p $bot_config
 
 configure do |c|
-  c.server    = "irc.freenode.net"
-  c.port      = 7000
-  c.ssl       = true
+  p $bot_config
+  c.server    = $bot_config[:connection_parameters][:server] || exit
+  c.port      = $bot_config[:connection_parameters][:port] || 6667
+  c.ssl       = $bot_config[:connection_parameters][:ssl]
   c.nick      = $bot_config[:bot_nick]
-  c.realname  = "John Adams"
+  c.realname  = $bot_config[:connection_parameters][:realname] || "John Adams"
   c.version   = Time.now.to_s
   c.verbose   = false
 end
@@ -104,7 +112,10 @@ end
 $help = {} # Hash for help.
 $secret_help = {}
 on :connect do
-  #msg "NickServ", "IDENTIFY #{$bot_config[:bot_nick]} Sekret"
+  # if config_root[:nickserv_secret] is defined and non-empty, authenticate
+  if (config_root[:nickserv_secret] and config_root[:nickserv_secret] != "") then
+    msg "NickServ", "IDENTIFY #{$bot_config[:bot_nick]} #{$bot_config[:nickserv_secret]}" 
+  end
   puts "Connected."
 
 #  TODO: These don't belong here, they are initializers, nothing to do with connection
