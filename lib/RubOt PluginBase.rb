@@ -1,50 +1,64 @@
 class PluginBase
 
-  def self.inherited(p)
-    super
-    @@commands = []
-
-  end
-  
   def self.plugin_name(value)
-    @@name = value.to_s
+    @name = value.to_s
+  end
+  def self.name
+    @name
   end
   
   def self.token(tok)
-    @@token = tok.to_s
+    @token = tok.to_s
+  end
+  def self.get_token
+    @token
   end
   
-  @@default_command = :help
+  @default_command = :help
   def self.default_command(command_name = :help)
-    @@default_command = command_name.to_sym
+    @default_command = command_name.to_sym
+  end
+  def self.get_default_command
+    @default_command ||= :help
+  end
+  
+  def self.default_command_context(value = :auto)
+    @default_command_context = value.to_sym
+  end
+  def self.get_default_command_context
+    @default_command_context ||= :auto
   end
   
   def missing_method(name, *args, &block)
-    warn "missing method #{name} default -> #{@@default_command}"
-    if self.respond_to?(@@default_command)
+    warn "missing method #{name} default -> #{@default_command}"
+    if self.respond_to?(@default_command)
       # By definition, the default method must be able to be invoked with no
       # args:
-      method(@@default_command).call
+      method(@default_command).call
     else
       super
     end
   end
   
-  @@context = :auto
+  @context = :auto
   # Needs to be :auto, or any of isaac's events
   def self.context(context = :auto)
-    @@context = context
+    @context = context
   end
   
   def noop
     nil
   end
-  
+  # Accessor for class instance variable
+  def self.commands
+    @commands
+  end
+  # TODO: Add a way to register owner-only commands 
   def register_commands
     # Register defined commands
-    @@commands.each do |command|
+    self.class.commands.each do |command|
       meth, context = command
-      puts "Registering #{meth} for #{@@name} for event #{context}"
+      puts "Registering #{meth} for #{self.class.name} for event #{context}"
       
       # This allows 'auto' for commands to work in channel and private
       if context == :auto
@@ -55,26 +69,26 @@ class PluginBase
       contexts.each do |c|
         #Register with global $bot
         m = self.method(meth.to_sym)
-        $bot.on(c.to_sym, /\s*!#{@@token.to_s}\s+#{meth.to_s}\s?(.*)$/, &m)
+        $bot.on(c.to_sym, /\s*!#{self.class.get_token.to_s}\s+#{meth.to_s}\s?(.*)$/, &m)
       end
     end
     # Register default command
-    if (@@default_command_context ||= :auto) == :auto
+    if (self.class.get_default_command_context == :auto) then
       contexts = [:channel, :private] 
     else
-      contexts = [context]
+      contexts = [self.class.get_default_command_context]
     end
     contexts.each do |c|
-      m = self.method(@@default_command)
-      $bot.on(c.to_sym, /\s*!#{@@token.to_s}(.*)$/, &m)
+      m = self.method(self.class.get_default_command)
+      $bot.on(c.to_sym, /\s*!#{self.class.get_token.to_s}(.*)$/, &m)
     end
   end
   
   def unregister_commands
     # Register defined commands
-    @@commands.each do |command|
+    self.class.commands.each do |command|
       meth, context = command
-      puts "Unregistering #{meth} for #{@@name} for event #{context}"
+      puts "Unregistering #{meth} for #{self.class.name} for event #{context}"
       
       # This allows 'auto' for commands to work in channel and private
       if context == :auto
@@ -85,18 +99,18 @@ class PluginBase
       contexts.each do |c|
         #Register with global $bot
         m = self.method(:noop)
-        $bot.off(c.to_sym, /^\s*!#{@@token.to_s}\s+#{meth.to_s}\s?(.*)$/, &m)
+        $bot.off(c.to_sym, /^\s*!#{self.class.get_token.to_s}\s+#{meth.to_s}\s?(.*)$/, &m)
       end
     end
     # Register default command
-    if (@@default_command_context ||= :auto) == :auto
+    if (self.class.get_default_command_context == :auto)  then
       contexts = [:channel, :private] 
     else
-      contexts = [context]
+      contexts = [self.class.get_default_command_context]
     end
     contexts.each do |c|
       m = self.method(:noop)
-      $bot.off(c.to_sym, /^\s*!#{@@token.to_s}(.*)$/, &m)
+      $bot.off(c.to_sym, /^\s*!#{self.class.get_token.to_s}(.*)$/, &m)
     end
   end
   
@@ -159,7 +173,7 @@ class PluginBase
   
   def self.method_added(method)
     # Maintain a list of added methods and their context
-    (@@commands ||= []) << [method, @@context]
+    (@commands ||= []) << [method, @context]
     
   end
   
@@ -167,11 +181,11 @@ class PluginBase
   # provides sane functionallity if not
   def help
     if channel.nil? then # list private commands
-      commands = @@commands.select {|c| [:private, :auto].include?(c[1]) }
+      commands = self.class.commands.select {|c| [:private, :auto].include?(c[1]) }
     else # list channel commands
-      commands = @@commands.select {|c| [:channel, :auto].include?(c[1]) }
+      commands = self.class.commands.select {|c| [:channel, :auto].include?(c[1]) }
     end
-    automsg "!#{@@token} (#{ commands.map{|c| c[0].to_s }.join("|") })" if commands && commands.size > 0
+    automsg "!#{self.class.get_token} (#{ commands.map{|c| c[0].to_s }.join("|") })" if commands && commands.size > 0
   end
 
 end

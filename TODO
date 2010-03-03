@@ -1,0 +1,8 @@
+TODO Generated on 2010-03-03 17:49:46 -0600 by jubesz
+
+TODO in lib/RubOt Core.rb
+004: The methods in here should only work for owner. Need to fix event registraion regex somehow to have an option for owner commands
+039: Fix. Once a plugin is unloaded and reloaded, it doesn't work
+
+TODO in lib/RubOt PluginBase.rb
+055: Add a way to register owner-only commands

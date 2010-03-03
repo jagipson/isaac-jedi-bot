@@ -14,7 +14,7 @@ file "TODO" do
       File.open(search_file, 'r') do |fh|
         search_file_heading = "\nTODO in #{search_file}"
         fh.each_with_index do |line_txt, line_num|
-          if (line_txt =~ /.*TODO:(.*)/i) then
+          if (line_txt =~ /#.*TODO:(.*)/i) then
             # Output main_file_heading only once, if there's a match
             if main_file_heading then
               todo_file.puts main_file_heading

@@ -13,4 +13,8 @@ class Banter < PluginBase
       automsg fortune_line.chomp    
     end
   end
+  
+  def help
+    automsg "Random fortune.  Please don't be offended."
+  end
 end
