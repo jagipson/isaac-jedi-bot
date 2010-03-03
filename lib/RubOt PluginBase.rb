@@ -3,6 +3,7 @@ class PluginBase
   def self.inherited(p)
     super
     @@commands = []
+
   end
   
   def self.plugin_name(value)
@@ -84,7 +85,7 @@ class PluginBase
       contexts.each do |c|
         #Register with global $bot
         m = self.method(:noop)
-        $bot.off(c.to_sym, /\s*!#{@@token.to_s}\s+#{meth.to_s}\s?(.*)$/, &m)
+        $bot.off(c.to_sym, /^\s*!#{@@token.to_s}\s+#{meth.to_s}\s?(.*)$/, &m)
       end
     end
     # Register default command
@@ -95,7 +96,7 @@ class PluginBase
     end
     contexts.each do |c|
       m = self.method(:noop)
-      $bot.off(c.to_sym, /\s*!#{@@token.to_s}(.*)$/, &m)
+      $bot.off(c.to_sym, /^\s*!#{@@token.to_s}(.*)$/, &m)
     end
   end
   

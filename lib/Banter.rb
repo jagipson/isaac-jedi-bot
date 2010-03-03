@@ -1,5 +1,5 @@
 class Banter < PluginBase
-puts @@commands
+  
   plugin_name     :banter
   token           :fortune
   default_command :fortune
