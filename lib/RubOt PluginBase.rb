@@ -1,4 +1,10 @@
 class PluginBase
+
+  def self.inherited(p)
+    super
+    @@commands = []
+  end
+  
   def self.plugin_name(value)
     @@name = value.to_s
   end
@@ -29,14 +35,18 @@ class PluginBase
     @@context = context
   end
   
-  def initialize
+  def noop
+    nil
+  end
+  
+  def register_commands
     # Register defined commands
     @@commands.each do |command|
       meth, context = command
       puts "Registering #{meth} for #{@@name} for event #{context}"
       
       # This allows 'auto' for commands to work in channel and private
-      if context = :auto
+      if context == :auto
         contexts = [:channel, :private] 
       else
         contexts = [context]
@@ -48,7 +58,7 @@ class PluginBase
       end
     end
     # Register default command
-    if (@@default_command_context || :auto) = :auto
+    if (@@default_command_context ||= :auto) == :auto
       contexts = [:channel, :private] 
     else
       contexts = [context]
@@ -57,6 +67,40 @@ class PluginBase
       m = self.method(@@default_command)
       $bot.on(c.to_sym, /\s*!#{@@token.to_s}(.*)$/, &m)
     end
+  end
+  
+  def unregister_commands
+    # Register defined commands
+    @@commands.each do |command|
+      meth, context = command
+      puts "Unregistering #{meth} for #{@@name} for event #{context}"
+      
+      # This allows 'auto' for commands to work in channel and private
+      if context == :auto
+        contexts = [:channel, :private] 
+      else
+        contexts = [context]
+      end
+      contexts.each do |c|
+        #Register with global $bot
+        m = self.method(:noop)
+        $bot.off(c.to_sym, /\s*!#{@@token.to_s}\s+#{meth.to_s}\s?(.*)$/, &m)
+      end
+    end
+    # Register default command
+    if (@@default_command_context ||= :auto) == :auto
+      contexts = [:channel, :private] 
+    else
+      contexts = [context]
+    end
+    contexts.each do |c|
+      m = self.method(:noop)
+      $bot.off(c.to_sym, /\s*!#{@@token.to_s}(.*)$/, &m)
+    end
+  end
+  
+  def initialize
+    register_commands
   end
 
   # Create accessors that users will expect to access $bot properties
@@ -111,6 +155,7 @@ class PluginBase
   
   # Keep this method at bottom of class declaration.  All classes defined after
   # This will be registered as commands, automagically
+  
   def self.method_added(method)
     # Maintain a list of added methods and their context
     (@@commands ||= []) << [method, @@context]
@@ -120,7 +165,12 @@ class PluginBase
   # I hope this method is completely overridden in the subclass, but this 
   # provides sane functionallity if not
   def help
-    automsg "!#{@@token} (#{ @@commands.map{|c| c[0].to_s }.join("|") })"
+    if channel.nil? then # list private commands
+      commands = @@commands.select {|c| [:private, :auto].include?(c[1]) }
+    else # list channel commands
+      commands = @@commands.select {|c| [:channel, :auto].include?(c[1]) }
+    end
+    automsg "!#{@@token} (#{ commands.map{|c| c[0].to_s }.join("|") })" if commands && commands.size > 0
   end
 
 end

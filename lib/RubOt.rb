@@ -27,3 +27,12 @@ on :connect do
 end
 
 require 'RubOt Core'
+
+# Run this file
+# ruby RubOt.rb
+
+# Look at Banter.rb as an example plugin
+# Load the plugin using /msg <bot_nick> !do load_plugin Banter.rb
+#
+# Then invoke fortune like this:
+# !fortune

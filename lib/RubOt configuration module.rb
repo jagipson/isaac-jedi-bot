@@ -59,4 +59,12 @@ def write_configuration(config_root, config_file=DEFAULT_CONF)
 end
 
 # extend the $bot object
+module BotExtensions
+  def off(event, match=//, &block)
+    match = match.to_s if match.is_a? Integer
+    (@events[event] ||= []).delete_if {|a| a[0] = Regexp.new(match) }
+  end
+end
+$bot.extend BotExtensions
+
 require 'RubOt PluginBase.rb'

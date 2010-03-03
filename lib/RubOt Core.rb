@@ -49,7 +49,7 @@ class Core < PluginBase
             @plugins[plugin.downcase.to_sym] = #{plugin[0..-4]}.new
           EOF
            
-        rescue => problem
+        rescue Exception => problem
           puts problem
           msg nick "Unable to load plugin #{plugin}. Check logs"
         end
@@ -63,6 +63,7 @@ class Core < PluginBase
     @plugins ||= {}
     args.split(" ").each do |plugin|
       begin
+        @plugins[plugin.downcase.to_sym].unregister_commands
         @plugins[plugin.downcase.to_sym] = nil
         msg nick, "#{plugin} unloaded." 
       rescue => problem

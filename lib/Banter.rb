@@ -1,15 +1,16 @@
-class Core < PluginBase
-  plugin_name :core
-  token       :do
-  
-  context :private
-  
+class Banter < PluginBase
+puts @@commands
+  plugin_name     :banter
+  token           :fortune
+  default_command :fortune
+
+  context :auto
   def fortune
     fortune_command = "fortune -s"
     fortune_result = `#{fortune_command}`
     fortune_result.chomp!
     fortune_result.split("\n").each do |fortune_line|
-      msg channel, fortune_line.chomp    
+      automsg fortune_line.chomp    
     end
   end
 end
