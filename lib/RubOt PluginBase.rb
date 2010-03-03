@@ -1,0 +1,126 @@
+class PluginBase
+  def self.plugin_name(value)
+    @@name = value.to_s
+  end
+  
+  def self.token(tok)
+    @@token = tok.to_s
+  end
+  
+  @@default_command = :help
+  def self.default_command(command_name = :help)
+    @@default_command = command_name.to_sym
+  end
+  
+  def missing_method(name, *args, &block)
+    warn "missing method #{name} default -> #{@@default_command}"
+    if self.respond_to?(@@default_command)
+      # By definition, the default method must be able to be invoked with no
+      # args:
+      method(@@default_command).call
+    else
+      super
+    end
+  end
+  
+  @@context = :auto
+  # Needs to be :auto, or any of isaac's events
+  def self.context(context = :auto)
+    @@context = context
+  end
+  
+  def initialize
+    # Register defined commands
+    @@commands.each do |command|
+      meth, context = command
+      puts "Registering #{meth} for #{@@name} for event #{context}"
+      
+      # This allows 'auto' for commands to work in channel and private
+      if context = :auto
+        contexts = [:channel, :private] 
+      else
+        contexts = [context]
+      end
+      contexts.each do |c|
+        #Register with global $bot
+        m = self.method(meth.to_sym)
+        $bot.on(c.to_sym, /\s*!#{@@token.to_s}\s+#{meth.to_s}\s?(.*)$/, &m)
+      end
+    end
+    # Register default command
+    if (@@default_command_context || :auto) = :auto
+      contexts = [:channel, :private] 
+    else
+      contexts = [context]
+    end
+    contexts.each do |c|
+      m = self.method(@@default_command)
+      $bot.on(c.to_sym, /\s*!#{@@token.to_s}(.*)$/, &m)
+    end
+  end
+
+  # Create accessors that users will expect to access $bot properties
+  [:config, :irc, :nick, :channel, :message, :user, :host, :match, :error].each do |item|
+    eval(<<-EOF)
+      def #{item}
+        $bot.#{item}
+      end
+    EOF
+  end
+  def args
+    match[0]
+  end
+  # Wrap other $bot methods
+  #single argument methods in $bot
+  %w(raw quit join part).each do |m|
+    eval(<<-EOF)
+      def #{m}(arg)
+        $bot.#{m}(arg)
+      end
+    EOF
+  end
+  #two argument methods in $bot
+  %w(msg action topic mode).each do |m|
+    eval(<<-EOF)
+      def #{m}(arg1, arg2)
+        $bot.#{m}(arg1, arg2)
+      end
+    EOF
+  end
+  # automsg detects whether the sender is private or public and sends the 
+  # message there
+  def automsg(text)
+    if channel.nil? then
+      msg nick, text
+    else
+      msg channel, text
+    end
+  end
+  
+  # The only three arg method in $bot
+  def kick(channel, user, reason=nil)
+    $bot.kick(channel, user, reason=nil)
+  end
+  %w(helpers).each do |method|
+    eval(<<-EOF)
+      def #{method}(*args, &block)
+        $bot.#{method}(*args, &block)
+      end
+    EOF
+  end
+  
+  # Keep this method at bottom of class declaration.  All classes defined after
+  # This will be registered as commands, automagically
+  def self.method_added(method)
+    # Maintain a list of added methods and their context
+    (@@commands ||= []) << [method, @@context]
+    
+  end
+  
+  # I hope this method is completely overridden in the subclass, but this 
+  # provides sane functionallity if not
+  def help
+    automsg "!#{@@token} (#{ @@commands.map{|c| c[0].to_s }.join("|") })"
+  end
+
+end
