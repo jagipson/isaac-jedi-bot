@@ -1,4 +1,12 @@
-# TODO: Cleanup Rakefile, set Default task to Test
+task :default => :test
+
+task :test do
+  require 'rake/runtest'
+  Rake.run_tests
+end
+
+desc "Generate TODO file"
+task :TODO
 
 file "TODO" do
   # remove old TODO file
