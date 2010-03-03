@@ -1,10 +1,9 @@
-TODO Generated on 2010-03-02 09:20:43 -0600 by jubesz
+TODO Generated on 2010-03-03 01:39:12 -0600 by vgoff
 
 TODO in lib/isaac-venn-bot.rb
-010: Not sure of date library should really be required
-013: Refactor,relocate 'wx_alert' require to wx_alert presentation layer code.
-015: Refactor,relocate 'uri' require to wx_alert presentation layer code.
-056: These don't belong here, they are initializers, nothing to do with connection
+011: Refactor,relocate 'wx_alert' require to wx_alert presentation layer code.
+013: Refactor,relocate 'uri' require to wx_alert presentation layer code.
+120: These don't belong here, they are initializers, nothing to do with connection
 
 TODO in lib/wx_alert.rb
 046: This crashes when quering large sets, e.g. all of Canada
