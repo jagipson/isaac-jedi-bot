@@ -24,7 +24,10 @@ class PluginBase
   end
   
   def self.token(tok)
-    @token = tok.to_s
+    # When a class is inheriting from me, register it's token
+    @@global_tokens_catalog ||= Hash.new
+    @token = self.validate_token(tok)
+    @@global_tokens_catalog[@token] = self
   end
   def self.get_token
     @token
@@ -71,6 +74,9 @@ class PluginBase
   end
 
   def register_commands
+    #first revalidate Class for good token, to ensure it was set
+    self.class.validate_token self.class.get_token
+    
     # Register defined commands
     self.class.commands.each do |command|
       meth, context = command
