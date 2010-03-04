@@ -53,7 +53,7 @@
     </tr>
     <tr class="top-aligned-row">
       <td><strong>Last Update:</strong></td>
-      <td>2010-03-04 02:40:23 -0600</td>
+      <td>2010-03-04 11:53:22 -0600</td>
     </tr>
     </table>
   </div>
@@ -171,13 +171,13 @@ Read the configuration file
   <span class="ruby-comment cmt"># Make sure initial nick is set</span>
   <span class="ruby-keyword kw">if</span> (<span class="ruby-keyword kw">not</span> <span class="ruby-identifier">config_root</span>[<span class="ruby-identifier">:bot_nick</span>]) <span class="ruby-keyword kw">then</span>
     <span class="ruby-identifier">config_root</span>[<span class="ruby-identifier">:bot_nick</span>] = <span class="ruby-node">&quot;UnnamedBot_#{(rand * 10000).to_i}&quot;</span>
-    <span class="ruby-identifier">warn</span> <span class="ruby-node">&quot;No setting for $bot_config[:bot_nick].  Using #{config_root[:bot_nick]}&quot;</span>
+    <span class="ruby-identifier">warn</span> <span class="ruby-node">&quot;No setting for BOT_CONFIG[:bot_nick].  Using #{config_root[:bot_nick]}&quot;</span>
   <span class="ruby-keyword kw">end</span>
   
   <span class="ruby-comment cmt"># Make sure owner nick is set</span>
   <span class="ruby-keyword kw">if</span> (<span class="ruby-keyword kw">not</span> <span class="ruby-identifier">config_root</span>[<span class="ruby-identifier">:owner_nick</span>]) <span class="ruby-keyword kw">then</span>
     <span class="ruby-identifier">config_root</span>[<span class="ruby-identifier">:owner_nick</span>] = <span class="ruby-constant">ENV</span>[<span class="ruby-value str">&quot;USER&quot;</span>]
-    <span class="ruby-identifier">warn</span> <span class="ruby-node">&quot;No setting for $bot_config[:bot_nick].  Using #{config_root[:owner_nick]}&quot;</span>
+    <span class="ruby-identifier">warn</span> <span class="ruby-node">&quot;No setting for BOT_CONFIG[:bot_nick].  Using #{config_root[:owner_nick]}&quot;</span>
   <span class="ruby-keyword kw">end</span>
    
   <span class="ruby-comment cmt"># Make sure required connection settings are set</span>
@@ -190,7 +190,7 @@ Read the configuration file
   <span class="ruby-node">%w(server port ssl realname verbose)</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">setting</span><span class="ruby-operator">|</span>
     <span class="ruby-keyword kw">if</span> (<span class="ruby-keyword kw">not</span> <span class="ruby-identifier">config_root</span>[<span class="ruby-identifier">:connection_parameters</span>][<span class="ruby-identifier">setting</span>.<span class="ruby-identifier">to_sym</span>]) <span class="ruby-keyword kw">then</span>
       <span class="ruby-identifier">config_root</span>[<span class="ruby-identifier">:connection_parameters</span>][<span class="ruby-identifier">setting</span>.<span class="ruby-identifier">to_sym</span>] = <span class="ruby-node">&quot;#{setting}&quot;</span>
-      <span class="ruby-identifier">warn</span> <span class="ruby-node">&quot;No #{setting} setting for $bot_config[:bot_nick]. Please check #{config_file}&quot;</span>
+      <span class="ruby-identifier">warn</span> <span class="ruby-node">&quot;No #{setting} setting for BOT_CONFIG[:bot_nick]. Please check #{config_file}&quot;</span>
       <span class="ruby-identifier">fatal_errors_occured</span> = <span class="ruby-keyword kw">true</span>
     <span class="ruby-keyword kw">end</span>
   <span class="ruby-keyword kw">end</span>

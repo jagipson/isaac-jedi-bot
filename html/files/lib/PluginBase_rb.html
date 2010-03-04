@@ -53,7 +53,7 @@
     </tr>
     <tr class="top-aligned-row">
       <td><strong>Last Update:</strong></td>
-      <td>2010-03-04 02:40:23 -0600</td>
+      <td>2010-03-04 16:39:38 -0600</td>
     </tr>
     </table>
   </div>
@@ -62,6 +62,71 @@
   <div id="bodyContent">
 
   <div id="contextContent">
+
+    <div id="description">
+      <h1><a href="../../classes/PluginBase.html">PluginBase</a> Abstract Class</h1>
+<p>
+Provides the framework for writing plugins that can be loaded into RubOt.
+This is an abstract class. Do not attempt to instantiate this class
+directly.
+</p>
+<p>
+The creation of subclasses of <a
+href="../../classes/PluginBase.html">PluginBase</a> is how plugins are
+created. Do not instantiate your own subclasses. Your subclass will be
+instantiated as a plugin object when it is loaded.
+</p>
+<h1>Creating RubOt Plugins</h1>
+<p>
+To create a RubOt Plugin, you must create a subclass of <a
+href="../../classes/PluginBase.html">PluginBase</a>, configure it, and
+define methods which will then become commands.
+</p>
+<p>
+The best way to get started is by demonstration.
+</p>
+<pre>
+     1    class Greets &lt; PluginBase
+     2      description &quot;Silly example plugin&quot;
+     3      token       :greet
+     4      context     :auto
+     5
+     6      def help
+     7        automsg &quot;Additional features available in &quot; +
+     8                &quot;private room then !greet to get list&quot;
+     9        super
+    10      end
+    11
+    12      def hi
+    13        automsg &quot;#{nick} said hi!&quot;
+    14      end
+    15
+    16      def hello
+    17        automsg &quot;Hello, #{nick}&quot;
+    18      end
+    19
+    20      context :private
+    21      def special
+    22       msg nick, &quot;Even though you lick windows on &quot; +
+    23                 &quot;the short bus, to me you are still special!&quot;
+    24      end
+    25    end
+</pre>
+<h2>line... by... line...</h2>
+<p>
+Lines 1-4: On line one, you define your subclass of <a
+href="../../classes/PluginBase.html">PluginBase</a> (in the example
+it&#8217;s <a href="../../classes/Greets.html">Greets</a>). This will be
+the <em>name</em> of your plugin. This is very important:
+</p>
+<p>
+<b>Your file must be given exactly the same name as your plugin, with a
+<em>.rb</em> extension</b>. For this example, the plugin file <em>must</em>
+be named <b><tt>Greets.rb</tt></b> or it *will not work*. Yes, it <b>is</b>
+case-sensitive.
+</p>
+
+    </div>
 
    </div>
 

@@ -74,14 +74,6 @@
 
   <div id="contextContent">
 
-    <div id="description">
-      <p>
-TODO: Fix. This does&#8217;t really delete the [regex,&amp;block] pair like
-it should extend the $bot object
-</p>
-
-    </div>
-
    </div>
 
 
@@ -90,7 +82,7 @@ it should extend the $bot object
 
       <div class="name-list">
 
-        <a href="#M000036">off</a>&nbsp;&nbsp;
+        <a href="#M000018">off</a>&nbsp;&nbsp;
 
       </div>
     </div>
@@ -111,12 +103,12 @@ it should extend the $bot object
       <h3 class="section-bar">Public Instance methods</h3>
 
 
-      <div id="method-M000036" class="method-detail">
-        <a name="M000036"></a>
+      <div id="method-M000018" class="method-detail">
+        <a name="M000018"></a>
 
         <div class="method-heading">
 
-          <a href="#M000036" class="method-signature">
+          <a href="#M000018" class="method-signature">
 
           <span class="method-name">off</span><span class="method-args">(event, match=//, &amp;block)</span>
 
@@ -127,10 +119,10 @@ it should extend the $bot object
         <div class="method-description">
 
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000036-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000036-source">
+            onclick="toggleCode('M000018-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000018-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/ConfigurationModule.rb, line 64</span>
+<span class="ruby-comment cmt"># File lib/ConfigurationModule.rb, line 62</span>
   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">off</span>(<span class="ruby-identifier">event</span>, <span class="ruby-identifier">match</span>=<span class="ruby-regexp re">//</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
     <span class="ruby-identifier">match</span> = <span class="ruby-identifier">match</span>.<span class="ruby-identifier">to_s</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">match</span>.<span class="ruby-identifier">is_a?</span> <span class="ruby-constant">Integer</span>
     (<span class="ruby-ivar">@events</span>[<span class="ruby-identifier">event</span>] <span class="ruby-operator">||=</span> []).<span class="ruby-identifier">delete_if</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">a</span><span class="ruby-operator">|</span> <span class="ruby-identifier">a</span>[<span class="ruby-value">0</span>] <span class="ruby-operator">==</span> <span class="ruby-constant">Regexp</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">match</span>) }

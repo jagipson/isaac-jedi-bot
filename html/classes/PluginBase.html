@@ -83,6 +83,70 @@
 
   <div id="contextContent">
 
+    <div id="description">
+      <h1><a href="PluginBase.html">PluginBase</a> Abstract Class</h1>
+<p>
+Provides the framework for writing plugins that can be loaded into RubOt.
+This is an abstract class. Do not attempt to instantiate this class
+directly.
+</p>
+<p>
+The creation of subclasses of <a href="PluginBase.html">PluginBase</a> is
+how plugins are created. Do not instantiate your own subclasses. Your
+subclass will be instantiated as a plugin object when it is loaded.
+</p>
+<h1>Creating RubOt Plugins</h1>
+<p>
+To create a RubOt Plugin, you must create a subclass of <a
+href="PluginBase.html">PluginBase</a>, configure it, and define methods
+which will then become commands.
+</p>
+<p>
+The best way to get started is by demonstration.
+</p>
+<pre>
+     1    class Greets &lt; PluginBase
+     2      description &quot;Silly example plugin&quot;
+     3      token       :greet
+     4      context     :auto
+     5
+     6      def help
+     7        automsg &quot;Additional features available in &quot; +
+     8                &quot;private room then !greet to get list&quot;
+     9        super
+    10      end
+    11
+    12      def hi
+    13        automsg &quot;#{nick} said hi!&quot;
+    14      end
+    15
+    16      def hello
+    17        automsg &quot;Hello, #{nick}&quot;
+    18      end
+    19
+    20      context :private
+    21      def special
+    22       msg nick, &quot;Even though you lick windows on &quot; +
+    23                 &quot;the short bus, to me you are still special!&quot;
+    24      end
+    25    end
+</pre>
+<h2>line... by... line...</h2>
+<p>
+Lines 1-4: On line one, you define your subclass of <a
+href="PluginBase.html">PluginBase</a> (in the example it&#8217;s <a
+href="Greets.html">Greets</a>). This will be the <em>name</em> of your
+plugin. This is very important:
+</p>
+<p>
+<b>Your file must be given exactly the same name as your plugin, with a
+<em>.rb</em> extension</b>. For this example, the plugin file <em>must</em>
+be named <b><tt>Greets.rb</tt></b> or it *will not work*. Yes, it <b>is</b>
+case-sensitive.
+</p>
+
+    </div>
+
    </div>
 
 
@@ -91,45 +155,9 @@
 
       <div class="name-list">
 
-        <a href="#M000025">args</a>&nbsp;&nbsp;
+        <a href="#M000017">new</a>&nbsp;&nbsp;
 
-        <a href="#M000026">automsg</a>&nbsp;&nbsp;
-
-        <a href="#M000021">commands</a>&nbsp;&nbsp;
-
-        <a href="#M000019">context</a>&nbsp;&nbsp;
-
-        <a href="#M000014">default_command</a>&nbsp;&nbsp;
-
-        <a href="#M000016">default_command_context</a>&nbsp;&nbsp;
-
-        <a href="#M000015">get_default_command</a>&nbsp;&nbsp;
-
-        <a href="#M000017">get_default_command_context</a>&nbsp;&nbsp;
-
-        <a href="#M000013">get_token</a>&nbsp;&nbsp;
-
-        <a href="#M000029">help</a>&nbsp;&nbsp;
-
-        <a href="#M000027">kick</a>&nbsp;&nbsp;
-
-        <a href="#M000028">method_added</a>&nbsp;&nbsp;
-
-        <a href="#M000018">missing_method</a>&nbsp;&nbsp;
-
-        <a href="#M000011">name</a>&nbsp;&nbsp;
-
-        <a href="#M000024">new</a>&nbsp;&nbsp;
-
-        <a href="#M000020">noop</a>&nbsp;&nbsp;
-
-        <a href="#M000010">plugin_name</a>&nbsp;&nbsp;
-
-        <a href="#M000022">register_commands</a>&nbsp;&nbsp;
-
-        <a href="#M000012">token</a>&nbsp;&nbsp;
-
-        <a href="#M000023">unregister_commands</a>&nbsp;&nbsp;
+        <a href="#M000016">unregister_commands</a>&nbsp;&nbsp;
 
       </div>
     </div>
@@ -150,164 +178,6 @@
       <h3 class="section-bar">Public Class methods</h3>
 
 
-      <div id="method-M000021" class="method-detail">
-        <a name="M000021"></a>
-
-        <div class="method-heading">
-
-          <a href="#M000021" class="method-signature">
-
-          <span class="method-name">commands</span><span class="method-args">()</span>
-
-          </a>
-
-        </div>
-
-        <div class="method-description">
-
-          <p>
-Accessor for class instance variable
-</p>
-
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000021-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000021-source">
-<pre>
-<span class="ruby-comment cmt"># File lib/PluginBase.rb, line 53</span>
-  <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">commands</span>
-    <span class="ruby-ivar">@commands</span>
-  <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-
-        </div>
-      </div>
-
-
-      <div id="method-M000019" class="method-detail">
-        <a name="M000019"></a>
-
-        <div class="method-heading">
-
-          <a href="#M000019" class="method-signature">
-
-          <span class="method-name">context</span><span class="method-args">(context = :auto)</span>
-
-          </a>
-
-        </div>
-
-        <div class="method-description">
-
-          <p>
-Needs to be :auto, or any of isaac&#8217;s events
-</p>
-
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000019-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000019-source">
-<pre>
-<span class="ruby-comment cmt"># File lib/PluginBase.rb, line 45</span>
-  <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">context</span>(<span class="ruby-identifier">context</span> = <span class="ruby-identifier">:auto</span>)
-    <span class="ruby-ivar">@context</span> = <span class="ruby-identifier">context</span>
-  <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-
-        </div>
-      </div>
-
-
-      <div id="method-M000014" class="method-detail">
-        <a name="M000014"></a>
-
-        <div class="method-heading">
-
-          <a href="#M000014" class="method-signature">
-
-          <span class="method-name">default_command</span><span class="method-args">(command_name = :help)</span>
-
-          </a>
-
-        </div>
-
-        <div class="method-description">
-
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000014-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000014-source">
-<pre>
-<span class="ruby-comment cmt"># File lib/PluginBase.rb, line 18</span>
-  <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">default_command</span>(<span class="ruby-identifier">command_name</span> = <span class="ruby-identifier">:help</span>)
-    <span class="ruby-ivar">@default_command</span> = <span class="ruby-identifier">command_name</span>.<span class="ruby-identifier">to_sym</span>
-  <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-
-        </div>
-      </div>
-
-
-      <div id="method-M000016" class="method-detail">
-        <a name="M000016"></a>
-
-        <div class="method-heading">
-
-          <a href="#M000016" class="method-signature">
-
-          <span class="method-name">default_command_context</span><span class="method-args">(value = :auto)</span>
-
-          </a>
-
-        </div>
-
-        <div class="method-description">
-
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000016-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000016-source">
-<pre>
-<span class="ruby-comment cmt"># File lib/PluginBase.rb, line 25</span>
-  <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">default_command_context</span>(<span class="ruby-identifier">value</span> = <span class="ruby-identifier">:auto</span>)
-    <span class="ruby-ivar">@default_command_context</span> = <span class="ruby-identifier">value</span>.<span class="ruby-identifier">to_sym</span>
-  <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-
-        </div>
-      </div>
-
-
-      <div id="method-M000015" class="method-detail">
-        <a name="M000015"></a>
-
-        <div class="method-heading">
-
-          <a href="#M000015" class="method-signature">
-
-          <span class="method-name">get_default_command</span><span class="method-args">()</span>
-
-          </a>
-
-        </div>
-
-        <div class="method-description">
-
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000015-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000015-source">
-<pre>
-<span class="ruby-comment cmt"># File lib/PluginBase.rb, line 21</span>
-  <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">get_default_command</span>
-    <span class="ruby-ivar">@default_command</span> <span class="ruby-operator">||=</span> <span class="ruby-identifier">:help</span>
-  <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-
-        </div>
-      </div>
-
-
       <div id="method-M000017" class="method-detail">
         <a name="M000017"></a>
 
@@ -315,7 +185,7 @@ Needs to be :auto, or any of isaac&#8217;s events
 
           <a href="#M000017" class="method-signature">
 
-          <span class="method-name">get_default_command_context</span><span class="method-args">()</span>
+          <span class="method-name">new</span><span class="method-args">()</span>
 
           </a>
 
@@ -327,134 +197,7 @@ Needs to be :auto, or any of isaac&#8217;s events
             onclick="toggleCode('M000017-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000017-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/PluginBase.rb, line 28</span>
-  <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">get_default_command_context</span>
-    <span class="ruby-ivar">@default_command_context</span> <span class="ruby-operator">||=</span> <span class="ruby-identifier">:auto</span>
-  <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-
-        </div>
-      </div>
-
-
-      <div id="method-M000013" class="method-detail">
-        <a name="M000013"></a>
-
-        <div class="method-heading">
-
-          <a href="#M000013" class="method-signature">
-
-          <span class="method-name">get_token</span><span class="method-args">()</span>
-
-          </a>
-
-        </div>
-
-        <div class="method-description">
-
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000013-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000013-source">
-<pre>
-<span class="ruby-comment cmt"># File lib/PluginBase.rb, line 13</span>
-  <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">get_token</span>
-    <span class="ruby-ivar">@token</span>
-  <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-
-        </div>
-      </div>
-
-
-      <div id="method-M000028" class="method-detail">
-        <a name="M000028"></a>
-
-        <div class="method-heading">
-
-          <a href="#M000028" class="method-signature">
-
-          <span class="method-name">method_added</span><span class="method-args">(method)</span>
-
-          </a>
-
-        </div>
-
-        <div class="method-description">
-
-          <p>
-Keep this method at bottom of class declaration. All classes defined after
-This will be registered as commands, automagically
-</p>
-
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000028-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000028-source">
-<pre>
-<span class="ruby-comment cmt"># File lib/PluginBase.rb, line 178</span>
-  <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">method_added</span>(<span class="ruby-identifier">method</span>)
-    <span class="ruby-comment cmt"># Maintain a list of added methods and their context</span>
-    (<span class="ruby-ivar">@commands</span> <span class="ruby-operator">||=</span> []) <span class="ruby-operator">&lt;&lt;</span> [<span class="ruby-identifier">method</span>, <span class="ruby-ivar">@context</span>]
-    
-  <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-
-        </div>
-      </div>
-
-
-      <div id="method-M000011" class="method-detail">
-        <a name="M000011"></a>
-
-        <div class="method-heading">
-
-          <a href="#M000011" class="method-signature">
-
-          <span class="method-name">name</span><span class="method-args">()</span>
-
-          </a>
-
-        </div>
-
-        <div class="method-description">
-
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000011-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000011-source">
-<pre>
-<span class="ruby-comment cmt"># File lib/PluginBase.rb, line 6</span>
-  <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">name</span>
-    <span class="ruby-ivar">@name</span>
-  <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-
-        </div>
-      </div>
-
-
-      <div id="method-M000024" class="method-detail">
-        <a name="M000024"></a>
-
-        <div class="method-heading">
-
-          <a href="#M000024" class="method-signature">
-
-          <span class="method-name">new</span><span class="method-args">()</span>
-
-          </a>
-
-        </div>
-
-        <div class="method-description">
-
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000024-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000024-source">
-<pre>
-<span class="ruby-comment cmt"># File lib/PluginBase.rb, line 117</span>
+<span class="ruby-comment cmt"># File lib/PluginBase.rb, line 199</span>
   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>
     <span class="ruby-identifier">register_commands</span>
   <span class="ruby-keyword kw">end</span>
@@ -465,345 +208,15 @@ This will be registered as commands, automagically
       </div>
 
 
-      <div id="method-M000010" class="method-detail">
-        <a name="M000010"></a>
+      <h3 class="section-bar">Protected Instance methods</h3>
+
+
+      <div id="method-M000016" class="method-detail">
+        <a name="M000016"></a>
 
         <div class="method-heading">
 
-          <a href="#M000010" class="method-signature">
-
-          <span class="method-name">plugin_name</span><span class="method-args">(value)</span>
-
-          </a>
-
-        </div>
-
-        <div class="method-description">
-
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000010-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000010-source">
-<pre>
-<span class="ruby-comment cmt"># File lib/PluginBase.rb, line 3</span>
-  <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">plugin_name</span>(<span class="ruby-identifier">value</span>)
-    <span class="ruby-ivar">@name</span> = <span class="ruby-identifier">value</span>.<span class="ruby-identifier">to_s</span>
-  <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-
-        </div>
-      </div>
-
-
-      <div id="method-M000012" class="method-detail">
-        <a name="M000012"></a>
-
-        <div class="method-heading">
-
-          <a href="#M000012" class="method-signature">
-
-          <span class="method-name">token</span><span class="method-args">(tok)</span>
-
-          </a>
-
-        </div>
-
-        <div class="method-description">
-
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000012-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000012-source">
-<pre>
-<span class="ruby-comment cmt"># File lib/PluginBase.rb, line 10</span>
-  <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">token</span>(<span class="ruby-identifier">tok</span>)
-    <span class="ruby-ivar">@token</span> = <span class="ruby-identifier">tok</span>.<span class="ruby-identifier">to_s</span>
-  <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-
-        </div>
-      </div>
-
-
-      <h3 class="section-bar">Public Instance methods</h3>
-
-
-      <div id="method-M000025" class="method-detail">
-        <a name="M000025"></a>
-
-        <div class="method-heading">
-
-          <a href="#M000025" class="method-signature">
-
-          <span class="method-name">args</span><span class="method-args">()</span>
-
-          </a>
-
-        </div>
-
-        <div class="method-description">
-
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000025-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000025-source">
-<pre>
-<span class="ruby-comment cmt"># File lib/PluginBase.rb, line 130</span>
-  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">args</span>
-    <span class="ruby-identifier">match</span>[<span class="ruby-value">0</span>]
-  <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-
-        </div>
-      </div>
-
-
-      <div id="method-M000026" class="method-detail">
-        <a name="M000026"></a>
-
-        <div class="method-heading">
-
-          <a href="#M000026" class="method-signature">
-
-          <span class="method-name">automsg</span><span class="method-args">(text)</span>
-
-          </a>
-
-        </div>
-
-        <div class="method-description">
-
-          <p>
-automsg detects whether the sender is private or public and sends the
-message there
-</p>
-
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000026-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000026-source">
-<pre>
-<span class="ruby-comment cmt"># File lib/PluginBase.rb, line 154</span>
-  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">automsg</span>(<span class="ruby-identifier">text</span>)
-    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">channel</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-keyword kw">then</span>
-      <span class="ruby-identifier">msg</span> <span class="ruby-identifier">nick</span>, <span class="ruby-identifier">text</span>
-    <span class="ruby-keyword kw">else</span>
-      <span class="ruby-identifier">msg</span> <span class="ruby-identifier">channel</span>, <span class="ruby-identifier">text</span>
-    <span class="ruby-keyword kw">end</span>
-  <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-
-        </div>
-      </div>
-
-
-      <div id="method-M000029" class="method-detail">
-        <a name="M000029"></a>
-
-        <div class="method-heading">
-
-          <a href="#M000029" class="method-signature">
-
-          <span class="method-name">help</span><span class="method-args">()</span>
-
-          </a>
-
-        </div>
-
-        <div class="method-description">
-
-          <p>
-I hope this method is completely overridden in the subclass, but this
-provides sane functionallity if not
-</p>
-
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000029-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000029-source">
-<pre>
-<span class="ruby-comment cmt"># File lib/PluginBase.rb, line 186</span>
-  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">help</span>
-    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">channel</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-keyword kw">then</span> <span class="ruby-comment cmt"># list private commands</span>
-      <span class="ruby-identifier">commands</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">commands</span>.<span class="ruby-identifier">select</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span> [<span class="ruby-identifier">:private</span>, <span class="ruby-identifier">:auto</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">c</span>[<span class="ruby-value">1</span>]) }
-    <span class="ruby-keyword kw">else</span> <span class="ruby-comment cmt"># list channel commands</span>
-      <span class="ruby-identifier">commands</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">commands</span>.<span class="ruby-identifier">select</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span> [<span class="ruby-identifier">:channel</span>, <span class="ruby-identifier">:auto</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">c</span>[<span class="ruby-value">1</span>]) }
-    <span class="ruby-keyword kw">end</span>
-    <span class="ruby-identifier">automsg</span> <span class="ruby-node">&quot;!#{self.class.get_token} (#{ commands.map{|c| c[0].to_s }.join(&quot;|&quot;) })&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">commands</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">commands</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>
-  <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-
-        </div>
-      </div>
-
-
-      <div id="method-M000027" class="method-detail">
-        <a name="M000027"></a>
-
-        <div class="method-heading">
-
-          <a href="#M000027" class="method-signature">
-
-          <span class="method-name">kick</span><span class="method-args">(channel, user, reason=nil)</span>
-
-          </a>
-
-        </div>
-
-        <div class="method-description">
-
-          <p>
-The only three arg method in $bot
-</p>
-
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000027-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000027-source">
-<pre>
-<span class="ruby-comment cmt"># File lib/PluginBase.rb, line 163</span>
-  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">kick</span>(<span class="ruby-identifier">channel</span>, <span class="ruby-identifier">user</span>, <span class="ruby-identifier">reason</span>=<span class="ruby-keyword kw">nil</span>)
-    <span class="ruby-identifier">$bot</span>.<span class="ruby-identifier">kick</span>(<span class="ruby-identifier">channel</span>, <span class="ruby-identifier">user</span>, <span class="ruby-identifier">reason</span>=<span class="ruby-keyword kw">nil</span>)
-  <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-
-        </div>
-      </div>
-
-
-      <div id="method-M000018" class="method-detail">
-        <a name="M000018"></a>
-
-        <div class="method-heading">
-
-          <a href="#M000018" class="method-signature">
-
-          <span class="method-name">missing_method</span><span class="method-args">(name, *args, &amp;block)</span>
-
-          </a>
-
-        </div>
-
-        <div class="method-description">
-
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000018-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000018-source">
-<pre>
-<span class="ruby-comment cmt"># File lib/PluginBase.rb, line 32</span>
-  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">missing_method</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
-    <span class="ruby-identifier">warn</span> <span class="ruby-node">&quot;missing method #{name} default -&gt; #{@default_command}&quot;</span>
-    <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-ivar">@default_command</span>)
-      <span class="ruby-comment cmt"># By definition, the default method must be able to be invoked with no</span>
-      <span class="ruby-comment cmt"># args:</span>
-      <span class="ruby-identifier">method</span>(<span class="ruby-ivar">@default_command</span>).<span class="ruby-identifier">call</span>
-    <span class="ruby-keyword kw">else</span>
-      <span class="ruby-keyword kw">super</span>
-    <span class="ruby-keyword kw">end</span>
-  <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-
-        </div>
-      </div>
-
-
-      <div id="method-M000020" class="method-detail">
-        <a name="M000020"></a>
-
-        <div class="method-heading">
-
-          <a href="#M000020" class="method-signature">
-
-          <span class="method-name">noop</span><span class="method-args">()</span>
-
-          </a>
-
-        </div>
-
-        <div class="method-description">
-
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000020-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000020-source">
-<pre>
-<span class="ruby-comment cmt"># File lib/PluginBase.rb, line 49</span>
-  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">noop</span>
-    <span class="ruby-keyword kw">nil</span>
-  <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-
-        </div>
-      </div>
-
-
-      <div id="method-M000022" class="method-detail">
-        <a name="M000022"></a>
-
-        <div class="method-heading">
-
-          <a href="#M000022" class="method-signature">
-
-          <span class="method-name">register_commands</span><span class="method-args">()</span>
-
-          </a>
-
-        </div>
-
-        <div class="method-description">
-
-          <p>
-TODO: Add a way to register owner-only commands
-</p>
-
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000022-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000022-source">
-<pre>
-<span class="ruby-comment cmt"># File lib/PluginBase.rb, line 57</span>
-  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">register_commands</span>
-    <span class="ruby-comment cmt"># Register defined commands</span>
-    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">commands</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">command</span><span class="ruby-operator">|</span>
-      <span class="ruby-identifier">meth</span>, <span class="ruby-identifier">context</span> = <span class="ruby-identifier">command</span>
-      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Registering #{meth} for #{self.class.name} for event #{context}&quot;</span>
-      
-      <span class="ruby-comment cmt"># This allows 'auto' for commands to work in channel and private</span>
-      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">context</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:auto</span>
-        <span class="ruby-identifier">contexts</span> = [<span class="ruby-identifier">:channel</span>, <span class="ruby-identifier">:private</span>] 
-      <span class="ruby-keyword kw">else</span>
-        <span class="ruby-identifier">contexts</span> = [<span class="ruby-identifier">context</span>]
-      <span class="ruby-keyword kw">end</span>
-      <span class="ruby-identifier">contexts</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span>
-        <span class="ruby-comment cmt">#Register with global $bot</span>
-        <span class="ruby-identifier">m</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">method</span>(<span class="ruby-identifier">meth</span>.<span class="ruby-identifier">to_sym</span>)
-        <span class="ruby-identifier">$bot</span>.<span class="ruby-identifier">on</span>(<span class="ruby-identifier">c</span>.<span class="ruby-identifier">to_sym</span>, <span class="ruby-node">/^\s*!#{self.class.get_token.to_s}\s+#{meth.to_s}\s?(.*)$/</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">m</span>)
-      <span class="ruby-keyword kw">end</span>
-    <span class="ruby-keyword kw">end</span>
-    <span class="ruby-comment cmt"># Register default command</span>
-    <span class="ruby-keyword kw">if</span> (<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">get_default_command_context</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:auto</span>) <span class="ruby-keyword kw">then</span>
-      <span class="ruby-identifier">contexts</span> = [<span class="ruby-identifier">:channel</span>, <span class="ruby-identifier">:private</span>] 
-    <span class="ruby-keyword kw">else</span>
-      <span class="ruby-identifier">contexts</span> = [<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">get_default_command_context</span>]
-    <span class="ruby-keyword kw">end</span>
-    <span class="ruby-identifier">contexts</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span>
-      <span class="ruby-identifier">m</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">method</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">get_default_command</span>)
-      <span class="ruby-identifier">$bot</span>.<span class="ruby-identifier">on</span>(<span class="ruby-identifier">c</span>.<span class="ruby-identifier">to_sym</span>, <span class="ruby-node">/^\s*!#{self.class.get_token.to_s}(.*)$/</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">m</span>)
-    <span class="ruby-keyword kw">end</span>
-  <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-
-        </div>
-      </div>
-
-
-      <div id="method-M000023" class="method-detail">
-        <a name="M000023"></a>
-
-        <div class="method-heading">
-
-          <a href="#M000023" class="method-signature">
+          <a href="#M000016" class="method-signature">
 
           <span class="method-name">unregister_commands</span><span class="method-args">()</span>
 
@@ -814,10 +227,10 @@ TODO: Add a way to register owner-only commands
         <div class="method-description">
 
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000023-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000023-source">
+            onclick="toggleCode('M000016-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000016-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/PluginBase.rb, line 87</span>
+<span class="ruby-comment cmt"># File lib/PluginBase.rb, line 167</span>
   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">unregister_commands</span>
     <span class="ruby-comment cmt"># Register defined commands</span>
     <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">commands</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">command</span><span class="ruby-operator">|</span>
@@ -833,7 +246,7 @@ TODO: Add a way to register owner-only commands
       <span class="ruby-identifier">contexts</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span>
         <span class="ruby-comment cmt">#Register with global $bot</span>
         <span class="ruby-identifier">m</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">method</span>(<span class="ruby-identifier">:noop</span>)
-        <span class="ruby-identifier">$bot</span>.<span class="ruby-identifier">off</span>(<span class="ruby-identifier">c</span>.<span class="ruby-identifier">to_sym</span>, <span class="ruby-node">/^\s*!#{self.class.get_token.to_s}\s+#{meth.to_s}\s?(.*)$/</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">m</span>)
+        <span class="ruby-identifier">$bot</span>.<span class="ruby-identifier">off</span>(<span class="ruby-identifier">c</span>.<span class="ruby-identifier">to_sym</span>, <span class="ruby-node">/^\s*!#{self.class.get_token.to_s}\s+#{meth.to_s}\s?(.*)$/i</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">m</span>)
       <span class="ruby-keyword kw">end</span>
     <span class="ruby-keyword kw">end</span>
     <span class="ruby-comment cmt"># Register default command</span>
@@ -844,8 +257,10 @@ TODO: Add a way to register owner-only commands
     <span class="ruby-keyword kw">end</span>
     <span class="ruby-identifier">contexts</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span>
       <span class="ruby-identifier">m</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">method</span>(<span class="ruby-identifier">:noop</span>)
-      <span class="ruby-identifier">$bot</span>.<span class="ruby-identifier">off</span>(<span class="ruby-identifier">c</span>.<span class="ruby-identifier">to_sym</span>, <span class="ruby-node">/^\s*!#{self.class.get_token.to_s}(.*)$/</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">m</span>)
+      <span class="ruby-identifier">$bot</span>.<span class="ruby-identifier">off</span>(<span class="ruby-identifier">c</span>.<span class="ruby-identifier">to_sym</span>, <span class="ruby-node">/^\s*!#{self.class.get_token.to_s}(.*)$/i</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">m</span>)
     <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># Unregister Token</span>
+    <span class="ruby-ivar">@@global_tokens_catalog</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">get_token</span>)
   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>

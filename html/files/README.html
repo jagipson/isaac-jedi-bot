@@ -53,7 +53,7 @@
     </tr>
     <tr class="top-aligned-row">
       <td><strong>Last Update:</strong></td>
-      <td>2010-03-03 18:34:03 -0600</td>
+      <td>2010-03-04 12:13:40 -0600</td>
     </tr>
     </table>
   </div>
@@ -64,16 +64,87 @@
   <div id="contextContent">
 
     <div id="description">
-      <p>
-This is an IRC Bot implemented in Ruby using the excellent isaac library
-available at <a
+      <h1>The RuBot Project</h1>
+<p>
+This is an IRC Bot implemented in Ruby using Harry Vangberg&#8217;s
+excellent isaac library available at <a
 href="http://github.com/ichverstehe/isaac.">github.com/ichverstehe/isaac.</a>
 Where isaac is a library for creating an IRC BOT, this project implements
-the library to create one. It may be more useful as an example than
-anything else.
+the library to create one.
 </p>
 <p>
-The name is just a nod to a classic movie franchise.
+The repository name is just a nod to a classic movie franchise. This bot
+cannot destroy the Deathstar.
+</p>
+<h2>Technical introduction</h2>
+<p>
+If you aren&#8217;t a Ruby hacker, or just want to use this system, you
+probably don&#8217;t need to read this section. If you want to know
+generally how it&#8217;s done, then read on.
+</p>
+<pre>
+ *ConfigurationModule.rb* is a utility resource that defines some top-level
+</pre>
+<p>
+methods that users of the system probably don&#8217;t need to know about
+and it sets up the environment. Much of the stuff that makes RuBot its own
+project has been placed in this file, to keep <b>RubOt.rb</b> as clean as
+possible, so that users who have created other <tt>Isaac::Bot</tt>s can
+move some of their code into it. Among these utilities are configuration
+file reading and writing, and the <tt>BotExtensions</tt> module that is
+used to <em>extend</em> our Isaac::Bot instance.
+</p>
+<p>
+The configuration file is stored on disk as a YAML file. The best way to
+create a configuration file is to run <b>RubOt.rb</b> without one, and a
+new one will be generated. Edit the file (jedbotconf.yaml) using a text
+editor, and relaunch RuBot. We dislike global variables, so we stuff all
+the global system configuration into the <tt>BOT_CONFIG</tt> Global
+Constant hash. As a plugin author, the two that are most meaningful are
+<tt>BOT_CONFIG[:owner_nick]</tt> and BOT_CONFIG[:bot_nick].
+</p>
+<p>
+This project <em>extends</em> Isaac::Bot, only minimally.
+<tt>Isaac::Bot</tt> stores <tt>Proc</tt> objects in an <tt>@event[]</tt>
+data structure using the <tt>on</tt> method. It has no mechanism for
+removing the routines, so I have extended it to add an <tt>off</tt> method.
+This manipulation of the events data structure is what makes it possible to
+add plugin loading and unloading.
+</p>
+<p>
+The remaining functionality is added to the bot either through adding
+<tt>on <em>:event</em></tt> Isaac DSL blocks at the bottom of
+<b>RuBot.rb</b> (doing things the Isaac way), or by creating subclasses of
+<b>PluginBase</b> to create loadable plugins (the RubOt way). Note, that
+the <a href="../classes/Core.html">Core</a> plugin contains the
+functionality to load and unload modules, and so it is instantiated
+differently from any other modules. <b>PluginBase</b> is too complicated to
+explain in a readme. We intend to provide documentation for it in the
+source, however, in the &#8220;Creating a Plugin&#8221; section, we explain
+how to use it.
+</p>
+<h2>Creating a Bot</h2>
+<p>
+To personalize RuBot, or to start over, first locate your configuration
+file (<tt>jedbotcnf.yaml</tt> is the default one) and delete it or move it
+aside. Next run <tt>$ ruby <em>path/to/</em>RubOt.rb</tt>. It will detect
+that you have no configuration and build a file for you. Now, edit
+<tt>jedbotcnf.yaml</tt> with your IRC settings, an relaunch RuBot.
+</p>
+<p>
+If it&#8217;s working, then you should see <tt>Connected.</tt> in the
+terminal. Your bot is now logged in. The <b>Core</b> plugin is controlled
+using the *!do* token. In IRC, send <tt>/msg <em>&lt;YourBotName&gt;</em>
+!do help</tt> for quick help.
+</p>
+<p>
+One other hint: Sometimes, the help you get with the <tt>help</tt> command
+will be different depending on if you are asking for help in a channel, or
+a private chat.
+</p>
+<h2>Creating a Plugin</h2>
+<p>
+<Not written yet, coming soon>
 </p>
 
     </div>

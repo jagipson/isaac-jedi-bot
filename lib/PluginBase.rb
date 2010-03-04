@@ -1,4 +1,62 @@
-class PluginBase
+=begin rdoc
+= PluginBase Abstract Class
+Provides the framework for writing plugins that can be loaded into RubOt. This
+is an abstract class.  Do not attempt to instantiate this class directly.
+
+The creation of subclasses of PluginBase is how plugins are created. Do not
+instantiate your own subclasses. Your subclass will be instantiated as a
+plugin object when it is loaded.
+
+= Creating RubOt Plugins
+
+To create a RubOt Plugin, you must create a subclass of PluginBase, configure
+it, and define methods which will then become commands.
+
+The best way to get started is by demonstration.
+
+     1	  class Greets < PluginBase
+     2	    description "Silly example plugin"
+     3	    token       :greet
+     4	    context     :auto
+     5	  
+     6	    def help
+     7	      automsg "Additional features available in " + 
+     8	              "private room then !greet to get list"
+     9	      super
+    10	    end
+    11	  
+    12	    def hi
+    13	      automsg "#{nick} said hi!"
+    14	    end
+    15	  
+    16	    def hello
+    17	      automsg "Hello, #{nick}"
+    18	    end
+    19	  
+    20	    context :private 
+    21	    def special
+    22	     msg nick, "Even though you lick windows on " +
+    23	               "the short bus, to me you are still special!" 
+    24	    end
+    25	  end
+
+== line... by... line...
+
+=== Lines 1-4:
+
+On line one, you define your subclass of PluginBase (in the example
+it's Greets). This will be the _name_ of your plugin. This is very important:
+
+<b>Your file must be given exactly the same name as your plugin, with a _.rb_
+extension</b>. For this example, the plugin file _must_ be named
+<tt>Greets.rb</tt> or it will not work. Yes, it *is* case-sensitive.
+
+
+=end
+
+class PluginBase #:enddoc:
+  private
+  
   #provide a default description
   @desc = "#{self.name} is indescribable!"
   def self.description(value)
@@ -73,6 +131,8 @@ class PluginBase
     (@commands ||= [])
   end
 
+  
+  # called by #initialize().
   def register_commands
     #first revalidate Class for good token, to ensure it was set
     self.class.validate_token self.class.get_token
@@ -105,7 +165,7 @@ class PluginBase
       $bot.on(c.to_sym, /^\s*!#{self.class.get_token.to_s}(.*)$/i, &m)
     end
   end
-  
+  protected
   def unregister_commands
     # Register defined commands
     self.class.commands.each do |command|
@@ -137,7 +197,7 @@ class PluginBase
     # Unregister Token
     @@global_tokens_catalog.delete(self.class.get_token)
   end
-  
+  private
   def initialize
     register_commands
   end
