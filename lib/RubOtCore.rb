@@ -45,12 +45,10 @@ class Core < PluginBase
         load plugin
         # Plugin's assume that the Classname = filename w/o .rb extension
         begin
-          eval(<<-EOF)
-            @plugins[plugin.downcase.to_sym] = #{plugin[0..-4]}.new
-          EOF
-           
-        rescue Exception => problem
-          puts problem
+          puts "About to register plugin #{plugin.inspect}"
+          self.instance_eval %Q{ @plugins[plugin.downcase.to_sym] = #{plugin[0..-4]}.new }
+        rescue 
+          p $!
           msg nick "Unable to load plugin #{plugin}. Check logs"
         end
       else
@@ -77,5 +75,10 @@ class Core < PluginBase
     msg nick, "loaded plugins: #{ (@plugins ||= {}).map {|p| p.to_s}.join(", ") }" 
   end
 end
-
+# This instance is created only because this Class is not loaded via the 
+# !do load_plugins or (as yet not implemented, autoloader plugin).  In
+# fact, this plugin contains the instructions for the load_plugin command so
+# it is an exception to the rule.  We instantiate core here.  Don't instantiate
+# any other plugins in any other plugin class definitions, because the object
+# will not be used by the system.
 core = Core.new
