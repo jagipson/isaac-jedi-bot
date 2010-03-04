@@ -23,13 +23,13 @@ def configuration_from_file(config_file=DEFAULT_CONF)
   # Make sure initial nick is set
   if (not config_root[:bot_nick]) then
     config_root[:bot_nick] = "UnnamedBot_#{(rand * 10000).to_i}"
-    warn "No setting for $bot_config[:bot_nick].  Using #{config_root[:bot_nick]}"
+    warn "No setting for BOT_CONFIG[:bot_nick].  Using #{config_root[:bot_nick]}"
   end
   
   # Make sure owner nick is set
   if (not config_root[:owner_nick]) then
     config_root[:owner_nick] = ENV["USER"]
-    warn "No setting for $bot_config[:bot_nick].  Using #{config_root[:owner_nick]}"
+    warn "No setting for BOT_CONFIG[:bot_nick].  Using #{config_root[:owner_nick]}"
   end
    
   # Make sure required connection settings are set
@@ -42,7 +42,7 @@ def configuration_from_file(config_file=DEFAULT_CONF)
   %w(server port ssl realname verbose).each do |setting|
     if (not config_root[:connection_parameters][setting.to_sym]) then
       config_root[:connection_parameters][setting.to_sym] = "#{setting}"
-      warn "No #{setting} setting for $bot_config[:bot_nick]. Please check #{config_file}"
+      warn "No #{setting} setting for BOT_CONFIG[:bot_nick]. Please check #{config_file}"
       fatal_errors_occured = true
     end
   end

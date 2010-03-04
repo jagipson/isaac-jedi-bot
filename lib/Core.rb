@@ -6,7 +6,7 @@ class Core < PluginBase
   context :private
   def join
     args.split(" ").each do |room|
-      if (nick =~ /^#{$bot_config[:owner_nick]}$/i) and (room =~ /#[\w-]+/)
+      if (nick =~ /^#{BOT_CONFIG[:owner_nick]}$/i) and (room =~ /#[\w-]+/)
         super room
         puts "Joining #{room}"
       end
@@ -15,7 +15,7 @@ class Core < PluginBase
 
   def part
       args.split(" ").each do |room|
-      if (nick =~ /^#{$bot_config[:owner_nick]}$/i) and (room =~ /#[\w-]+/)
+      if (nick =~ /^#{BOT_CONFIG[:owner_nick]}$/i) and (room =~ /#[\w-]+/)
         part room
         super "Leaving #{room}"
       end
@@ -23,14 +23,14 @@ class Core < PluginBase
   end
 
   def hangup 
-    if ($bot.nick =~ /^#{$bot_config[:owner_nick]}$/i)
+    if ($bot.nick =~ /^#{BOT_CONFIG[:owner_nick]}$/i)
       quit("Disconnecting")
       puts "Owner hangup"
     end
   end
 
   def toggle_verbosity 
-    if (nick =~ /^#{$bot_config[:owner_nick]}$/i)
+    if (nick =~ /^#{BOT_CONFIG[:owner_nick]}$/i)
       $bot.configure do |c|
         c.verbose = ! c.verbose
         puts "Verbosity:#{c.verbose.to_s}"
