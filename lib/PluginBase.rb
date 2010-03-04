@@ -17,8 +17,8 @@ The best way to get started is by demonstration.
      1	  class Greets < PluginBase
      2	    description "Silly example plugin"
      3	    token       :greet
-     4	    context     :auto
-     5	  
+     4	    
+     5	    context  :auto
      6	    def help
      7	      automsg "Additional features available in " + 
      8	              "private room then !greet to get list"
@@ -28,33 +28,89 @@ The best way to get started is by demonstration.
     12	    def hi
     13	      automsg "#{nick} said hi!"
     14	    end
-    15	  
-    16	    def hello
-    17	      automsg "Hello, #{nick}"
-    18	    end
-    19	  
-    20	    context :private 
-    21	    def special
-    22	     msg nick, "Even though you lick windows on " +
-    23	               "the short bus, to me you are still special!" 
-    24	    end
-    25	  end
+    15	    
+    16	    context :channel
+    17	    def hello
+    18	      automsg "Hello, #{nick}"
+    19	    end
+    20	  
+    21	    context :private 
+    22	    def special
+    23	     msg nick, "Even though you lick windows on " +
+    24	               "the short bus, to me you are still special!" 
+    25	    end
+    26    end
 
 == line... by... line...
 
-=== Lines 1-4:
+=== Lines 1-3:
 
-On line one, you define your subclass of PluginBase (in the example
+On line 1, you define your subclass of PluginBase (in the example
 it's Greets). This will be the _name_ of your plugin. This is very important:
 
 <b>Your file must be given exactly the same name as your plugin, with a _.rb_
 extension</b>. For this example, the plugin file _must_ be named
 <tt>Greets.rb</tt> or it will not work. Yes, it *is* case-sensitive.
 
+Line 2 shows proper use of +description+. Implementing +description+ is
+entirely voluntary, but if you don't define one, the PluginBase will for you,
+because it is needed for the global help system (activated by +help!+ in IRC).
+
+The +token+ definition on line 3 is absolutely necessary. The _token_ is what
+is used by RubOt to determine which module to route your command message to.
+For example, to use any functionallity in _Greets_, the "+!greet+" token must
+be the first text on the IRC line. Don't include the bang (!) when you define
+the token here, but do prefix the token with bang (!) in IRC.
+
+=== Lines 5-25
+
+The remainder of this file defines the commands that the plugin will listen
+for. Commands actually are Ruby methods of your plugin class. In _Greets_, the
+commands are _help_, _hi_, _hello_, and _special_.
+
+==== Help Behavior
+
+A quick word on _help_: We prefer that you define _help_, but if you don't,
+PluginBase will do it for you. The automatic help is terse, but lists the
+available commands. You can use the automatically generated help within your
+help by calling +super+. The automatically generated help is also context
+sensitive (in the sense of RubOt context which is covered below). This means
+that if you run the +help+ command in a public IRC channel, only the commands
+defined in the _channel_ and _auto_ contexts will be displayed. Conversely, if
+you run the +help+ command in private, only the commands defined in the
+_private_ and _auto_ contexts will be displayed.
+
+==== Contexts Explained
+
+Line 5 sets the _context_ to +:auto+. This is not really necessary here,
+because +:auto+ is the default context, and this statement is usually only
+used to set the context back to +:auto+ after it has been set to something
+else. All commands defined in the +:auto+ context respond whether the command
+was sent in +:channel+ or +:private+. The +:channel+ and +:private+ contexts
+are for defining commands that may _only_ be sent from a channel _or_ private.
+
+==== Accessing Data and Performing Actions
+
+The single +Isaac::Bot+ instance is globally accessible via the global +$bot+
+variable. To keep your code legible, the following mappings have been made:
+
+  $bot.config    => config
+  $bot.irc       => irc
+  $bot.nick      => nick
+  $bot.channel   => channel
+  $bot.message   => message
+  $bot.user      => user
+  $bot.host      => host
+  $bot.match     => match
+  $bot.error     => error
+  
+  TODO: Finish documenting mapped commands
+  TODO: Document value-adds like automsg, etc.
 
 =end
 
 class PluginBase #:enddoc:
+                 
   private
   
   #provide a default description

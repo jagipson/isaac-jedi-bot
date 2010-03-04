@@ -53,7 +53,7 @@
     </tr>
     <tr class="top-aligned-row">
       <td><strong>Last Update:</strong></td>
-      <td>2010-03-04 16:39:38 -0600</td>
+      <td>2010-03-04 17:43:49 -0600</td>
     </tr>
     </table>
   </div>
@@ -64,23 +64,21 @@
   <div id="contextContent">
 
     <div id="description">
-      <h1><a href="../../classes/PluginBase.html">PluginBase</a> Abstract Class</h1>
+      <h1>PluginBase Abstract Class</h1>
 <p>
 Provides the framework for writing plugins that can be loaded into RubOt.
 This is an abstract class. Do not attempt to instantiate this class
 directly.
 </p>
 <p>
-The creation of subclasses of <a
-href="../../classes/PluginBase.html">PluginBase</a> is how plugins are
-created. Do not instantiate your own subclasses. Your subclass will be
-instantiated as a plugin object when it is loaded.
+The creation of subclasses of PluginBase is how plugins are created. Do not
+instantiate your own subclasses. Your subclass will be instantiated as a
+plugin object when it is loaded.
 </p>
 <h1>Creating RubOt Plugins</h1>
 <p>
-To create a RubOt Plugin, you must create a subclass of <a
-href="../../classes/PluginBase.html">PluginBase</a>, configure it, and
-define methods which will then become commands.
+To create a RubOt Plugin, you must create a subclass of PluginBase,
+configure it, and define methods which will then become commands.
 </p>
 <p>
 The best way to get started is by demonstration.
@@ -89,8 +87,8 @@ The best way to get started is by demonstration.
      1    class Greets &lt; PluginBase
      2      description &quot;Silly example plugin&quot;
      3      token       :greet
-     4      context     :auto
-     5
+     4
+     5      context  :auto
      6      def help
      7        automsg &quot;Additional features available in &quot; +
      8                &quot;private room then !greet to get list&quot;
@@ -101,29 +99,85 @@ The best way to get started is by demonstration.
     13        automsg &quot;#{nick} said hi!&quot;
     14      end
     15
-    16      def hello
-    17        automsg &quot;Hello, #{nick}&quot;
-    18      end
-    19
-    20      context :private
-    21      def special
-    22       msg nick, &quot;Even though you lick windows on &quot; +
-    23                 &quot;the short bus, to me you are still special!&quot;
-    24      end
-    25    end
+    16      context :channel
+    17      def hello
+    18        automsg &quot;Hello, #{nick}&quot;
+    19      end
+    20
+    21      context :private
+    22      def special
+    23       msg nick, &quot;Even though you lick windows on &quot; +
+    24                 &quot;the short bus, to me you are still special!&quot;
+    25      end
+    26    end
 </pre>
 <h2>line... by... line...</h2>
+<h3>Lines 1-3:</h3>
 <p>
-Lines 1-4: On line one, you define your subclass of <a
-href="../../classes/PluginBase.html">PluginBase</a> (in the example
+On line 1, you define your subclass of PluginBase (in the example
 it&#8217;s <a href="../../classes/Greets.html">Greets</a>). This will be
 the <em>name</em> of your plugin. This is very important:
 </p>
 <p>
 <b>Your file must be given exactly the same name as your plugin, with a
 <em>.rb</em> extension</b>. For this example, the plugin file <em>must</em>
-be named <b><tt>Greets.rb</tt></b> or it *will not work*. Yes, it <b>is</b>
+be named <tt>Greets.rb</tt> or it will not work. Yes, it <b>is</b>
 case-sensitive.
+</p>
+<p>
+Line 2 shows proper use of <tt>description</tt>. Implementing
+<tt>description</tt> is entirely voluntary, but if you don&#8217;t define
+one, the PluginBase will for you, because it is needed for the global help
+system (activated by <tt>help!</tt> in IRC).
+</p>
+<p>
+The <tt>token</tt> definition on line 3 is absolutely necessary. The
+<em>token</em> is what is used by RubOt to determine which module to route
+your command message to. For example, to use any functionallity in
+<em>Greets</em>, the &#8220;+!greet+&#8221; token must be the first text on
+the IRC line. Don&#8217;t include the bang (!) when you define the token
+here, but do prefix the token with bang (!) in IRC.
+</p>
+<h3>Lines 5-25</h3>
+<p>
+The remainder of this file defines the commands that the plugin will listen
+for. Commands actually are Ruby methods of your plugin class. In
+<em>Greets</em>, the commands are <em>help</em>, <em>hi</em>,
+<em>hello</em>, and <em>special</em>.
+</p>
+<h4>Help Behavior</h4>
+<p>
+A quick word on <em>help</em>: We prefer that you define <em>help</em>, but
+if you don&#8217;t, PluginBase will do it for you. The automatic help is
+terse, but lists the available commands. You can use the automatically
+generated help within your help by calling <tt>super</tt>. The
+automatically generated help is also context sensitive (in the sense of
+RubOt context which is covered below). This means that if you run the
+<tt>help</tt> command in a public IRC channel, only the commands defined in
+the <em>channel</em> and <em>auto</em> contexts will be displayed.
+Conversely, if you run the <tt>help</tt> command in private, only the
+commands defined in the <em>private</em> and <em>auto</em> contexts will be
+displayed.
+</p>
+<h4>Contexts Explained</h4>
+<p>
+Line 5 sets the <em>context</em> to <tt>:auto</tt>. This is not really
+necessary here, because <tt>:auto</tt> is the default context, and this
+statement is usually only used to set the context back to <tt>:auto</tt>
+after it has been set to something else. All commands defined in the
+<tt>:auto</tt> context respond whether the command was sent in
+<tt>:channel</tt> or <tt>:private</tt>. The <tt>:channel</tt> and
+<tt>:private</tt> contexts are for defining commands that may <em>only</em>
+be sent from a channel <em>or</em> private.
+</p>
+<h4>Accessing Data and Performing Actions</h4>
+<p>
+The single +Isaac::Bot+ instance is globally accessible via the global
++$bot+ variable. To keep your code legible, the following mappings have
+been made:
+</p>
+<p>
+|This|Is| |A|Table|
 </p>
 
     </div>
