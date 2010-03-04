@@ -53,7 +53,7 @@ class PluginBase
   def self.commands
     (@commands ||= [])
   end
-  # TODO: Add a way to register owner-only commands 
+
   def register_commands
     # Register defined commands
     self.class.commands.each do |command|

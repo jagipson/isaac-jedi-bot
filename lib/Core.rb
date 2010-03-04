@@ -2,7 +2,7 @@ class Core < PluginBase
   plugin_name :core
   token       :do
   default_command :help
-#  TODO: The methods in here should only work for owner. Need to fix event registraion regex somehow to have an option for owner commands 
+
   context :private
   def join
     args.split(" ").each do |room|
