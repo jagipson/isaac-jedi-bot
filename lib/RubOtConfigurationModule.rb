@@ -68,4 +68,4 @@ module BotExtensions
 end
 $bot.extend BotExtensions
 
-require 'RubOt PluginBase.rb'
+require 'RubOtPluginBase.rb'

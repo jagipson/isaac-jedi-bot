@@ -5,7 +5,7 @@
 exit(1) unless defined?(RUBY_VERSION) and RUBY_VERSION =~ /1\.9\.*/
 
 require 'isaac'
-require 'RubOt configuration module'
+require 'RubOtConfigurationModule'
 
 $bot_config = configuration_from_file
 
@@ -26,7 +26,7 @@ on :connect do
   puts "Connected."
 end
 
-require 'RubOt Core'
+require 'RubOtCore'
 
 # Run this file
 # ruby RubOt.rb
