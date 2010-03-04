@@ -51,7 +51,7 @@ class PluginBase
   end
   # Accessor for class instance variable
   def self.commands
-    @commands
+    (@commands ||= [])
   end
   # TODO: Add a way to register owner-only commands 
   def register_commands
@@ -173,8 +173,7 @@ class PluginBase
   
   def self.method_added(method)
     # Maintain a list of added methods and their context
-    (@commands ||= []) << [method, @context]
-    
+    (@commands ||= []) << [method, (@context ||= :auto)]
   end
   
   # I hope this method is completely overridden in the subclass, but this 
