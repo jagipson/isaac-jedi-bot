@@ -1,10 +1,26 @@
 class PluginBase
-
-  def self.plugin_name(value)
-    @name = value.to_s
+  #provide a default description
+  @desc = "#{self.name} is indescribable!"
+  def self.description(value)
+    @desc = value.to_s
   end
-  def self.name
-    @name
+  def self.desc
+    @desc
+  end
+  
+  def self.validate_token(tok)
+    # Guarantee that a token was established
+    if (tok.nil? or tok.to_s !~ /^[A-Za-z]+[A-Za-z0-9]*$/i ) then
+      raise "Bad token (#{tok.to_s}) defined in Plugin (#{self.name})"
+    
+    # Guarantee that a token is unique by checking against registered tokens
+    elsif (@@global_tokens_catalog[tok.to_s.downcase.to_sym] and
+           @@global_tokens_catalog[tok.to_s.downcase.to_sym] != self)
+      raise "Non-unique token (#{tok.to_s.downcase}) in #{self.name}. " +
+        "Already used by #{@@global_tokens_catalog[tok.to_s.downcase.to_sym]}"
+    else
+      return tok.to_s.downcase.to_sym
+    end
   end
   
   def self.token(tok)
@@ -112,6 +128,8 @@ class PluginBase
       m = self.method(:noop)
       $bot.off(c.to_sym, /^\s*!#{self.class.get_token.to_s}(.*)$/, &m)
     end
+    # Unregister Token
+    @@global_tokens_catalog.delete(self.class.get_token)
   end
   
   def initialize

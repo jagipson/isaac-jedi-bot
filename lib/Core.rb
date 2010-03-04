@@ -1,6 +1,8 @@
+# encoding: utf-8
+
 class Core < PluginBase
-  plugin_name :core
-  token       :do
+  description     "Core plugin for administrative tasks."
+  token           :do
   default_command :help
 
   context :private
@@ -62,7 +64,7 @@ class Core < PluginBase
     args.split(" ").each do |plugin|
       begin
         @plugins[plugin.downcase.to_sym].unregister_commands
-        @plugins[plugin.downcase.to_sym] = nil
+        @plugins.delete(plugin.downcase.to_sym)
         msg nick, "#{plugin} unloaded." 
       rescue => problem
         puts problem
@@ -71,8 +73,19 @@ class Core < PluginBase
     end
   end
   
+  #--
+  # Unicode Non breaking spaces are used in this method to 'fool' the isaac library
+  # into allowing us to have consecutive spaces.  the parse() method in isaac has a
+  # side effect of squashing multiple consecutive spaces into one.  This circumvents
+  # that effect, so I can print formatted tables
   def list_plugins
-    msg nick, "loaded plugins: #{ (@plugins ||= {}).map {|p| p.to_s}.join(", ") }" 
+    # Always responds in private
+    msg nick, "loaded plugins in order of appearance: "
+    #IMPORTANT Spaces in the next line are NON-Breaking (not normal space char) 
+    msg nick, "   Token Name            Description"
+    ([self]+(@plugins||={}).values).each do |i| #IMPORTANT Spaces in the next line are NON-Breaking (not normal space char) 
+      msg nick, "#{("!" + i.class.get_token.to_s).rjust(8, " ")} #{i.class.name[0..13].ljust(15, " ")} #{i.class.desc}"
+    end
   end
 end
 # This instance is created only because this Class is not loaded via the 
@@ -82,3 +95,12 @@ end
 # any other plugins in any other plugin class definitions, because the object
 # will not be used by the system.
 core = Core.new
+
+# Using isaac events, hook root "!help" and send to core help.
+# Don't do anything like this in non Core plugin
+on :channel, /\s*!help/i do
+  core.list_plugins
+end
+on :private, /\s*!help/i do
+  core.list_plugins
+end

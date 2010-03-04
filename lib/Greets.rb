@@ -1,5 +1,5 @@
 class Greets < PluginBase
-  plugin_name :greeter
+  description "Silly example plugin"
   token       :greet
   context     :auto
   

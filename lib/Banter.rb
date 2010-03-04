@@ -1,8 +1,7 @@
 class Banter < PluginBase
-  
-  plugin_name     :banter
-  token           :fortune
-  default_command :fortune
+description     "Provide hours of empty entertainment with random quotes" 
+token           :fortune
+default_command :fortune
 
   context :auto
   def fortune
