@@ -37,7 +37,7 @@ class Core < PluginBase
       end
     end
   end
-  # TODO: Fix. Once a plugin is unloaded and reloaded, it doesn't work
+
   def load_plugin
     @plugins ||= {}
     args.split(" ").each do |plugin|

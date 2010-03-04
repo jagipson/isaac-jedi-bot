@@ -58,11 +58,12 @@ def write_configuration(config_root, config_file=DEFAULT_CONF)
   File.open(config_file, "w") { |f| YAML.dump(config_root, f) }
 end
 
+# TODO: Fix. This does't really delete the [regex,&block] pair like it should
 # extend the $bot object
 module BotExtensions
   def off(event, match=//, &block)
     match = match.to_s if match.is_a? Integer
-    (@events[event] ||= []).delete_if {|a| a[0] = Regexp.new(match) }
+    (@events[event] ||= []).delete_if {|a| a[0] == Regexp.new(match) }
   end
 end
 $bot.extend BotExtensions
