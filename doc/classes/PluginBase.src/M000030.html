@@ -1,0 +1,20 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>help (PluginBase)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre>     <span class="ruby-comment cmt"># File lib/PluginBase.rb, line 186</span>
+186:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">help</span>
+187:     <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">channel</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-keyword kw">then</span> <span class="ruby-comment cmt"># list private commands</span>
+188:       <span class="ruby-identifier">commands</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">commands</span>.<span class="ruby-identifier">select</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span> [<span class="ruby-identifier">:private</span>, <span class="ruby-identifier">:auto</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">c</span>[<span class="ruby-value">1</span>]) }
+189:     <span class="ruby-keyword kw">else</span> <span class="ruby-comment cmt"># list channel commands</span>
+190:       <span class="ruby-identifier">commands</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">commands</span>.<span class="ruby-identifier">select</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span> [<span class="ruby-identifier">:channel</span>, <span class="ruby-identifier">:auto</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">c</span>[<span class="ruby-value">1</span>]) }
+191:     <span class="ruby-keyword kw">end</span>
+192:     <span class="ruby-identifier">automsg</span> <span class="ruby-node">&quot;!#{self.class.get_token} (#{ commands.map{|c| c[0].to_s }.join(&quot;|&quot;) })&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">commands</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">commands</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>
+193:   <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

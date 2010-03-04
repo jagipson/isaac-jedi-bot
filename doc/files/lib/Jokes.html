@@ -2,7 +2,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>File: wx_alert.rb [RDoc Documentation]</title>
+  <title>File: Jokes [RDoc Documentation]</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta http-equiv="Content-Script-Type" content="text/javascript" />
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
@@ -43,17 +43,17 @@
 
 
   <div id="fileHeader">
-    <h1>wx_alert.rb</h1>
+    <h1>Jokes</h1>
     <table class="header-table">
     <tr class="top-aligned-row">
       <td><strong>Path:</strong></td>
-      <td>lib/wx_alert.rb
+      <td>lib/Jokes
 
       </td>
     </tr>
     <tr class="top-aligned-row">
       <td><strong>Last Update:</strong></td>
-      <td>2010-03-02 00:41:14 -0600</td>
+      <td>2010-03-04 01:36:46 -0600</td>
     </tr>
     </table>
   </div>
@@ -65,7 +65,35 @@
 
     <div id="description">
       <p>
-part of the isaac-jedi-bot irc bot
+class <a href="../../classes/Greets.html">Greets</a> < <a
+href="../../classes/PluginBase.html">PluginBase</a>
+</p>
+<pre>
+  plugin_name :joke
+  token :jokes
+  context :auto
+  def help
+    automsg &quot;Additional features available in private room then !jokes to get list&quot;
+    super
+
+  end
+  def mom
+    automsg &quot;My mother wears combat boots!&quot;
+  end
+  def dirty_joke
+    automsg &quot;Two pigs fell in the mud.&quot;
+  end
+
+  def clean_joke
+    automsg &quot;Two pigs took a bath.&quot;
+  end
+ context :private
+  def special
+   msg nick, &quot;I still don't care how much I drool on myself, you are still my friend!&quot;
+  end
+</pre>
+<p>
+end
 </p>
 
     </div>

@@ -1,0 +1,20 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>part (Core)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre>    <span class="ruby-comment cmt"># File lib/Core.rb, line 16</span>
+16:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">part</span>
+17:       <span class="ruby-identifier">args</span>.<span class="ruby-identifier">split</span>(<span class="ruby-value str">&quot; &quot;</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">room</span><span class="ruby-operator">|</span>
+18:       <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">nick</span> <span class="ruby-operator">=~</span> <span class="ruby-node">/^#{$bot_config[:owner_nick]}$/i</span>) <span class="ruby-keyword kw">and</span> (<span class="ruby-identifier">room</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/#[\w-]+/</span>)
+19:         <span class="ruby-identifier">part</span> <span class="ruby-identifier">room</span>
+20:         <span class="ruby-keyword kw">super</span> <span class="ruby-node">&quot;Leaving #{room}&quot;</span>
+21:       <span class="ruby-keyword kw">end</span>
+22:     <span class="ruby-keyword kw">end</span>
+23:   <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

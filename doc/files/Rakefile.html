@@ -53,7 +53,7 @@
     </tr>
     <tr class="top-aligned-row">
       <td><strong>Last Update:</strong></td>
-      <td>2010-03-01 23:08:17 -0600</td>
+      <td>2010-03-03 21:07:54 -0600</td>
     </tr>
     </table>
   </div>
@@ -62,6 +62,66 @@
   <div id="bodyContent">
 
   <div id="contextContent">
+
+    <div id="description">
+      <p>
+task :default => :test
+</p>
+<p>
+task :test do
+</p>
+<pre>
+  require 'rake/runtest'
+  Rake.run_tests
+</pre>
+<p>
+end
+</p>
+<p>
+desc &#8220;Generate <a href="TODO.html">TODO</a> file&#8221; task :<a
+href="TODO.html">TODO</a>
+</p>
+<p>
+file &#8220;TODO&#8221; do
+</p>
+<pre>
+  # remove old TODO file
+  todo_file = Dir['TODO']
+  rm(todo_file, verbose:true) unless todo_file.empty?
+
+  main_file_heading = &quot;TODO Generated on #{Time.now} by #{ENV[&quot;USER&quot;]}&quot;
+
+  # Search all .rb files
+  search_files = Dir['**/*.rb']
+  File.open('TODO', 'w') do |todo_file|
+    search_files.each do |search_file|
+      File.open(search_file, 'r') do |fh|
+        search_file_heading = &quot;\nTODO in #{search_file}&quot;
+        fh.each_with_index do |line_txt, line_num|
+          if (line_txt =~ /#.*TODO:(.*)/i) then
+            # Output main_file_heading only once, if there's a match
+            if main_file_heading then
+              todo_file.puts main_file_heading
+              main_file_heading = nil
+            end
+            # Output search_file heading once, only if there's a match
+            if search_file_heading then
+              todo_file.puts search_file_heading
+              search_file_heading = nil
+            end
+            # Output matching line:
+            todo_file.puts &quot;#{line_num.to_s.rjust(3, &quot;0&quot;)}: #{$1.strip!}&quot;
+          end
+        end
+      end
+    end
+  end
+</pre>
+<p>
+end
+</p>
+
+    </div>
 
    </div>
 

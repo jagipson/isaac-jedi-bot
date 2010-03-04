@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>register_commands (PluginBase)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre>    <span class="ruby-comment cmt"># File lib/PluginBase.rb, line 57</span>
+57:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">register_commands</span>
+58:     <span class="ruby-comment cmt"># Register defined commands</span>
+59:     <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">commands</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">command</span><span class="ruby-operator">|</span>
+60:       <span class="ruby-identifier">meth</span>, <span class="ruby-identifier">context</span> = <span class="ruby-identifier">command</span>
+61:       <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Registering #{meth} for #{self.class.name} for event #{context}&quot;</span>
+62:       
+63:       <span class="ruby-comment cmt"># This allows 'auto' for commands to work in channel and private</span>
+64:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">context</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:auto</span>
+65:         <span class="ruby-identifier">contexts</span> = [<span class="ruby-identifier">:channel</span>, <span class="ruby-identifier">:private</span>] 
+66:       <span class="ruby-keyword kw">else</span>
+67:         <span class="ruby-identifier">contexts</span> = [<span class="ruby-identifier">context</span>]
+68:       <span class="ruby-keyword kw">end</span>
+69:       <span class="ruby-identifier">contexts</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span>
+70:         <span class="ruby-comment cmt">#Register with global $bot</span>
+71:         <span class="ruby-identifier">m</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">method</span>(<span class="ruby-identifier">meth</span>.<span class="ruby-identifier">to_sym</span>)
+72:         <span class="ruby-identifier">$bot</span>.<span class="ruby-identifier">on</span>(<span class="ruby-identifier">c</span>.<span class="ruby-identifier">to_sym</span>, <span class="ruby-node">/^\s*!#{self.class.get_token.to_s}\s+#{meth.to_s}\s?(.*)$/</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">m</span>)
+73:       <span class="ruby-keyword kw">end</span>
+74:     <span class="ruby-keyword kw">end</span>
+75:     <span class="ruby-comment cmt"># Register default command</span>
+76:     <span class="ruby-keyword kw">if</span> (<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">get_default_command_context</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:auto</span>) <span class="ruby-keyword kw">then</span>
+77:       <span class="ruby-identifier">contexts</span> = [<span class="ruby-identifier">:channel</span>, <span class="ruby-identifier">:private</span>] 
+78:     <span class="ruby-keyword kw">else</span>
+79:       <span class="ruby-identifier">contexts</span> = [<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">get_default_command_context</span>]
+80:     <span class="ruby-keyword kw">end</span>
+81:     <span class="ruby-identifier">contexts</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span>
+82:       <span class="ruby-identifier">m</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">method</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">get_default_command</span>)
+83:       <span class="ruby-identifier">$bot</span>.<span class="ruby-identifier">on</span>(<span class="ruby-identifier">c</span>.<span class="ruby-identifier">to_sym</span>, <span class="ruby-node">/^\s*!#{self.class.get_token.to_s}(.*)$/</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">m</span>)
+84:     <span class="ruby-keyword kw">end</span>
+85:   <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>
