@@ -88,10 +88,10 @@ class PluginBase
       else
         contexts = [context]
       end
-      contexts.each do |c|
+      contexts.each do |c|    
         #Register with global $bot
         m = self.method(meth.to_sym)
-        $bot.on(c.to_sym, /^\s*!#{self.class.get_token.to_s}\s+#{meth.to_s}\s?(.*)$/, &m)
+        $bot.on(c.to_sym, /^\s*!#{self.class.get_token.to_s}\s+#{meth.to_s}\s?(.*)$/i, &m)
       end
     end
     # Register default command
@@ -102,7 +102,7 @@ class PluginBase
     end
     contexts.each do |c|
       m = self.method(self.class.get_default_command)
-      $bot.on(c.to_sym, /^\s*!#{self.class.get_token.to_s}(.*)$/, &m)
+      $bot.on(c.to_sym, /^\s*!#{self.class.get_token.to_s}(.*)$/i, &m)
     end
   end
   
@@ -121,7 +121,7 @@ class PluginBase
       contexts.each do |c|
         #Register with global $bot
         m = self.method(:noop)
-        $bot.off(c.to_sym, /^\s*!#{self.class.get_token.to_s}\s+#{meth.to_s}\s?(.*)$/, &m)
+        $bot.off(c.to_sym, /^\s*!#{self.class.get_token.to_s}\s+#{meth.to_s}\s?(.*)$/i, &m)
       end
     end
     # Register default command
@@ -132,7 +132,7 @@ class PluginBase
     end
     contexts.each do |c|
       m = self.method(:noop)
-      $bot.off(c.to_sym, /^\s*!#{self.class.get_token.to_s}(.*)$/, &m)
+      $bot.off(c.to_sym, /^\s*!#{self.class.get_token.to_s}(.*)$/i, &m)
     end
     # Unregister Token
     @@global_tokens_catalog.delete(self.class.get_token)
