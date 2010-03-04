@@ -1,10 +1,10 @@
-TODO Generated on 2010-03-03 18:48:20 -0600 by jubesz
+TODO Generated on 2010-03-04 01:27:16 -0600 by vgoff
 
-TODO in lib/RubOt configuration module.rb
-060: Fix. This does't really delete the [regex,&block] pair like it should
-
-TODO in lib/RubOt Core.rb
+TODO in lib/Core.rb
 004: The methods in here should only work for owner. Need to fix event registraion regex somehow to have an option for owner commands
 
-TODO in lib/RubOt PluginBase.rb
+TODO in lib/PluginBase.rb
 055: Add a way to register owner-only commands
+
+TODO in lib/ConfigurationModule.rb
+060: Fix. This does't really delete the [regex,&block] pair like it should
