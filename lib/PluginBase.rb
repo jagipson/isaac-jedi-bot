@@ -94,17 +94,35 @@ are for defining commands that may _only_ be sent from a channel _or_ private.
 The single +Isaac::Bot+ instance is globally accessible via the global +$bot+
 variable. To keep your code legible, the following mappings have been made:
 
+===== Accessing Isaac::Bot instance internals - You should never need these
   $bot.config    => config
   $bot.irc       => irc
-  $bot.nick      => nick
-  $bot.channel   => channel
-  $bot.message   => message
-  $bot.user      => user
-  $bot.host      => host
-  $bot.match     => match
-  $bot.error     => error
   
-  TODO: Finish documenting mapped commands
+===== Variables for use in command definitions:
+  
+  $bot.nick      => nick        IRC nick of the person who issued the command
+  $bot.channel   => channel     IRC channel command was issued in 
+                                (or nil if the command was in private)
+  $bot.message   => message     complete IRC message from _nick_
+  $bot.user      => user        Username of message sender
+  $bot.host      => host        Hostname of message sender      
+  $bot.error     => error       Error (used in _:error_ context)
+  $bot.match[0]  => args        Everything *after* the command in the message
+  
+===== Methods for performing actions:
+  
+  $bot.raw       => raw(txt)    Send raw message to IRC Server
+  $bot.msg       => msg(n,t)    Send text 't' to 'n' (n can be nick or channel)
+  $bot.action    => action(n,t) Same as $bot.msg only sends */me* action    
+  
+  $bot.quit      => quit(t="")  Performs /quit with message        
+  $bot.join      => join(*chn)  */join*s rooms. 'chn' is an Array      
+  $bot.part      => part(*chn)  */part*s rooms. 'chn' is an Array
+  
+  $bot.topic     => topic(c,t)  Set topic 't' in channel 'c'
+  $bot.mode      => mode(c,o)   Set mode option 'o' in channel 'c'
+  $bot.kick      => kick(c,u,r) */kick*s channel, user, reason
+
   TODO: Document value-adds like automsg, etc.
 
 =end
@@ -259,7 +277,7 @@ class PluginBase #:enddoc:
   end
 
   # Create accessors that users will expect to access $bot properties
-  [:config, :irc, :nick, :channel, :message, :user, :host, :match, :error].each do |item|
+  [:config, :irc, :nick, :channel, :message, :user, :host, :error].each do |item|
     eval(<<-EOF)
       def #{item}
         $bot.#{item}
@@ -300,6 +318,8 @@ class PluginBase #:enddoc:
   def kick(channel, user, reason=nil)
     $bot.kick(channel, user, reason=nil)
   end
+  
+  # TODO: I think this can safely be removed
   %w(helpers).each do |method|
     eval(<<-EOF)
       def #{method}(*args, &block)

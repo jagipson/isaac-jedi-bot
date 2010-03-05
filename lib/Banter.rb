@@ -14,6 +14,6 @@ default_command :fortune
   end
   
   def help
-    automsg "Random fortune.  Please don't be offended."
+    automsg args
   end
 end

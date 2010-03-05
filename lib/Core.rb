@@ -4,7 +4,7 @@ class Core < PluginBase
   description     "Core plugin for administrative tasks."
   token           :do
   default_command :help
-
+  # TODO: Override help() so it shows complete command explainations
   context :private
   def join
     args.split(" ").each do |room|

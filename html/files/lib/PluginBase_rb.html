@@ -53,7 +53,7 @@
     </tr>
     <tr class="top-aligned-row">
       <td><strong>Last Update:</strong></td>
-      <td>2010-03-04 17:43:49 -0600</td>
+      <td>2010-03-04 18:54:18 -0600</td>
     </tr>
     </table>
   </div>
@@ -64,21 +64,23 @@
   <div id="contextContent">
 
     <div id="description">
-      <h1>PluginBase Abstract Class</h1>
+      <h1><a href="../../classes/PluginBase.html">PluginBase</a> Abstract Class</h1>
 <p>
 Provides the framework for writing plugins that can be loaded into RubOt.
 This is an abstract class. Do not attempt to instantiate this class
 directly.
 </p>
 <p>
-The creation of subclasses of PluginBase is how plugins are created. Do not
-instantiate your own subclasses. Your subclass will be instantiated as a
-plugin object when it is loaded.
+The creation of subclasses of <a
+href="../../classes/PluginBase.html">PluginBase</a> is how plugins are
+created. Do not instantiate your own subclasses. Your subclass will be
+instantiated as a plugin object when it is loaded.
 </p>
 <h1>Creating RubOt Plugins</h1>
 <p>
-To create a RubOt Plugin, you must create a subclass of PluginBase,
-configure it, and define methods which will then become commands.
+To create a RubOt Plugin, you must create a subclass of <a
+href="../../classes/PluginBase.html">PluginBase</a>, configure it, and
+define methods which will then become commands.
 </p>
 <p>
 The best way to get started is by demonstration.
@@ -114,7 +116,8 @@ The best way to get started is by demonstration.
 <h2>line... by... line...</h2>
 <h3>Lines 1-3:</h3>
 <p>
-On line 1, you define your subclass of PluginBase (in the example
+On line 1, you define your subclass of <a
+href="../../classes/PluginBase.html">PluginBase</a> (in the example
 it&#8217;s <a href="../../classes/Greets.html">Greets</a>). This will be
 the <em>name</em> of your plugin. This is very important:
 </p>
@@ -127,8 +130,9 @@ case-sensitive.
 <p>
 Line 2 shows proper use of <tt>description</tt>. Implementing
 <tt>description</tt> is entirely voluntary, but if you don&#8217;t define
-one, the PluginBase will for you, because it is needed for the global help
-system (activated by <tt>help!</tt> in IRC).
+one, the <a href="../../classes/PluginBase.html">PluginBase</a> will for
+you, because it is needed for the global help system (activated by
+<tt>help!</tt> in IRC).
 </p>
 <p>
 The <tt>token</tt> definition on line 3 is absolutely necessary. The
@@ -148,16 +152,16 @@ for. Commands actually are Ruby methods of your plugin class. In
 <h4>Help Behavior</h4>
 <p>
 A quick word on <em>help</em>: We prefer that you define <em>help</em>, but
-if you don&#8217;t, PluginBase will do it for you. The automatic help is
-terse, but lists the available commands. You can use the automatically
-generated help within your help by calling <tt>super</tt>. The
-automatically generated help is also context sensitive (in the sense of
-RubOt context which is covered below). This means that if you run the
-<tt>help</tt> command in a public IRC channel, only the commands defined in
-the <em>channel</em> and <em>auto</em> contexts will be displayed.
-Conversely, if you run the <tt>help</tt> command in private, only the
-commands defined in the <em>private</em> and <em>auto</em> contexts will be
-displayed.
+if you don&#8217;t, <a href="../../classes/PluginBase.html">PluginBase</a>
+will do it for you. The automatic help is terse, but lists the available
+commands. You can use the automatically generated help within your help by
+calling <tt>super</tt>. The automatically generated help is also context
+sensitive (in the sense of RubOt context which is covered below). This
+means that if you run the <tt>help</tt> command in a public IRC channel,
+only the commands defined in the <em>channel</em> and <em>auto</em>
+contexts will be displayed. Conversely, if you run the <tt>help</tt>
+command in private, only the commands defined in the <em>private</em> and
+<em>auto</em> contexts will be displayed.
 </p>
 <h4>Contexts Explained</h4>
 <p>
@@ -176,9 +180,38 @@ The single +Isaac::Bot+ instance is globally accessible via the global
 +$bot+ variable. To keep your code legible, the following mappings have
 been made:
 </p>
-<p>
-|This|Is| |A|Table|
-</p>
+<h5>Accessing Isaac::Bot instance internals - You should never need these</h5>
+<pre>
+  $bot.config    =&gt; config
+  $bot.irc       =&gt; irc
+</pre>
+<h5>Variables for use in command definitions:</h5>
+<pre>
+  $bot.nick      =&gt; nick        IRC nick of the person who issued the command
+  $bot.channel   =&gt; channel     IRC channel command was issued in
+                                (or nil if the command was in private)
+  $bot.message   =&gt; message     complete IRC message from _nick_
+  $bot.user      =&gt; user        Username of message sender
+  $bot.host      =&gt; host        Hostname of message sender
+  $bot.error     =&gt; error       Error (used in _:error_ context)
+  $bot.match[0]  =&gt; args        Everything *after* the command in the message
+</pre>
+<h5>Methods for performing actions:</h5>
+<pre>
+  $bot.raw       =&gt; raw(txt)    Send raw message to IRC Server
+  $bot.msg       =&gt; msg(n,t)    Send text 't' to 'n' (n can be nick or channel)
+  $bot.action    =&gt; action(n,t) Same as $bot.msg only sends */me* action
+
+  $bot.quit      =&gt; quit(t=&quot;&quot;)  Performs /quit with message
+  $bot.join      =&gt; join(*chn)  */join*s rooms. 'chn' is an Array
+  $bot.part      =&gt; part(*chn)  */part*s rooms. 'chn' is an Array
+
+  $bot.topic     =&gt; topic(c,t)  Set topic 't' in channel 'c'
+  $bot.mode      =&gt; mode(c,o)   Set mode option 'o' in channel 'c'
+  $bot.kick      =&gt; kick(c,u,r) */kick*s channel, user, reason
+
+  TODO: Document value-adds like automsg, etc.
+</pre>
 
     </div>
 
