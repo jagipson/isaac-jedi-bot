@@ -59,7 +59,7 @@ def write_configuration(config_root, config_file=DEFAULT_CONF)
 end
 
 module BotExtensions
-  def off(event, match=//, &block)
+  def off(event, match=//)
     match = match.to_s if match.is_a? Integer
     (@events[event] ||= []).delete_if {|a| a[0] == Regexp.new(match) }
   end

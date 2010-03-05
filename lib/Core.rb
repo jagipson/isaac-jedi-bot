@@ -114,6 +114,7 @@ class Core < PluginBase
     end
   end
   
+  context :hidden
   def initialize
     # Since Core registers the commands of plugins that it loads, and it loads
     # itself, it must also register itself.  Other plugins don't need this.
