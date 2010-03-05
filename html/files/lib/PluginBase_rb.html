@@ -53,7 +53,7 @@
     </tr>
     <tr class="top-aligned-row">
       <td><strong>Last Update:</strong></td>
-      <td>2010-03-04 18:59:02 -0600</td>
+      <td>2010-03-05 09:16:30 -0600</td>
     </tr>
     </table>
   </div>
@@ -174,6 +174,12 @@ after it has been set to something else. All commands defined in the
 <tt>:private</tt> contexts are for defining commands that may <em>only</em>
 be sent from a channel <em>or</em> private.
 </p>
+<p>
+Another special context is <tt>:helper</tt>. All methods defined in the
+<tt>:helper</tt> context are available to other methods in your plugin, but
+cannot be run as a command directly from IRC. See &#8220;Hiding
+Methods.&#8220;
+</p>
 <h4>Accessing Data and Performing Actions</h4>
 <p>
 The single +Isaac::Bot+ instance is globally accessible via the global
@@ -201,7 +207,11 @@ been made:
   $bot.raw       =&gt; raw(txt)    Send raw message to IRC Server
   $bot.msg       =&gt; msg(n,t)    Send text 't' to 'n' (n can be nick or channel)
   $bot.action    =&gt; action(n,t) Same as $bot.msg only sends */me* action
-
+</pre>
+<p>
+see also automsg
+</p>
+<pre>
   $bot.quit      =&gt; quit(t=&quot;&quot;)  Performs /quit with message
   $bot.join      =&gt; join(*chn)  */join*s rooms. 'chn' is an Array
   $bot.part      =&gt; part(*chn)  */part*s rooms. 'chn' is an Array
@@ -209,9 +219,28 @@ been made:
   $bot.topic     =&gt; topic(c,t)  Set topic 't' in channel 'c'
   $bot.mode      =&gt; mode(c,o)   Set mode option 'o' in channel 'c'
   $bot.kick      =&gt; kick(c,u,r) */kick*s channel, user, reason
-
-  TODO: Document value-adds like automsg, etc.
 </pre>
+<h5>Hiding Methods</h5>
+<p>
+By default, all instance methods defined in the plugin class automatically
+become IRC plugin commands.
+</p>
+<p>
+If you want to define a method that other methods can call, but you do not
+want the method to be visible or accessible as a command in IRC, then you
+must hide the method. You can hide methods in these ways:
+</p>
+<ul>
+<li>Any method whose name begins with an underscore (_) will be hidden
+
+</li>
+<li>Set <tt>context :helper</tt> in your plugin class declaration. All methods
+defined under the <em>helper</em> context will be hidden regardless of its
+name. You can resume defining command methods by setting the context to
+something else (e.g. <tt>context :auto</tt>)
+
+</li>
+</ul>
 
     </div>
 

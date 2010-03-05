@@ -192,6 +192,12 @@ after it has been set to something else. All commands defined in the
 <tt>:private</tt> contexts are for defining commands that may <em>only</em>
 be sent from a channel <em>or</em> private.
 </p>
+<p>
+Another special context is <tt>:helper</tt>. All methods defined in the
+<tt>:helper</tt> context are available to other methods in your plugin, but
+cannot be run as a command directly from IRC. See &#8220;Hiding
+Methods.&#8220;
+</p>
 <h4>Accessing Data and Performing Actions</h4>
 <p>
 The single +Isaac::Bot+ instance is globally accessible via the global
@@ -219,7 +225,11 @@ been made:
   $bot.raw       =&gt; raw(txt)    Send raw message to IRC Server
   $bot.msg       =&gt; msg(n,t)    Send text 't' to 'n' (n can be nick or channel)
   $bot.action    =&gt; action(n,t) Same as $bot.msg only sends */me* action
-
+</pre>
+<p>
+see also <a href="PluginBase.html#M000018">automsg</a>
+</p>
+<pre>
   $bot.quit      =&gt; quit(t=&quot;&quot;)  Performs /quit with message
   $bot.join      =&gt; join(*chn)  */join*s rooms. 'chn' is an Array
   $bot.part      =&gt; part(*chn)  */part*s rooms. 'chn' is an Array
@@ -227,9 +237,28 @@ been made:
   $bot.topic     =&gt; topic(c,t)  Set topic 't' in channel 'c'
   $bot.mode      =&gt; mode(c,o)   Set mode option 'o' in channel 'c'
   $bot.kick      =&gt; kick(c,u,r) */kick*s channel, user, reason
-
-  TODO: Document value-adds like automsg, etc.
 </pre>
+<h5>Hiding Methods</h5>
+<p>
+By default, all instance methods defined in the plugin class automatically
+become IRC plugin commands.
+</p>
+<p>
+If you want to define a method that other methods can call, but you do not
+want the method to be visible or accessible as a command in IRC, then you
+must hide the method. You can hide methods in these ways:
+</p>
+<ul>
+<li>Any method whose name begins with an underscore (_) will be hidden
+
+</li>
+<li>Set <tt>context :helper</tt> in your plugin class declaration. All methods
+defined under the <em>helper</em> context will be hidden regardless of its
+name. You can resume defining command methods by setting the context to
+something else (e.g. <tt>context :auto</tt>)
+
+</li>
+</ul>
 
     </div>
 
@@ -241,9 +270,15 @@ been made:
 
       <div class="name-list">
 
-        <a href="#M000011">new</a>&nbsp;&nbsp;
+        <a href="#M000018">automsg</a>&nbsp;&nbsp;
 
-        <a href="#M000010">unregister_commands</a>&nbsp;&nbsp;
+        <a href="#M000020">help</a>&nbsp;&nbsp;
+
+        <a href="#M000019">method_added</a>&nbsp;&nbsp;
+
+        <a href="#M000016">register_commands</a>&nbsp;&nbsp;
+
+        <a href="#M000017">unregister_commands</a>&nbsp;&nbsp;
 
       </div>
     </div>
@@ -261,17 +296,17 @@ been made:
 
     <div id="methods">
 
-      <h3 class="section-bar">Public Class methods</h3>
+      <h3 class="section-bar">Protected Class methods</h3>
 
 
-      <div id="method-M000011" class="method-detail">
-        <a name="M000011"></a>
+      <div id="method-M000019" class="method-detail">
+        <a name="M000019"></a>
 
         <div class="method-heading">
 
-          <a href="#M000011" class="method-signature">
+          <a href="#M000019" class="method-signature">
 
-          <span class="method-name">new</span><span class="method-args">()</span>
+          <span class="method-name">method_added</span><span class="method-args">(method)</span>
 
           </a>
 
@@ -279,13 +314,21 @@ been made:
 
         <div class="method-description">
 
+          <p>
+Keep this method at bottom of class declaration. All classes defined after
+This will be registered as commands, automagically
+</p>
+
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000011-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000011-source">
+            onclick="toggleCode('M000019-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000019-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/PluginBase.rb, line 275</span>
-  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>
-    <span class="ruby-identifier">register_commands</span>
+<span class="ruby-comment cmt"># File lib/PluginBase.rb, line 376</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">method_added</span>(<span class="ruby-identifier">method</span>)
+    <span class="ruby-comment cmt"># Maintain a list of added methods and their context</span>
+    <span class="ruby-ivar">@context</span> <span class="ruby-operator">||=</span> <span class="ruby-identifier">:auto</span>
+    (<span class="ruby-ivar">@commands</span> <span class="ruby-operator">||=</span> []) <span class="ruby-operator">&lt;&lt;</span> [<span class="ruby-identifier">method</span>, (<span class="ruby-ivar">@context</span>)] <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@context</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:helper</span> <span class="ruby-keyword kw">or</span> 
+                                                      <span class="ruby-identifier">method</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/^_/</span>
   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
@@ -297,12 +340,171 @@ been made:
       <h3 class="section-bar">Protected Instance methods</h3>
 
 
-      <div id="method-M000010" class="method-detail">
-        <a name="M000010"></a>
+      <div id="method-M000018" class="method-detail">
+        <a name="M000018"></a>
 
         <div class="method-heading">
 
-          <a href="#M000010" class="method-signature">
+          <a href="#M000018" class="method-signature">
+
+          <span class="method-name">automsg</span><span class="method-args">(text)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+sends a message either to a channel <em>or</em> to private, depending on
+where the command was invoked. If you have defined a command method in
+<tt>:auto</tt> context, <a href="PluginBase.html#M000018">automsg</a> will
+send the <em>text</em> to the channel if the command was run in the
+channel, and send the <em>text</em> to private (query) if the command was
+run using a private message. This is useful for the <tt>:auto</tt> context.
+</p>
+
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000018-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000018-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/PluginBase.rb, line 365</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">automsg</span>(<span class="ruby-identifier">text</span>)
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">channel</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-keyword kw">then</span>
+      <span class="ruby-identifier">msg</span> <span class="ruby-identifier">nick</span>, <span class="ruby-identifier">text</span>
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-identifier">msg</span> <span class="ruby-identifier">channel</span>, <span class="ruby-identifier">text</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000020" class="method-detail">
+        <a name="M000020"></a>
+
+        <div class="method-heading">
+
+          <a href="#M000020" class="method-signature">
+
+          <span class="method-name">help</span><span class="method-args">()</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+provides a quick and dirty list of all commands in a plugin. This method is
+a scaffold of sorts. You should really override this method in your plugin
+class to provide better information to your users. This method is context
+sensitive (in the Rubot sense of context) in that if <tt>!&lt;token&gt;
+help</tt> is called in a channel it only lists commands available in the
+channel, but if it is called in private, it lists only commands available
+in private.
+</p>
+
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000020-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000020-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/PluginBase.rb, line 390</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">help</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">channel</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-keyword kw">then</span> <span class="ruby-comment cmt"># list private commands</span>
+      <span class="ruby-identifier">commands</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">commands</span>.<span class="ruby-identifier">select</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span> [<span class="ruby-identifier">:private</span>, <span class="ruby-identifier">:auto</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">c</span>[<span class="ruby-value">1</span>]) }
+    <span class="ruby-keyword kw">else</span> <span class="ruby-comment cmt"># list channel commands</span>
+      <span class="ruby-identifier">commands</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">commands</span>.<span class="ruby-identifier">select</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span> [<span class="ruby-identifier">:channel</span>, <span class="ruby-identifier">:auto</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">c</span>[<span class="ruby-value">1</span>]) }
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-identifier">automsg</span> <span class="ruby-node">&quot;!#{self.class.get_token} (#{ commands.map{|c| c[0].to_s }.join(&quot;|&quot;) })&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">commands</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">commands</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000016" class="method-detail">
+        <a name="M000016"></a>
+
+        <div class="method-heading">
+
+          <a href="#M000016" class="method-signature">
+
+          <span class="method-name">register_commands</span><span class="method-args">()</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+registers command-events for all non-hidden command methods in your plugin
+with the global $bot object. The only time this should be run is to enable
+commands while loading plugin, or reenable commands for a plugin whose
+commands have been unregistered by <a
+href="PluginBase.html#M000017">unregister_commands</a>. This is invoked for
+you by the <a href="Core.html">Core</a> plugin when you issue a <tt>!do
+load_plugin ...</tt> command so, unless you are writing a plugin that
+manages other plugins, you don&#8217;t need to run this directly.
+</p>
+
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000016-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000016-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/PluginBase.rb, line 247</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">register_commands</span>
+    <span class="ruby-comment cmt">#first revalidate Class for good token, to ensure it was set</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">validate_token</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">get_token</span>
+    
+    <span class="ruby-comment cmt"># Register defined commands</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">commands</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">command</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">meth</span>, <span class="ruby-identifier">context</span> = <span class="ruby-identifier">command</span>
+      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Registering #{meth} for #{self.class.name} for event #{context}&quot;</span>
+    
+      <span class="ruby-comment cmt"># This allows 'auto' for commands to work in channel and private</span>
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">context</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:auto</span>
+        <span class="ruby-identifier">contexts</span> = [<span class="ruby-identifier">:channel</span>, <span class="ruby-identifier">:private</span>] 
+      <span class="ruby-keyword kw">else</span>
+        <span class="ruby-identifier">contexts</span> = [<span class="ruby-identifier">context</span>]
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">contexts</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span>     
+        <span class="ruby-comment cmt"># Wrap m in an error handler:</span>
+        <span class="ruby-identifier">bloc</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">meth_wrap_proc</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">method</span>(<span class="ruby-identifier">meth</span>.<span class="ruby-identifier">to_sym</span>))
+        <span class="ruby-comment cmt">#Register with global $bot as an event</span>
+        <span class="ruby-identifier">$bot</span>.<span class="ruby-identifier">on</span>(<span class="ruby-identifier">c</span>.<span class="ruby-identifier">to_sym</span>, <span class="ruby-node">/^\s*!#{self.class.get_token.to_s}\s+#{meth.to_s}\s?(.*)$/i</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">bloc</span>)
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># Register default command</span>
+    <span class="ruby-keyword kw">if</span> (<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">get_default_command_context</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:auto</span>) <span class="ruby-keyword kw">then</span>
+      <span class="ruby-identifier">contexts</span> = [<span class="ruby-identifier">:channel</span>, <span class="ruby-identifier">:private</span>] 
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-identifier">contexts</span> = [<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">get_default_command_context</span>]
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-identifier">contexts</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">bloc</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">meth_wrap_proc</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">method</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">get_default_command</span>))
+      <span class="ruby-identifier">$bot</span>.<span class="ruby-identifier">on</span>(<span class="ruby-identifier">c</span>.<span class="ruby-identifier">to_sym</span>, <span class="ruby-node">/^\s*!#{self.class.get_token.to_s}(.*)$/i</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">bloc</span>)
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000017" class="method-detail">
+        <a name="M000017"></a>
+
+        <div class="method-heading">
+
+          <a href="#M000017" class="method-signature">
 
           <span class="method-name">unregister_commands</span><span class="method-args">()</span>
 
@@ -312,11 +514,21 @@ been made:
 
         <div class="method-description">
 
+          <p>
+unregisters command-events that have previously been registered by <a
+href="PluginBase.html#M000016">register_commands</a> from the global $bot
+object. The only time this should be run is to disable a loaded plugin, or
+immediately prior to unloading a plugin. This is invoked for you by the <a
+href="Core.html">Core</a> plugin when you issue a <tt>!do unload_plugin
+...</tt> command so, unless you are writing a plugin that manages other
+plugins, you don&#8217;t need to run this directly.
+</p>
+
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000010-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000010-source">
+            onclick="toggleCode('M000017-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000017-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/PluginBase.rb, line 243</span>
+<span class="ruby-comment cmt"># File lib/PluginBase.rb, line 287</span>
   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">unregister_commands</span>
     <span class="ruby-comment cmt"># Register defined commands</span>
     <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">commands</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">command</span><span class="ruby-operator">|</span>

@@ -102,19 +102,19 @@ encoding: utf-8
 
       <div class="name-list">
 
-        <a href="#M000005">hangup</a>&nbsp;&nbsp;
+        <a href="#M000007">hangup</a>&nbsp;&nbsp;
 
-        <a href="#M000003">join</a>&nbsp;&nbsp;
+        <a href="#M000005">join</a>&nbsp;&nbsp;
 
-        <a href="#M000009">list_plugins</a>&nbsp;&nbsp;
+        <a href="#M000011">list_plugins</a>&nbsp;&nbsp;
 
-        <a href="#M000007">load_plugin</a>&nbsp;&nbsp;
+        <a href="#M000009">load_plugin</a>&nbsp;&nbsp;
 
-        <a href="#M000004">part</a>&nbsp;&nbsp;
+        <a href="#M000006">part</a>&nbsp;&nbsp;
 
-        <a href="#M000006">toggle_verbosity</a>&nbsp;&nbsp;
+        <a href="#M000008">toggle_verbosity</a>&nbsp;&nbsp;
 
-        <a href="#M000008">unload_plugin</a>&nbsp;&nbsp;
+        <a href="#M000010">unload_plugin</a>&nbsp;&nbsp;
 
       </div>
     </div>
@@ -135,12 +135,12 @@ encoding: utf-8
       <h3 class="section-bar">Public Instance methods</h3>
 
 
-      <div id="method-M000005" class="method-detail">
-        <a name="M000005"></a>
+      <div id="method-M000007" class="method-detail">
+        <a name="M000007"></a>
 
         <div class="method-heading">
 
-          <a href="#M000005" class="method-signature">
+          <a href="#M000007" class="method-signature">
 
           <span class="method-name">hangup</span><span class="method-args">()</span>
 
@@ -151,8 +151,8 @@ encoding: utf-8
         <div class="method-description">
 
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000005-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000005-source">
+            onclick="toggleCode('M000007-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000007-source">
 <pre>
 <span class="ruby-comment cmt"># File lib/Core.rb, line 27</span>
   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">hangup</span> 
@@ -168,12 +168,12 @@ encoding: utf-8
       </div>
 
 
-      <div id="method-M000003" class="method-detail">
-        <a name="M000003"></a>
+      <div id="method-M000005" class="method-detail">
+        <a name="M000005"></a>
 
         <div class="method-heading">
 
-          <a href="#M000003" class="method-signature">
+          <a href="#M000005" class="method-signature">
 
           <span class="method-name">join</span><span class="method-args">()</span>
 
@@ -184,8 +184,8 @@ encoding: utf-8
         <div class="method-description">
 
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000003-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000003-source">
+            onclick="toggleCode('M000005-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000005-source">
 <pre>
 <span class="ruby-comment cmt"># File lib/Core.rb, line 9</span>
   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">join</span>
@@ -203,12 +203,12 @@ encoding: utf-8
       </div>
 
 
-      <div id="method-M000009" class="method-detail">
-        <a name="M000009"></a>
+      <div id="method-M000011" class="method-detail">
+        <a name="M000011"></a>
 
         <div class="method-heading">
 
-          <a href="#M000009" class="method-signature">
+          <a href="#M000011" class="method-signature">
 
           <span class="method-name">list_plugins</span><span class="method-args">()</span>
 
@@ -219,10 +219,10 @@ encoding: utf-8
         <div class="method-description">
 
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000009-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000009-source">
+            onclick="toggleCode('M000011-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000011-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/Core.rb, line 81</span>
+<span class="ruby-comment cmt"># File lib/Core.rb, line 84</span>
   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">list_plugins</span>
     <span class="ruby-comment cmt"># Always responds in private</span>
     <span class="ruby-identifier">msg</span> <span class="ruby-identifier">nick</span>, <span class="ruby-value str">&quot;loaded plugins in order of appearance: &quot;</span>
@@ -239,12 +239,12 @@ encoding: utf-8
       </div>
 
 
-      <div id="method-M000007" class="method-detail">
-        <a name="M000007"></a>
+      <div id="method-M000009" class="method-detail">
+        <a name="M000009"></a>
 
         <div class="method-heading">
 
-          <a href="#M000007" class="method-signature">
+          <a href="#M000009" class="method-signature">
 
           <span class="method-name">load_plugin</span><span class="method-args">()</span>
 
@@ -255,60 +255,28 @@ encoding: utf-8
         <div class="method-description">
 
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000007-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000007-source">
+            onclick="toggleCode('M000009-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000009-source">
 <pre>
 <span class="ruby-comment cmt"># File lib/Core.rb, line 43</span>
   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">load_plugin</span>
     <span class="ruby-ivar">@plugins</span> <span class="ruby-operator">||=</span> {}
     <span class="ruby-identifier">args</span>.<span class="ruby-identifier">split</span>(<span class="ruby-value str">&quot; &quot;</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">plugin</span><span class="ruby-operator">|</span>
       <span class="ruby-keyword kw">if</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-identifier">plugin</span>) <span class="ruby-keyword kw">then</span>
-        <span class="ruby-identifier">load</span> <span class="ruby-identifier">plugin</span>
         <span class="ruby-comment cmt"># Plugin's assume that the Classname = filename w/o .rb extension</span>
         <span class="ruby-keyword kw">begin</span>
+          <span class="ruby-identifier">load</span> <span class="ruby-identifier">plugin</span>
           <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;About to register plugin #{plugin.inspect}&quot;</span>
-          <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">instance_eval</span> <span class="ruby-node">%Q{ @plugins[plugin.downcase.to_sym] = #{plugin[0..-4]}.new }</span>
-        <span class="ruby-keyword kw">rescue</span> 
-          <span class="ruby-identifier">p</span> <span class="ruby-identifier">$!</span>
-          <span class="ruby-identifier">msg</span> <span class="ruby-identifier">nick</span> <span class="ruby-node">&quot;Unable to load plugin #{plugin}. Check logs&quot;</span>
+          <span class="ruby-identifier">sym</span> = <span class="ruby-identifier">plugin</span>.<span class="ruby-identifier">downcase</span>.<span class="ruby-identifier">to_sym</span>
+          <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">instance_eval</span> <span class="ruby-node">%Q{ @plugins[sym] = #{plugin[0..-4]}.new }</span>
+          <span class="ruby-ivar">@plugins</span>[<span class="ruby-identifier">sym</span>].<span class="ruby-identifier">register_commands</span>
+          <span class="ruby-identifier">msg</span> <span class="ruby-identifier">nick</span>, <span class="ruby-node">&quot;#{plugin} loaded.  Default command: !#{@plugins[sym].class.get_token} #{@plugins[sym].class.get_default_command}&quot;</span>
+        <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">Exception</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">e</span>
+          <span class="ruby-identifier">p</span> <span class="ruby-identifier">e</span>
+          <span class="ruby-identifier">msg</span> <span class="ruby-identifier">nick</span>, <span class="ruby-node">&quot;Unable to load plugin #{plugin}. Check logs&quot;</span>
         <span class="ruby-keyword kw">end</span>
       <span class="ruby-keyword kw">else</span>
         <span class="ruby-identifier">msg</span> <span class="ruby-identifier">nick</span>, <span class="ruby-node">&quot;Unable to find plugin #{plugin}; PWD=#{ENV[&quot;PWD&quot;]}&quot;</span>
-      <span class="ruby-keyword kw">end</span>
-    <span class="ruby-keyword kw">end</span>
-  <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-
-        </div>
-      </div>
-
-
-      <div id="method-M000004" class="method-detail">
-        <a name="M000004"></a>
-
-        <div class="method-heading">
-
-          <a href="#M000004" class="method-signature">
-
-          <span class="method-name">part</span><span class="method-args">()</span>
-
-          </a>
-
-        </div>
-
-        <div class="method-description">
-
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000004-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000004-source">
-<pre>
-<span class="ruby-comment cmt"># File lib/Core.rb, line 18</span>
-  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">part</span>
-      <span class="ruby-identifier">args</span>.<span class="ruby-identifier">split</span>(<span class="ruby-value str">&quot; &quot;</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">room</span><span class="ruby-operator">|</span>
-      <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">nick</span> <span class="ruby-operator">=~</span> <span class="ruby-node">/^#{BOT_CONFIG[:owner_nick]}$/i</span>) <span class="ruby-keyword kw">and</span> (<span class="ruby-identifier">room</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/#[\w-]+/</span>)
-        <span class="ruby-identifier">part</span> <span class="ruby-identifier">room</span>
-        <span class="ruby-keyword kw">super</span> <span class="ruby-node">&quot;Leaving #{room}&quot;</span>
       <span class="ruby-keyword kw">end</span>
     <span class="ruby-keyword kw">end</span>
   <span class="ruby-keyword kw">end</span>
@@ -326,7 +294,7 @@ encoding: utf-8
 
           <a href="#M000006" class="method-signature">
 
-          <span class="method-name">toggle_verbosity</span><span class="method-args">()</span>
+          <span class="method-name">part</span><span class="method-args">()</span>
 
           </a>
 
@@ -338,12 +306,12 @@ encoding: utf-8
             onclick="toggleCode('M000006-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000006-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/Core.rb, line 34</span>
-  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">toggle_verbosity</span> 
-    <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">nick</span> <span class="ruby-operator">=~</span> <span class="ruby-node">/^#{BOT_CONFIG[:owner_nick]}$/i</span>)
-      <span class="ruby-identifier">$bot</span>.<span class="ruby-identifier">configure</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span>
-        <span class="ruby-identifier">c</span>.<span class="ruby-identifier">verbose</span> = <span class="ruby-operator">!</span> <span class="ruby-identifier">c</span>.<span class="ruby-identifier">verbose</span>
-        <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Verbosity:#{c.verbose.to_s}&quot;</span>
+<span class="ruby-comment cmt"># File lib/Core.rb, line 18</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">part</span>
+      <span class="ruby-identifier">args</span>.<span class="ruby-identifier">split</span>(<span class="ruby-value str">&quot; &quot;</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">room</span><span class="ruby-operator">|</span>
+      <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">nick</span> <span class="ruby-operator">=~</span> <span class="ruby-node">/^#{BOT_CONFIG[:owner_nick]}$/i</span>) <span class="ruby-keyword kw">and</span> (<span class="ruby-identifier">room</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/#[\w-]+/</span>)
+        <span class="ruby-identifier">part</span> <span class="ruby-identifier">room</span>
+        <span class="ruby-keyword kw">super</span> <span class="ruby-node">&quot;Leaving #{room}&quot;</span>
       <span class="ruby-keyword kw">end</span>
     <span class="ruby-keyword kw">end</span>
   <span class="ruby-keyword kw">end</span>
@@ -361,7 +329,7 @@ encoding: utf-8
 
           <a href="#M000008" class="method-signature">
 
-          <span class="method-name">unload_plugin</span><span class="method-args">()</span>
+          <span class="method-name">toggle_verbosity</span><span class="method-args">()</span>
 
           </a>
 
@@ -373,7 +341,42 @@ encoding: utf-8
             onclick="toggleCode('M000008-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000008-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/Core.rb, line 62</span>
+<span class="ruby-comment cmt"># File lib/Core.rb, line 34</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">toggle_verbosity</span> 
+    <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">nick</span> <span class="ruby-operator">=~</span> <span class="ruby-node">/^#{BOT_CONFIG[:owner_nick]}$/i</span>)
+      <span class="ruby-identifier">$bot</span>.<span class="ruby-identifier">configure</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span>
+        <span class="ruby-identifier">c</span>.<span class="ruby-identifier">verbose</span> = <span class="ruby-operator">!</span> <span class="ruby-identifier">c</span>.<span class="ruby-identifier">verbose</span>
+        <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Verbosity:#{c.verbose.to_s}&quot;</span>
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000010" class="method-detail">
+        <a name="M000010"></a>
+
+        <div class="method-heading">
+
+          <a href="#M000010" class="method-signature">
+
+          <span class="method-name">unload_plugin</span><span class="method-args">()</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000010-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000010-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/Core.rb, line 65</span>
   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">unload_plugin</span>
     <span class="ruby-ivar">@plugins</span> <span class="ruby-operator">||=</span> {}
     <span class="ruby-identifier">args</span>.<span class="ruby-identifier">split</span>(<span class="ruby-value str">&quot; &quot;</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">plugin</span><span class="ruby-operator">|</span>

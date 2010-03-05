@@ -89,6 +89,10 @@ else. All commands defined in the +:auto+ context respond whether the command
 was sent in +:channel+ or +:private+. The +:channel+ and +:private+ contexts
 are for defining commands that may _only_ be sent from a channel _or_ private.
 
+Another special context is +:helper+. All methods defined in the +:helper+
+context are available to other methods in your plugin, but cannot be run as a
+command directly from IRC.  See "Hiding Methods."
+
 ==== Accessing Data and Performing Actions
 
 The single +Isaac::Bot+ instance is globally accessible via the global +$bot+
@@ -113,7 +117,9 @@ variable. To keep your code legible, the following mappings have been made:
   
   $bot.raw       => raw(txt)    Send raw message to IRC Server
   $bot.msg       => msg(n,t)    Send text 't' to 'n' (n can be nick or channel)
-  $bot.action    => action(n,t) Same as $bot.msg only sends */me* action    
+  $bot.action    => action(n,t) Same as $bot.msg only sends */me* action 
+  
+see also #automsg   
   
   $bot.quit      => quit(t="")  Performs /quit with message        
   $bot.join      => join(*chn)  */join*s rooms. 'chn' is an Array      
@@ -123,7 +129,16 @@ variable. To keep your code legible, the following mappings have been made:
   $bot.mode      => mode(c,o)   Set mode option 'o' in channel 'c'
   $bot.kick      => kick(c,u,r) */kick*s channel, user, reason
 
-  TODO: Document value-adds like automsg, etc.
+===== Hiding Methods
+
+By default, all instance methods defined in the plugin class automatically
+become IRC plugin commands.  
+
+If you want to define a method that other methods can call, but you do not
+want the method to be visible or accessible as a command in IRC, then you must
+hide the method.  You can hide methods in these ways:
+* Any method whose name begins with an underscore (_) will be hidden
+* Set <tt>context :helper</tt> in your plugin class declaration. All methods defined under the _helper_ context will be hidden regardless of its name.  You can resume defining command methods by setting the context to something else (e.g. <tt>context :auto</tt>)
 
 =end
 
@@ -180,6 +195,8 @@ class PluginBase #:enddoc:
     @default_command_context ||= :auto
   end
   
+  # this hook method is part of Ruby.  I am overriding it here to run the 
+  # default command, which is usually some sort of help.
   def missing_method(name, *args, &block)
     warn "missing method #{name} default -> #{@default_command}"
     if self.respond_to?(@default_command)
@@ -191,18 +208,42 @@ class PluginBase #:enddoc:
     end
   end
   
+  # set default context
   @context = :auto
   # Needs to be :auto, or any of isaac's events
   def self.context(context = :auto)
     @context = context
   end
   
+  # Accessor for class object variable
   def self.commands
     (@commands ||= [])
   end
 
+  # Wrap a method object in an error handler and return a proc
+  def self.meth_wrap_proc(m)
+    return nil unless m.kind_of?(Method)
+    return Proc.new do
+      begin
+        m.call
+      rescue Exception => e
+        puts "An error occured:#{e.message}\n#{e.backtrace.join("\n")}"
+        puts "resuming..."
+      end
+    end
+  end  
   
-  # called by #initialize().
+  ##### Start Protected Methods
+  
+  protected
+  
+  # registers command-events for all non-hidden command methods in your plugin with
+  # the global $bot object.  The only time this should be run is to enable commands
+  # while loading plugin, or reenable commands for a plugin whose commands have been unregistered by 
+  # #unregister_commands.  This is invoked
+  # for you by the Core plugin when you issue a <tt>!do load_plugin ...</tt> command
+  # so, unless you are writing a plugin that manages other plugins, you don't need
+  # to run this directly.
   def register_commands
     #first revalidate Class for good token, to ensure it was set
     self.class.validate_token self.class.get_token
@@ -236,7 +277,13 @@ class PluginBase #:enddoc:
       $bot.on(c.to_sym, /^\s*!#{self.class.get_token.to_s}(.*)$/i, &bloc)
     end
   end
-  protected
+  
+  # unregisters command-events that have previously been registered by #register_commands
+  # from the global $bot object.  The only time this should be run is to disable
+  # a loaded plugin, or immediately prior to unloading a plugin.  This is invoked
+  # for you by the Core plugin when you issue a <tt>!do unload_plugin ...</tt> command
+  # so, unless you are writing a plugin that manages other plugins, you don't need
+  # to run this directly.
   def unregister_commands
     # Register defined commands
     self.class.commands.each do |command|
@@ -270,6 +317,7 @@ class PluginBase #:enddoc:
   end
   
   private
+  # These are documented at the top of the file in the big rDoc block
   # Create accessors that users will expect to access $bot properties
   [:config, :irc, :nick, :channel, :message, :user, :host, :error].each do |item|
     eval(<<-EOF)
@@ -279,7 +327,11 @@ class PluginBase #:enddoc:
     EOF
   end
   def args
-    match[0]
+    $bot.match[0]
+  end
+  # The only three arg method in $bot
+  def kick(channel, user, reason=nil)
+    $bot.kick(channel, user, reason=nil)
   end
   # Wrap other $bot methods
   #single argument methods in $bot
@@ -298,8 +350,15 @@ class PluginBase #:enddoc:
       end
     EOF
   end
-  # automsg detects whether the sender is private or public and sends the 
-  # message there
+  
+  #### More Protected Method
+  protected
+  
+  # sends a message either to a channel _or_ to private, depending on where the 
+  # command was invoked.  If you have defined a command method in +:auto+ context,
+  # #automsg will send the _text_ to the channel if the command was run in the 
+  # channel, and send the _text_ to private (query) if the command was run using 
+  # a private message.  This is useful for the +:auto+ context.
   def automsg(text)
     if channel.nil? then
       msg nick, text
@@ -318,8 +377,13 @@ class PluginBase #:enddoc:
                                                       method =~ /^_/
   end
   
-  # I hope this method is completely overridden in the subclass, but this 
-  # provides sane functionallity if not
+  # provides a quick and dirty list of all commands in a plugin.  This method is 
+  # a scaffold of sorts.  You should really override this method in your plugin class
+  # to provide better information to your users.
+  # This method is context sensitive (in the Rubot sense of context) in that if 
+  # <tt>!<token> help</tt> is called in a channel it only lists commands available 
+  # in the channel, but if it is called in private, it lists only commands available
+  # in private.
   def help
     if channel.nil? then # list private commands
       commands = self.class.commands.select {|c| [:private, :auto].include?(c[1]) }
