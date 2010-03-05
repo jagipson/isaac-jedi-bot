@@ -308,26 +308,14 @@ class PluginBase #:enddoc:
     end
   end
   
-  # The only three arg method in $bot
-  def kick(channel, user, reason=nil)
-    $bot.kick(channel, user, reason=nil)
-  end
-  
-  # TODO: I think this can safely be removed
-  %w(helpers).each do |method|
-    eval(<<-EOF)
-      def #{method}(*args, &block)
-        $bot.#{method}(*args, &block)
-      end
-    EOF
-  end
-  
   # Keep this method at bottom of class declaration.  All classes defined after
   # This will be registered as commands, automagically
   
   def self.method_added(method)
     # Maintain a list of added methods and their context
-    (@commands ||= []) << [method, (@context ||= :auto)]
+    @context ||= :auto
+    (@commands ||= []) << [method, (@context)] unless @context == :helper or 
+                                                      method =~ /^_/
   end
   
   # I hope this method is completely overridden in the subclass, but this 
