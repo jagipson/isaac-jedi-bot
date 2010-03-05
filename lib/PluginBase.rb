@@ -62,6 +62,24 @@ For example, to use any functionallity in _Greets_, the "+!greet+" token must
 be the first text on the IRC line. Don't include the bang (!) when you define
 the token here, but do prefix the token with bang (!) in IRC.
 
+Another setting, not shown, takes the form of:
+
+<tt>       default_command     :help </tt>
+
+This is actually the default which is used if you do not
+override it with something else.  The default_command is called whenever a line
+starts with <tt>!<token></tt> but has an invalid command, or no command at all.
+If you do not define a +help+ command method, then a terse one will be created
+automatically (see "Help Behavior" and #help methods).  Overriding this is
+useful if you create a plugin that has only one command, and requires no help.
+An additional setting, is:
+
+<tt>       default_command_context     :auto </tt>
+
+If you don't add this configuration, then it defaults to +:auto+. Only use
+this setting if you want to change the how the plugin's default_command
+responds.
+
 === Lines 5-25
 
 The remainder of this file defines the commands that the plugin will listen
@@ -142,12 +160,33 @@ hide the method.  You can hide methods in these ways:
 
 =end
 
-class PluginBase #:enddoc:
-                 
+class PluginBase
+  # This abstract class does 3 things (for it's subclasses)
+  # 1. Sets up a standard syntax (!<token> <command> [args]) for creating IRC
+  #    Bot events.
+  # 2. It makes data and methods from Isaac::Bot accessible so that subclasses
+  #    can benefit from the IRC commands, such as Isaac::Bot#msg and
+  #    Isaac::Bot#join, etc.  It also provides a more programmer-friendly
+  #    environment, as Isaac::Bot sets up a Domain Specific Language (DSL) for
+  #    bot creation, RubOt reverts back to a more Rubyish environment which is
+  #    Friendlier for programmers.  RubOt also, adds functionallity such as the
+  #    ability to create a command that responds in private and in channel.  
+  #    Isaac::Bot required you to create two seperate events for this.
+  # 3. It provides a plugin framework for Isaac::Bot.  In RubOt, all bot
+  #    functionallity is implemetned in loadable plugins.  The plugin
+  #    archetecture allows loading and unloading plugins while connected to the
+  #    IRC server, without stopping the bot core.  It also provides error handling
+  #    so that (hopefully) errors in plugins are simply logged to the bot console
+  #    and are not likely to result in crashing and disconnecting the bot. 
   private
   
-  #provide a default description
+  #
+  #  Plugin Configuration Accessors
+  #
+  
+  #provide a default description which should be overridden in the sublass
   @desc = "#{self.name} is indescribable!"
+  # Description class-object variable accessors
   def self.description(value)
     @desc = value.to_s
   end
@@ -155,6 +194,10 @@ class PluginBase #:enddoc:
     @desc
   end
   
+  # Validate the token, and return the token in symbol form.  A valid token 
+  # is a non-nil, non-empty string or symbol object that begins with a letter
+  # and contains only letters and digits, thereafter.  Tokens must also be unique
+  # per each RubOt instance. Invalid tokens raise errors.  
   def self.validate_token(tok)
     # Guarantee that a token was established
     if (tok.nil? or tok.to_s !~ /^[A-Za-z]+[A-Za-z0-9]*$/i ) then
@@ -169,9 +212,10 @@ class PluginBase #:enddoc:
       return tok.to_s.downcase.to_sym
     end
   end
-  
+  # token class-object variable accessors
   def self.token(tok)
-    # When a class is inheriting from me, register it's token
+    # @@global_token_catalog is used to make sure that all subclasses of
+    # PluginBase have unique @tokens.
     @@global_tokens_catalog ||= Hash.new
     @token = self.validate_token(tok)
     @@global_tokens_catalog[@token] = self
@@ -180,7 +224,9 @@ class PluginBase #:enddoc:
     @token
   end
   
+  # declare the default default_command as help, in case the subclass forgot to.
   @default_command = :help
+  # default_command class-object variable accessors
   def self.default_command(command_name = :help)
     @default_command = command_name.to_sym
   end
@@ -188,12 +234,25 @@ class PluginBase #:enddoc:
     @default_command ||= :help
   end
   
+  # default_command_context class-object variable accessors
   def self.default_command_context(value = :auto)
     @default_command_context = value.to_sym
   end
   def self.get_default_command_context
     @default_command_context ||= :auto
   end
+  
+  # set default context
+  @context = :auto
+  # Needs to be :auto, or any of isaac's events
+  # context class-object variable accessors
+  def self.context(context = :auto)
+    @context = context
+  end
+  
+  #
+  #  Implement default_commands
+  #
   
   # this hook method is part of Ruby.  I am overriding it here to run the 
   # default command, which is usually some sort of help.
@@ -208,17 +267,9 @@ class PluginBase #:enddoc:
     end
   end
   
-  # set default context
-  @context = :auto
-  # Needs to be :auto, or any of isaac's events
-  def self.context(context = :auto)
-    @context = context
-  end
-  
-  # Accessor for class object variable
-  def self.commands
-    (@commands ||= [])
-  end
+  #
+  #  Wrap command-methods in an error handler (hard candy shell) 
+  #
 
   # Wrap a method object in an error handler and return a proc
   def self.meth_wrap_proc(m)
@@ -232,6 +283,12 @@ class PluginBase #:enddoc:
       end
     end
   end  
+  
+  # @commands class-object variable accessor
+  # @commands holds a list of the methods that respond to IRC events
+  def self.commands
+    (@commands ||= [])
+  end
   
   ##### Start Protected Methods
   
@@ -351,7 +408,7 @@ class PluginBase #:enddoc:
     EOF
   end
   
-  #### More Protected Method
+  #### More Protected Methods
   protected
   
   # sends a message either to a channel _or_ to private, depending on where the 
@@ -367,6 +424,10 @@ class PluginBase #:enddoc:
     end
   end
   
+  #
+  #  Meta-programming hooks
+  #
+  
   # Keep this method at bottom of class declaration.  All classes defined after
   # This will be registered as commands, automagically
   
@@ -376,6 +437,10 @@ class PluginBase #:enddoc:
     (@commands ||= []) << [method, (@context)] unless @context == :helper or 
                                                       method =~ /^_/
   end
+  
+  #
+  #  Provide default help scaffold using reflection
+  #
   
   # provides a quick and dirty list of all commands in a plugin.  This method is 
   # a scaffold of sorts.  You should really override this method in your plugin class

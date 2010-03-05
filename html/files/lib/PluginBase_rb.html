@@ -53,7 +53,7 @@
     </tr>
     <tr class="top-aligned-row">
       <td><strong>Last Update:</strong></td>
-      <td>2010-03-05 09:16:30 -0600</td>
+      <td>2010-03-05 11:36:02 -0600</td>
     </tr>
     </table>
   </div>
@@ -141,6 +141,29 @@ your command message to. For example, to use any functionallity in
 <em>Greets</em>, the &#8220;+!greet+&#8221; token must be the first text on
 the IRC line. Don&#8217;t include the bang (!) when you define the token
 here, but do prefix the token with bang (!) in IRC.
+</p>
+<p>
+Another setting, not shown, takes the form of:
+</p>
+<p>
+<tt> default_command :help </tt>
+</p>
+<p>
+This is actually the default which is used if you do not override it with
+something else. The default_command is called whenever a line starts with
+<tt>!&lt;token&gt;</tt> but has an invalid command, or no command at all.
+If you do not define a <tt>help</tt> command method, then a terse one will
+be created automatically (see &#8220;Help Behavior&#8221; and help
+methods). Overriding this is useful if you create a plugin that has only
+one command, and requires no help. An additional setting, is:
+</p>
+<p>
+<tt> default_command_context :auto </tt>
+</p>
+<p>
+If you don&#8217;t add this configuration, then it defaults to
+<tt>:auto</tt>. Only use this setting if you want to change the how the
+plugin&#8217;s default_command responds.
 </p>
 <h3>Lines 5-25</h3>
 <p>
