@@ -439,8 +439,10 @@ class PluginBase
   end
   
   #
-  #  Provide default help scaffold using reflection
+  #  Set Context, then Provide default help scaffold using reflection
   #
+  
+  context :auto
   
   # provides a quick and dirty list of all commands in a plugin.  This method is 
   # a scaffold of sorts.  You should really override this method in your plugin class
