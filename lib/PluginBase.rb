@@ -211,17 +211,18 @@ class PluginBase #:enddoc:
     self.class.commands.each do |command|
       meth, context = command
       puts "Registering #{meth} for #{self.class.name} for event #{context}"
-      
+    
       # This allows 'auto' for commands to work in channel and private
       if context == :auto
         contexts = [:channel, :private] 
       else
         contexts = [context]
       end
-      contexts.each do |c|    
-        #Register with global $bot
-        m = self.method(meth.to_sym)
-        $bot.on(c.to_sym, /^\s*!#{self.class.get_token.to_s}\s+#{meth.to_s}\s?(.*)$/i, &m)
+      contexts.each do |c|     
+        # Wrap m in an error handler:
+        bloc = self.class.meth_wrap_proc(self.method(meth.to_sym))
+        #Register with global $bot as an event
+        $bot.on(c.to_sym, /^\s*!#{self.class.get_token.to_s}\s+#{meth.to_s}\s?(.*)$/i, &bloc)
       end
     end
     # Register default command
@@ -231,8 +232,8 @@ class PluginBase #:enddoc:
       contexts = [self.class.get_default_command_context]
     end
     contexts.each do |c|
-      m = self.method(self.class.get_default_command)
-      $bot.on(c.to_sym, /^\s*!#{self.class.get_token.to_s}(.*)$/i, &m)
+      bloc = self.class.meth_wrap_proc(self.method(self.class.get_default_command))
+      $bot.on(c.to_sym, /^\s*!#{self.class.get_token.to_s}(.*)$/i, &bloc)
     end
   end
   protected

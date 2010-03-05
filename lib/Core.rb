@@ -44,18 +44,17 @@ class Core < PluginBase
     @plugins ||= {}
     args.split(" ").each do |plugin|
       if File.exist?(plugin) then
-        load plugin
         # Plugin's assume that the Classname = filename w/o .rb extension
         begin
+          load plugin
           puts "About to register plugin #{plugin.inspect}"
-          self.instance_eval %Q{ @plugins[plugin.downcase.to_sym] = #{plugin[0..-4]}.new }
-        rescue 
-          p $!
-          msg nick "Unable to load plugin #{plugin}. Check logs"
           sym = plugin.downcase.to_sym
           self.instance_eval %Q{ @plugins[sym] = #{plugin[0..-4]}.new }
           @plugins[sym].register_commands
           msg nick, "#{plugin} loaded.  Default command: !#{@plugins[sym].class.get_token} #{@plugins[sym].class.get_default_command}"
+        rescue Exception => e
+          p e
+          msg nick, "Unable to load plugin #{plugin}. Check logs"
         end
       else
         msg nick, "Unable to find plugin #{plugin}; PWD=#{ENV["PWD"]}"
