@@ -197,10 +197,6 @@ class PluginBase #:enddoc:
     @context = context
   end
   
-  def noop
-    nil
-  end
-  # Accessor for class instance variable
   def self.commands
     (@commands ||= [])
   end
