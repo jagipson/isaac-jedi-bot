@@ -5,26 +5,58 @@ class Core < PluginBase
   token           :do
   default_command :help
   
-  def help(cmd="")
-    puts "Local help"
+  # helper method to print usage for a command in this plugin
+  def _usage(cmd)
+    "!#{self.class.get_token} #{cmd.downcase} "
+  end
+  
+  def help
+    # warning, use non-breaking spaces in this method.
+    cmd = args.strip.split(" ")[0] # get first word in args
     case cmd
-    when "apples"
-      nil
-    when "jacks"
-      nil
-    else
+    when /^(join)|(part)$/i
+      m = [] << "<#room1> [#room2]...[#roomN]"
+      m      << "args: one or more space-delimited IRC rooms"
+      m      << "#{cmd.strip}s IRC rooms."
+    when /^hangup$/i
+      m = [] << " " # empty string (no args)
+      m      << "disconnect and terminate RubOt"
+    when /^toggle_verbosity$/i
+      m = [] << " "
+      m      << "toggle Isaac::Bot engine's verbose console logging"
+    when /^(un)?load(_plugin)?$/i
+      m = [] << "<PlugInFileName.rb>"
+             << "args: valid file name containing a RubOt plugin"
+      m      << "#{$&.capitalize}s the named plugin.  Don't forget the filename extension (.rb)"
+    when /list_plugins/i
+      m = [] << " "
+      m      << "prints a table listing all loaded plugins"
+    elsema
       command_lists = {}
       command_lists[:private] = self.class.commands.select {|c| [:private].include?(c[1]) }
       command_lists[:public] = self.class.commands.select {|c| [:channel].include?(c[1]) }
       command_lists[:both] = self.class.commands.select {|c| [:channel].include?(c[1]) }
       # only print help for this plugin to private
-      msg nick, "Command         Access"
-      msg nick, "-------         ------"
+      # get the length of the longest command
+      cmd_len = command_lists.values.flatten.map { |v| v.size }.max
+      cmd_len += self.class.get_token.to_s.length # add in length of token
+      cmd_len += "! ".length # add in length of bang!-space prefix
+      cmd_len = [cmd_len, "Command".length].max # <= decides on column width
+      msg nick, "Command".ljust(cmd_len, ' ') + ' ' + "Access"
+      msg nick, ("-" * "Command".length).ljust(cmd_len, ' ') + ' ' + ("-" * "Access".length)
       [:private, :public, :both].each do |l|
         command_lists[l].each do |i| 
-          msg nick, "!#{self.class.get_token.to_s} #{i[0].to_s}".ljust(15, " ")[0..14] + l.to_s
+          msg nick, "!#{self.class.get_token.to_s} #{i[0].to_s}".ljust(cmd_len, " ") + " " + l.to_s
         end
       end
+      msg nick, " " # send blank line
+      msg nick, "For help in individual commands, use !do help <command>"
+      return
+    end
+    # Process non 'else' help
+    msg(nick, _usage(cmd) + m.shift)
+    while (n = m.shift) do
+      msg nick, n
     end
   end
      
