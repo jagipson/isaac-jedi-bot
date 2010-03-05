@@ -1,0 +1,4 @@
+TODO Generated on 2010-03-05 09:10:46 -0600 by jubesz
+
+TODO in lib/Core.rb
+006: Override help() so it shows complete command explainations
