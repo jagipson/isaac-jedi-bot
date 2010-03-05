@@ -52,6 +52,10 @@ class Core < PluginBase
         rescue 
           p $!
           msg nick "Unable to load plugin #{plugin}. Check logs"
+          sym = plugin.downcase.to_sym
+          self.instance_eval %Q{ @plugins[sym] = #{plugin[0..-4]}.new }
+          @plugins[sym].register_commands
+          msg nick, "#{plugin} loaded.  Default command: !#{@plugins[sym].class.get_token} #{@plugins[sym].class.get_default_command}"
         end
       else
         msg nick, "Unable to find plugin #{plugin}; PWD=#{ENV["PWD"]}"

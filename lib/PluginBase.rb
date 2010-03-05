@@ -271,11 +271,8 @@ class PluginBase #:enddoc:
     # Unregister Token
     @@global_tokens_catalog.delete(self.class.get_token)
   end
+  
   private
-  def initialize
-    register_commands
-  end
-
   # Create accessors that users will expect to access $bot properties
   [:config, :irc, :nick, :channel, :message, :user, :host, :error].each do |item|
     eval(<<-EOF)
