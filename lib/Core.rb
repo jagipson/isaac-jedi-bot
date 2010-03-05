@@ -5,29 +5,29 @@ class Core < PluginBase
   token           :do
   default_command :help
   
-  #   def help(cmd="")
-  #   puts "Local help"
-  #   case cmd
-  #   when "apples"
-  #     nil
-  #   when "jacks"
-  #     nil
-  #   else
-  #     command_lists = {}
-  #     command_lists[:private] = self.class.commands.select {|c| [:private].include?(c[1]) }
-  #     command_lists[:public] = self.class.commands.select {|c| [:channel].include?(c[1]) }
-  #     command_lists[:both] = self.class.commands.select {|c| [:channel].include?(c[1]) }
-  #     # only print help for this plugin to private
-  #     msg nick, "Command         Access"
-  #     msg nick, "-------         ------"
-  #     [:private, :public, :both].each do |l|
-  #       command_lists[l].each do |i| 
-  #         msg nick, "!#{self.class.get_token.to_s} #{i[0].to_s}".ljust(15, " ")[0..14] + l.to_s
-  #       end
-  #     end
-  #   end
-  # end
-  # 
+  def help(cmd="")
+    puts "Local help"
+    case cmd
+    when "apples"
+      nil
+    when "jacks"
+      nil
+    else
+      command_lists = {}
+      command_lists[:private] = self.class.commands.select {|c| [:private].include?(c[1]) }
+      command_lists[:public] = self.class.commands.select {|c| [:channel].include?(c[1]) }
+      command_lists[:both] = self.class.commands.select {|c| [:channel].include?(c[1]) }
+      # only print help for this plugin to private
+      msg nick, "Command         Access"
+      msg nick, "-------         ------"
+      [:private, :public, :both].each do |l|
+        command_lists[l].each do |i| 
+          msg nick, "!#{self.class.get_token.to_s} #{i[0].to_s}".ljust(15, " ")[0..14] + l.to_s
+        end
+      end
+    end
+  end
+     
   context :private
   def join
     args.split(" ").each do |room|
