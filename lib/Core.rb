@@ -90,6 +90,12 @@ class Core < PluginBase
       msg nick, "#{("!" + i.class.get_token.to_s).rjust(8, " ")} #{i.class.name[0..13].ljust(15, " ")} #{i.class.desc}"
     end
   end
+  
+  def initialize
+    # Since Core registers the commands of plugins that it loads, and it loads
+    # itself, it must also register itself.  Other plugins don't need this.
+    register_commands
+  end
 end
 # This instance is created only because this Class is not loaded via the 
 # !do load_plugins or (as yet not implemented, autoloader plugin).  In
