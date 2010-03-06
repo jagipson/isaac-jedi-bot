@@ -45,6 +45,8 @@ differently from any other modules. *PluginBase* is too complicated to explain
 in a readme. We intend to provide documentation for it in the source, however,
 in the "Creating a Plugin" section, we explain how to use it.
 
+More at: http://rdoc.info/projects/jagipson/isaac-jedi-bot
+
 == Creating a Bot
 
 To personalize RuBot, or to start over, first locate your configuration file
