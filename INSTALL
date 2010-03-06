@@ -1,0 +1,17 @@
+= Steps to install RubOt
+
+== Prerequisites
+
+* Install latest stable Ruby 1.9 (http://www.ruby-lang.org/en/downloads/)
+* <tt>gem install isaac</tt>
+
+== Installing RubOt
+
+=== Stable
+
+No stable release yet. :/
+
+=== Edge
+(for developers and code hackers)
+* install git
+* <tt>git clone git@github.com:jagipson/isaac-jedi-bot.git</tt>
