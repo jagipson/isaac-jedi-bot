@@ -59,6 +59,7 @@ def write_configuration(config_root, config_file=DEFAULT_CONF)
 end
 
 module BotExtensions
+  # Define new off() in classes that include this module
   def off(event, match=//)
     match = match.to_s if match.is_a? Integer
     (@events[event] ||= []).delete_if {|a| a[0] == Regexp.new(match) }
@@ -69,5 +70,4 @@ $bot.extend BotExtensions
 #-- 
 # I think this next line should be deleted, but I'm waiting until we have
 # tests built
-
-require 'PluginBase.rb'
+# require 'PluginBase.rb'
