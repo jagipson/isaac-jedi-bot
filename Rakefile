@@ -6,14 +6,16 @@ end
 
 
 
-task :default => :test
+task :default => :cukes
+
+task :cukes do
+  `cucumber features` 
+end
 
 task :test do
   require 'rake/runtest'
   Rake.run_tests
 end
-
-
 
 desc "Generate TODO file"
 task :TODO

@@ -4,7 +4,7 @@ Feature: Extend Isaac::Bot with off() method
 
 	In order to remove items in Isaac::Bot's $events data structure
 	That were added using the on() method
-	I want to extend the Isaac::Bot object to have and off() method
+	I want to extend the Isaac::Bot object to have an off() method
 	
 	# We don't test adding events (that's Isaac test suite's job)	
 		
