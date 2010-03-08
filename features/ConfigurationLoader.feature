@@ -8,6 +8,7 @@ Feature: Configuration Loader
 	defaults if settings are missing, and create a new file with reasonable 	
 	defaults, if non exists.
 	
+	@no_warn
  	Scenario: Configuration Loads on non-existent file 
 		Given a non-existent config file name
 		When loading the configuration
