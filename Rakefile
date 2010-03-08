@@ -1,15 +1,15 @@
 require 'rake/rdoctask'
+require 'cucumber'
+require 'cucumber/rake/task'
+
 Rake::RDocTask.new do |rd|
   rd.main = "README"
   rd.rdoc_files.include("README", "lib/**/*.rb")
 end
 
-
-
-task :default => :cukes
-
-task :cukes do
-  `cucumber features` 
+task :default => :features
+Cucumber::Rake::Task.new(:features) do |t|
+  t.cucumber_opts = "features --format pretty"
 end
 
 task :test do
