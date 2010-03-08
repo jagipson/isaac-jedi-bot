@@ -178,6 +178,20 @@ class PluginBase
   #    IRC server, without stopping the bot core.  It also provides error handling
   #    so that (hopefully) errors in plugins are simply logged to the bot console
   #    and are not likely to result in crashing and disconnecting the bot. 
+  
+  # PluginBase adds commands to an Isaac::Bot instance as events using the
+  # Isaac::Bot#on method. If the bot is run via RubOt.rb (just like issac.rb),
+  # then a $bot global is associated with your bot instance.  Normally, we 
+  # would just access the global $bot, however, for the convenience of running
+  # tests, and for some as-yet unimagined use of this library, and in the name
+  # of encapsulation, we will use a local @bot instance.  If @bot isn't passed
+  # to the constructor, then $bot will be used.  Once a PluginBase is 
+  # instantiated, @bot cannot be changed.
+  def initialize(instance_bot=nil)
+    @bot = instance_bot or $bot
+    return self
+  end
+  
   private
   
   #
@@ -320,7 +334,7 @@ class PluginBase
         # Wrap m in an error handler:
         bloc = self.class.meth_wrap_proc(self.method(meth.to_sym))
         #Register with global $bot as an event
-        $bot.on(c.to_sym, /^\s*!#{self.class.get_token.to_s}\s+#{meth.to_s}\s?(.*)$/i, &bloc)
+        @bot.on(c.to_sym, /^\s*!#{self.class.get_token.to_s}\s+#{meth.to_s}\s?(.*)$/i, &bloc)
       end
     end
     # Register default command
@@ -331,7 +345,7 @@ class PluginBase
     end
     contexts.each do |c|
       bloc = self.class.meth_wrap_proc(self.method(self.class.get_default_command))
-      $bot.on(c.to_sym, /^\s*!#{self.class.get_token.to_s}(.*)$/i, &bloc)
+      @bot.on(c.to_sym, /^\s*!#{self.class.get_token.to_s}(.*)$/i, &bloc)
     end
   end
   
@@ -355,7 +369,7 @@ class PluginBase
       end
       contexts.each do |c|
         #Register with global $bot
-        $bot.off(c.to_sym, /^\s*!#{self.class.get_token.to_s}\s+#{meth.to_s}\s?(.*)$/i)
+        @bot.off(c.to_sym, /^\s*!#{self.class.get_token.to_s}\s+#{meth.to_s}\s?(.*)$/i)
       end
     end
     # Register default command
@@ -365,7 +379,7 @@ class PluginBase
       contexts = [self.class.get_default_command_context]
     end
     contexts.each do |c|
-      $bot.off(c.to_sym, /^\s*!#{self.class.get_token.to_s}(.*)$/i)
+      @bot.off(c.to_sym, /^\s*!#{self.class.get_token.to_s}(.*)$/i)
     end
     # Unregister Token
     @@global_tokens_catalog.delete(self.class.get_token)
@@ -377,23 +391,23 @@ class PluginBase
   [:config, :irc, :nick, :channel, :message, :user, :host, :error].each do |item|
     eval(<<-EOF)
       def #{item}
-        $bot.#{item}
+        @bot.#{item}
       end
     EOF
   end
   def args
-    $bot.match[0]
+    @bot.match[0]
   end
   # The only three arg method in $bot
   def kick(channel, user, reason=nil)
-    $bot.kick(channel, user, reason=nil)
+    @bot.kick(channel, user, reason=nil)
   end
   # Wrap other $bot methods
   #single argument methods in $bot
   %w(raw quit join part).each do |m|
     eval(<<-EOF)
       def #{m}(arg)
-        $bot.#{m}(arg)
+        @bot.#{m}(arg)
       end
     EOF
   end
@@ -401,7 +415,7 @@ class PluginBase
   %w(msg action topic mode).each do |m|
     eval(<<-EOF)
       def #{m}(arg1, arg2)
-        $bot.#{m}(arg1, arg2)
+        @bot.#{m}(arg1, arg2)
       end
     EOF
   end
@@ -433,7 +447,8 @@ class PluginBase
     # Maintain a list of added methods and their context
     @context ||= :auto
     (@commands ||= []) << [method, (@context)] unless @context == :helper or 
-                                                      method =~ /^_/
+                                                      method =~ /^_/ or
+                                                      method =~ /initialize/
   end
   
   #
