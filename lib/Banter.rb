@@ -4,6 +4,7 @@ token           :fortune
 default_command :fortune
 
   context :auto
+# Requires fortune to be loaded on your system, but will not cause problems (other than non-functioning) if it is not installed.
   def fortune
     fortune_command = "fortune -s"
     fortune_result = `#{fortune_command}`
