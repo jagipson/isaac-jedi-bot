@@ -188,7 +188,7 @@ class PluginBase
   # to the constructor, then $bot will be used.  Once a PluginBase is 
   # instantiated, @bot cannot be changed.
   def initialize(instance_bot=nil)
-    @bot = instance_bot or $bot
+    @bot = instance_bot || $bot
     return self
   end
   
