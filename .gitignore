@@ -3,4 +3,5 @@ jedbotcnf.yaml*
 depricatedfiles
 TestPlug.rb
 html/
+*.html
 
