@@ -8,8 +8,9 @@ Rake::RDocTask.new do |rd|
 end
 
 task :default => :features
+$VERBOSE = nil
 Cucumber::Rake::Task.new(:features) do |t|
-  t.cucumber_opts = "features --format pretty"
+  t.cucumber_opts = "features --format pretty -s "
 end
 
 task :test do
