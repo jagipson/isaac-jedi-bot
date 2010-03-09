@@ -19,6 +19,13 @@ Spec::Rake::SpecTask.new('examples') do |t|
   t.spec_files = FileList['spec/**/*.rb']
 end
 
+desc "Run all examples with RCov"
+Spec::Rake::SpecTask.new('examples_with_rcov') do |t|
+  t.spec_files = FileList['spec/**/*.rb']
+  t.rcov = true
+  t.rcov_opts = ['--exclude', 'spec']
+end
+
 desc "Run features and examples"
 task :test => [:features, :examples]
 
@@ -27,6 +34,13 @@ task :preflight_check_dev => :preflight_check do
       ThreeSegmentNumericVersion.new("1.9.1") then
     puts "F.Y.I: This program was developed using Ruby 1.9.1, " \
       "not #{RUBY_VERSION}."
+  end
+  # cucumber was already required, so rake will fail if cucumber is not installed
+  puts "Checking for required development gems"
+  [:cucumber, :rake, :rspec, :rcov].each do |gemi|
+    unless (system("gem list | grep #{gemi}")) then
+      puts "*** Missing gem #{gemi}"
+    end
   end
 end
 
@@ -39,9 +53,8 @@ task :preflight_check do
     puts "This program was developed for Ruby 1.9, so it might not work."
   end
   
-  # cucumber was already required, so rake will fail if cucumber is not installed
-  puts "Checking for required gems"
-  [:isaac, :cucumber].each do |gemi|
+  puts "Checking for required runtime gems"
+  [:isaac].each do |gemi|
     unless (system("gem list | grep #{gemi}")) then
       puts "*** Missing gem #{gemi}"
     end

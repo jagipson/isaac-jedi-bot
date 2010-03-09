@@ -14,6 +14,8 @@ When /^it has a "([^\"]*)" "([^\"]*)" event$/ do |arg1, arg2|
 end
   
 When /^I remove the "([^\"]*)" "([^\"]*)" event$/ do |arg1, arg2|
+  # testing
+  raise
   $bot.off(arg2.to_sym, /(#{arg1})/)
 end
 

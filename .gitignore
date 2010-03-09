@@ -4,4 +4,4 @@ depricatedfiles
 TestPlug.rb
 html/
 *.html
-
+coverage/
