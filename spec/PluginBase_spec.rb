@@ -9,13 +9,11 @@ describe PluginBase, "abstract class" do
 end
 
 describe PluginBase, "bare subclass" do
- 
-  before (:all) do
-    # Create a subclass so PluginBase doesn't raise
-    class PBC < PluginBase
-    end
+
+  # Create a subclass so PluginBase doesn't raise
+  class PBC < PluginBase
   end
-  
+
   before (:each) do
     pbc = PBC.new
   end
@@ -96,7 +94,7 @@ describe PluginBase, "bare subclass" do
   
 end
 
-describe PluginBase, "automsg"
+describe PluginBase, "automsg" do
 
   # Automsg feature
   
@@ -127,6 +125,5 @@ describe PluginBase, "bare subclass in chat" do
   
   # Pertaining to its behaviour in IRC
   
-  "should "
   
 end
