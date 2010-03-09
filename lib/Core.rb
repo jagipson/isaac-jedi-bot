@@ -31,7 +31,7 @@ class Core < PluginBase
     when /list_plugins/i
       m = [] << " "
       m      << "prints a table listing all loaded plugins"
-    elsema
+    else
       command_lists = {}
       command_lists[:private] = self.class.commands.select {|c| [:private].include?(c[1]) }
       command_lists[:public] = self.class.commands.select {|c| [:channel].include?(c[1]) }

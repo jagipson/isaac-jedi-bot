@@ -206,7 +206,7 @@ class PluginBase
     @desc = value.to_s
   end
   def self.desc
-    @desc
+    @desc ||= "#{self.name} is indescribable!"
   end
   
   # Validate the token, and return the token in symbol form.  A valid token 
@@ -258,8 +258,6 @@ class PluginBase
     @default_command_context ||= :auto
   end
   
-  # set default context
-  @context = :auto
   # Needs to be :auto, or any of isaac's events
   # context class-object variable accessors
   def self.context(context = :auto)
