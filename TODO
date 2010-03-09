@@ -1,0 +1,4 @@
+TODO Generated on 2010-03-09 09:27:44 -0600 by jubesz
+
+TODO in lib/PluginBase.rb
+237: Once tests written, use inherited() hook to initialize token to self.class.to_s.downcase; a sensible default

@@ -189,6 +189,7 @@ class PluginBase
   # instantiated, @bot cannot be changed.
   def initialize(instance_bot=nil)
     @bot = instance_bot || $bot
+    raise "warning: PluginBase was instantiated directly" if self.class == PluginBase
     return self
   end
   
@@ -234,6 +235,7 @@ class PluginBase
     @token = self.validate_token(tok)
     @@global_tokens_catalog[@token] = self
   end
+  # TODO: Once tests written, use inherited() hook to initialize token to self.class.to_s.downcase; a sensible default
   def self.get_token
     @token
   end

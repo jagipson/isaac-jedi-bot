@@ -13,6 +13,33 @@ Cucumber::Rake::Task.new(:features) do |t|
   t.cucumber_opts = "features --format pretty -s "
 end
 
+task :preflight_check_dev => :preflight_check do
+  if not ThreeSegmentNumericVersion.new(RUBY_VERSION) ==  \
+      ThreeSegmentNumericVersion.new("1.9.1") then
+    puts "F.Y.I: This program was developed using Ruby 1.9.1, " \
+      "not #{RUBY_VERSION}."
+  end
+  
+end
+
+task :preflight_check do
+  require 'lib/ruby_utilities.rb'
+  # make sure we are running at least 1.9.1
+  if not ThreeSegmentNumericVersion.new(RUBY_VERSION).between?  \
+      ThreeSegmentNumericVersion.new("1.9.0"),
+      ThreeSegmentNumericVersion.new("1.9.9") then
+    puts "This program was developed for Ruby 1.9, so it might not work."
+  end
+  
+  # cucumber was already required, so rake will fail if cucumber is not installed
+  puts "Checking for required gems"
+  [:isaac, :cucumber].each do |gemi|
+    unless (system("gem list | grep #{gemi}")) then
+      puts "*** Missing gem #{gemi}"
+    end
+  end
+end
+
 task :test do
   require 'rake/runtest'
   Rake.run_tests
