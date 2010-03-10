@@ -1,5 +1,5 @@
 # encoding: utf-8
-require 'PluginBase.rb'
+require_relative 'PluginBase.rb'
 
 class Core < PluginBase
   description     "Core plugin for administrative tasks."
