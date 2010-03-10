@@ -270,12 +270,13 @@ class PluginBase
   
   # this hook method is part of Ruby.  I am overriding it here to run the 
   # default command, which is usually some sort of help.
-  def missing_method(name, *args, &block)
+  def method_missing(name, *args, &block)
     warn "missing method #{name} default -> #{@default_command}"
-    if self.respond_to?(@default_command)
+    cmdsym = self.class.get_default_command
+    if self.respond_to?(cmdsym)
       # By definition, the default method must be able to be invoked with no
       # args:
-      method(@default_command).call
+      method(cmdsym).call
     else
       super
     end
@@ -456,7 +457,7 @@ class PluginBase
   #
   
   context :auto
-  
+
   # provides a quick and dirty list of all commands in a plugin.  This method is 
   # a scaffold of sorts.  You should really override this method in your plugin class
   # to provide better information to your users.

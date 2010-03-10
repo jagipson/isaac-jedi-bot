@@ -1,4 +1,5 @@
 # encoding: utf-8
+require 'PluginBase.rb'
 
 class Core < PluginBase
   description     "Core plugin for administrative tasks."
@@ -26,7 +27,7 @@ class Core < PluginBase
       m      << "toggle Isaac::Bot engine's verbose console logging"
     when /^(un)?load(_plugin)?$/i
       m = [] << "<PlugInFileName.rb>"
-             << "args: valid file name containing a RubOt plugin"
+      m      << "args: valid file name containing a RubOt plugin"
       m      << "#{$&.capitalize}s the named plugin.  Don't forget the filename extension (.rb)"
     when /list_plugins/i
       m = [] << " "
@@ -147,7 +148,11 @@ class Core < PluginBase
   end
   
   context :hidden
-  def initialize
+  # most plugins don'e need to override initialize, but this one does, so it
+  # can self-register.  When overriding initialize, call super or it breaks
+  def initialize(instance_bot=nil)
+    super instance_bot
+    
     # Since Core registers the commands of plugins that it loads, and it loads
     # itself, it must also register itself.  Other plugins don't need this.
     register_commands

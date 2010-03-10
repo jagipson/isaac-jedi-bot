@@ -1,6 +1,5 @@
 require 'lib/PluginBase.rb'
 
-
 describe PluginBase, "abstract class" do
   
   it "should raise if you instantiate it directly" do
@@ -13,7 +12,7 @@ describe PluginBase, "bare subclass, class methods and properties" do
   # Create a subclass so PluginBase doesn't raise
   class PBC < PluginBase
   end
-  
+
   # Pertaining to its behaviour as a class (default behaviour):
   it "should provide a default description" do
     PBC.desc.should match /PBC is indescribable!/
@@ -67,10 +66,47 @@ describe PluginBase, "bare subclass, class methods and properties" do
 end
 
 describe PluginBase, "class instances and operations" do
-
-  it "should have a default_command of 'help'"
   
-  it "should call its default_command if a missing_method is called"
+  before(:each) do
+    # no matter what, I want a fresh class and instance for these tests
+    begin
+      Object.send(:remove_const, PBC)
+      # Huh?  Constants aren't as constant as you thought, eh?
+    rescue NameError
+      # Happens when undefining a nonexistant constant, like the first time
+      #the test is run
+    ensure
+      # Create a subclass so PluginBase doesn't raise
+      class PBC < PluginBase
+      end
+      
+      @bot = mock('bot')
+      @pbc = PBC.new(@bot)
+    end
+  end
+  
+  it "should have a default_command of 'help'" do
+    @pbc.should respond_to :help
+  end
+  
+  it "should call its default_command if a missing_method is called" do
+    class PBC < PluginBase
+      default_command :increment
+      def increment
+        @count ||= 0
+        @count += 1
+        print "\a"
+      end
+      attr_reader :count
+    end
+    @bot.stub(:channel)
+    @bot.stub(:nick)
+    @bot.stub(:msg)
+    @pbc.bogus
+    @pbc.increment
+    @pbc.count.should == 2
+    # This means that the same method #increment ran twice; once via a call to #bogus
+  end
   
   it "should raise if its default_command is missing"
   
