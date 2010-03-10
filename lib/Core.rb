@@ -96,15 +96,18 @@ class Core < PluginBase
     end
   end
 
-  def load_plugin
+  def load_plugin(plugin_list_arg=nil)
     @plugins ||= {}
-    args.split(" ").each do |plugin|
-      if File.exist?(plugin) then
+    plugin_list = plugin_list_arg || args
+    plugin_list.split(" ").each do |plugin|
+      plugin_file = $system_root + "/plugins/" + plugin
+      plugin_file += ".rb" unless plugin =~ /.*\.rb/
+      if File.exist?(plugin_file) then
         # Plugin's assume that the Classname = filename w/o .rb extension
         begin
-          load plugin
+          load plugin_file
           puts "About to register plugin #{plugin.inspect}"
-          sym = plugin.downcase.to_sym
+          sym = plugin.downcase.sub(/.rb$/,"").to_sym
           self.instance_eval %Q{ @plugins[sym] = #{plugin[0..-4]}.new }
           @plugins[sym].register_commands
           msg nick, "#{plugin} loaded.  Default command: !#{@plugins[sym].class.get_token} #{@plugins[sym].class.get_default_command}"
@@ -113,7 +116,7 @@ class Core < PluginBase
           msg nick, "Unable to load plugin #{plugin}. Check logs"
         end
       else
-        msg nick, "Unable to find plugin #{plugin}; PWD=#{ENV["PWD"]}"
+        msg nick, "Unable to find plugin #{plugin_file}; PWD=#{ENV["PWD"]}"
       end
     end
   end
@@ -121,6 +124,7 @@ class Core < PluginBase
   def unload_plugin
     @plugins ||= {}
     args.split(" ").each do |plugin|
+      plugin.sub!(/.rb$/,"")
       begin
         @plugins[plugin.downcase.to_sym].unregister_commands
         @plugins.delete(plugin.downcase.to_sym)

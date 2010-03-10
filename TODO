@@ -1,10 +1,10 @@
-TODO Generated on 2010-03-10 08:50:06 -0600 by jubesz
-
-TODO in lib/Banter.rb
-005: Test if fortune command exists, and unload self if it doesn't
+TODO Generated on 2010-03-10 14:50:08 -0600 by jubesz
 
 TODO in lib/PluginBase.rb
 237: Once tests written, use inherited() hook to initialize token to self.class.to_s.downcase; a sensible default
+
+TODO in plugins/Banter.rb
+005: Test if fortune command exists, and unload self if it doesn't
 
 TODO in spec/PluginBase_spec.rb
 114: Refactor this test. This test is testing for too many things

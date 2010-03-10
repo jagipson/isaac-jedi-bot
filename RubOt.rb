@@ -4,6 +4,8 @@
 # Guarantee Ruby 1.9.x
 exit(1) unless defined?(RUBY_VERSION) and RUBY_VERSION =~ /1\.9\.*/
 
+$system_root = __FILE__.sub(File.basename(__FILE__),"")
+
 require 'isaac'
 require_relative 'lib/ConfigurationModule'
 
