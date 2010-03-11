@@ -74,7 +74,7 @@ class Core < PluginBase
   def part
       args.split(" ").each do |room|
       if (nick =~ /^#{BOT_CONFIG[:owner_nick]}$/i) and (room =~ /#[\w-]+/)
-        super room "Leaving #{room}"
+        super room
         puts "Parting #{room}"
       end
     end
