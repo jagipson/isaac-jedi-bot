@@ -108,7 +108,7 @@ class Core < PluginBase
           load plugin_file
           puts "About to register plugin #{plugin.inspect}"
           sym = plugin.downcase.sub(/.rb$/,"").to_sym
-          self.instance_eval %Q{ @plugins[sym] = #{plugin[0..-4]}.new }
+          self.instance_eval %Q{ @plugins[sym] = #{plugin}.new }
           @plugins[sym].register_commands
           msg nick, "#{plugin} loaded.  Default command: !#{@plugins[sym].class.get_token} #{@plugins[sym].class.get_default_command}"
         rescue Exception => e
@@ -120,7 +120,7 @@ class Core < PluginBase
       end
     end
   end
-  
+  # TODO: Plugins are not getting unloaded properly, that is, some info remains and reloads don't reload the new code
   def unload_plugin
     @plugins ||= {}
     args.split(" ").each do |plugin|

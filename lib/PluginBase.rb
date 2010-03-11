@@ -386,7 +386,7 @@ class PluginBase
     @@global_tokens_catalog.delete(self.class.get_token)
   end
   
-  private
+  protected
   # These are documented at the top of the file in the big rDoc block
   # Create accessors that users will expect to access $bot properties
   [:config, :irc, :nick, :channel, :message, :user, :host, :error].each do |item|
@@ -396,6 +396,7 @@ class PluginBase
       end
     EOF
   end
+  
   def args
     @bot.match[0]
   end
