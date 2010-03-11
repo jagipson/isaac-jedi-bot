@@ -22,36 +22,41 @@ class Venn < PluginBase
       #set querier to channel or nick, if private
       @querier = channel || nick
       
-      puts "Venn for #{nick}: #{message}" 
+      puts "Venn request for #{nick}: #{message}" 
       # parse command for proper format
-      message.strip!
+      @bot.message.strip!
+
       # reset the hash of sets (arrays), for user names
       @userrooms = {}
       @remaining_room_queries = []
       @joined_rooms = []  # Rooms that had to be joined for this chart
+      puts "Venn Dataset Initialized"
       
       #build room list and join rooms
       message.split("\s").each do |room|
         if (room =~ /#[a-z0-9-]+/i)
+          puts "About to join #{room}"
           join room
           @userrooms[room.upcase.to_sym] = []
         end
       end
-      
+      puts "About to validate args"
       # Validate List
       if ((@userrooms.keys.count < 2) or (@userrooms.keys.count > 3)) then
-        msg @querier, "Only 2 and 3 circle venns are supported.  Specify exactly two or three rooms."
+        automsg "Only 2 and 3 circle venns are supported.  Specify exactly two or three rooms."
         @userrooms = {}
       else
+        puts "about to send messages to #{@userrooms.keys}"
         @remaining_room_queries = @userrooms.keys
         @userrooms.keys.each { |room| raw "who #{room} %cu" }
       end
     end
+    puts "completed setup"
   end
   
   context :helper
   def _handle_354
-    @userrooms[@bot.mesg.params[1].upcase.to_sym] << @bot.mesg.params[2] if @bot.mesg.params[2] !~ /#{BOT_CONFIG[:bot_nick]}/i
+    @userrooms[@bot.mesg.params[1].upcase.to_sym] << @bot.mesg.params[2] if @bot.mesg.params[2] !~ /#{BOT_CONFIG[:bot_nick][0..8]}/i
   end
   
   def _handle_366
@@ -101,7 +106,7 @@ class Venn < PluginBase
       msg @querier, "http://chart.apis.google.com/chart?cht=v&chs=500x500&chd=t:#{data.join(",")}&chdl=#{labels}"
       msg @querier, "set intersection [#{intersection.join(", ")}]"
       msg @querier, "membership:"
-      @userrooms.each_pair { |room,members| msg @querier, "            #{room.to_s} has #{members.count}"}
+      @userrooms.each_pair { |room,members| msg @querier, "#{room.to_s} has #{members.count}"}
       @venning = false
     else
       puts "Still need to visit #{@remaining_room_queries.inspect}"
@@ -116,9 +121,9 @@ class Venn < PluginBase
     
     m = self.class.meth_wrap_proc(self.method(:_handle_366))
     @bot.on :"366", //, &m
-
+    
     m = self.class.meth_wrap_proc(self.method(:_handle_315))
     #Handle an end of query message
     @bot.on :"315", //, &m
-  end
+      end
 end
