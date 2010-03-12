@@ -121,6 +121,7 @@ describe ThreeSegmentNumericVersion, "behavior" do
   end
   
   it "should represent itself as a string" do
+    @tsnv.should_not equal "123.45.6"
     @tsnv.should respond_to :to_s
   end
   
