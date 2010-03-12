@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 
-# Guarantee Ruby 1.9.x
-exit(1) unless defined?(RUBY_VERSION) and RUBY_VERSION =~ /1\.9\.*/
+# includes for Ruby 1.8.x
+require 'lib/require_relative' if defined?(RUBY_VERSION) and RUBY_VERSION =~ /1\.8\.*/
 
 $system_root = __FILE__.sub(File.basename(__FILE__),"")
 
