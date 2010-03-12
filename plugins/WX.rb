@@ -9,7 +9,7 @@ class WX < PluginBase
     require 'base64'
     @wx_alerts = {}
     @wx_watch = []
-    @watcher_interval = 10
+    @watcher_interval = 600
     
     @mutex = Mutex.new
     
@@ -39,7 +39,7 @@ class WX < PluginBase
     end
     
   end
-  
+  # TODO: Persist watchers across sessions
   def watchers
     if (nick =~ /^#{BOT_CONFIG[:owner_nick]}$/i) then
       @wx_watch.each { |w| msg nick, w.join("::") }

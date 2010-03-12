@@ -38,3 +38,5 @@ require_relative 'lib/Core'
 #
 # Then invoke fortune like this:
 # !fortune
+
+# TODO: trap ^C (SIG_HUP) and require user to HUP again before terminaiton

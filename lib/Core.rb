@@ -60,7 +60,8 @@ class Core < PluginBase
       msg nick, n
     end
   end
-     
+  
+  # TODO: persist joins across sessions
   context :private
   def join
     args.split(" ").each do |room|
