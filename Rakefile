@@ -11,7 +11,11 @@ end
 
 task :default => :features
 Cucumber::Rake::Task.new(:features) do |t|
-  t.cucumber_opts = "features --format pretty -s "
+  if File.exist?("cucumber.yml") then
+    t.cucumber_opts = nil
+  else
+    t.cucumber_opts = "features --format pretty -s "
+  end
 end
 
 desc "Run all examples"
