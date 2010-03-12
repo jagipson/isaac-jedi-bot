@@ -291,7 +291,8 @@ describe PluginBase, "class instances and operations" do
   
   after(:all) do
     # perform cleanup or other tests might fail
-    Object.send(:remove_const, :PBC)
+    Object.send(:remove_const, :PBC) if RUBY_VERSION =~ /1\.8\.\d/
+    # Object.send(:remove_const, :PBC) if RUBY_VERSION =~ /1\.9\.\d/
     class PBC < PluginBase
     end
   end
