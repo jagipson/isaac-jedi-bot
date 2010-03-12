@@ -125,5 +125,12 @@ class Venn < PluginBase
     m = self.class.meth_wrap_proc(self.method(:_handle_315))
     #Handle an end of query message
     @bot.on :"315", //, &m
-      end
+  end
+  def unregister_commands
+    @bot.off :"354", //
+    @bot.off :"366", //
+    @bot.off :"315", //
+    
+    super
+  end
 end
