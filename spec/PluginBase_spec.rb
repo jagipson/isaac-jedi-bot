@@ -1,69 +1,4 @@
-require_relative '../lib/PluginBase.rb'
-
-describe PluginBase, "abstract class" do
-  
-  it "should raise if you instantiate it directly" do
-    lambda { pb = PluginBase.new }.should raise_exception(RuntimeError, "warning: PluginBase was instantiated directly")
-  end
-end
-
-describe PluginBase, "bare subclass, class methods and properties" do
-
-  # Create a subclass so PluginBase doesn't raise
-  class PBC < PluginBase
-  end
-
-  # Pertaining to its behaviour as a class (default behaviour):
-  it "should provide a default description" do
-    PBC.desc.should match /PBC is indescribable!/
-    class PBC < PluginBase
-      description         "new description"
-    end
-    PBC.desc.should match /new description/
-  end
-  
-  it "should not provide a default token" do
-    PBC.get_token.should be_nil
-  end
-  
-  it "should raise if setting a token that's nil" do
-    lambda { PBC.token nil }.should raise_error
-  end
-  
-  it "should raise if token is not unique" do
-    class Other < PluginBase
-      token :notunique
-    end
-    lambda { PBC.token :notunique }.should raise_error
-  end
-  
-  it "should raise if token !~/^[A-Za-z]+[A-Za-z0-9]*$/i" do
-    lambda { PBC.token :not_valid }.should raise_error
-  end
-    
-  it "should have a default_command_context of :auto" do
-    PBC.get_default_command_context.should == :auto
-  end
-  
-  
-  it "should have a default context of :auto" do
-    # Context isn't set until the first method is added, so we must add 
-    # a dummy method on PBC 
-    lambda {
-      class PBC < PluginBase
-        def useless_method
-          nil
-        end
-        throw @context
-      end
-    }.should throw_symbol :auto
-  end
-  
-  it "should return an array of #commands" do
-    PBC.commands.should be_kind_of(Array)
-  end
-  
-end
+require_relative '../lib/PluginBase'
 
 describe PluginBase, "class instances and operations" do
   
@@ -187,7 +122,7 @@ describe PluginBase, "class instances and operations" do
      # in commands[], with _any_ context
      PBC.commands.map{|cp| cp[0] }.should_not include(:initialize)
    end
-  
+
   it "should wrap each proc sent to @bot#on() in a uniform error handler" do
   # This might have said "it should not crash when there's a bug in a command"
     class PBC < PluginBase
@@ -201,7 +136,7 @@ describe PluginBase, "class instances and operations" do
     # Now call the buggy code after the wrapper is applied
     lambda { PBC.meth_wrap_proc(@pbc.method(:buggy_command)).call }.should_not raise_error
   end
-  
+
   #it "should register both :channel and :private events when context is :auto"
   #see "should call @bot#on() for each command when registering commands"
   
@@ -233,47 +168,16 @@ describe PluginBase, "class instances and operations" do
     @bot.should_receive(:off).once.with(:private, /^\s*!pbc5(.*)$/i)
     @pbc.method(:unregister_commands).call
   end
-  
-  it "should respond to #config with @bot.config" do
-    @bot.should_receive(:config)
-    @pbc.method(:config).call
+ 
+  test_response = [:config, :irc, :nick, :channel, :message, :user, :host, :error]
+
+  test_response.each do |symbol|
+    it "should respond to ##{symbol.to_s} with @bot.#{symbol.to_s}" do
+      @bot.should_receive(symbol)
+      @pbc.method(symbol).call
+    end
   end
-  
-  it "should respond to #irc with @bot.irc" do
-    @bot.should_receive(:irc)
-    @pbc.method(:irc).call
-  end
-  
-  it "should respond to #nick with @bot.nick" do
-    @bot.should_receive(:nick)
-    @pbc.method(:nick).call
-  end
-  
-  it "should respond to #channel with @bot.channel" do
-    @bot.should_receive(:channel)
-    @pbc.method(:channel).call
-  end
-  
-  it "should respond to #message with @bot.message" do
-    @bot.should_receive(:message)
-    @pbc.method(:message).call
-  end
-  
-  it "should respond to #user with @bot.user" do
-    @bot.should_receive(:user)
-    @pbc.method(:user).call
-  end
-  
-  it "should respond to #host with @bot.host" do
-    @bot.should_receive(:host)
-    @pbc.method(:host).call
-  end
-  
-  it "should respond to #error with @bot.error" do
-    @bot.should_receive(:error)
-    @pbc.method(:error).call
-  end
-  
+    
   it "should respond to #args with @bot.match[0]" do
     @bot.should_receive(:match).and_return(["pattern", "matches", "array"])
     @pbc.method(:args).call
@@ -326,36 +230,3 @@ describe PluginBase, "class instances and operations" do
   
 end
 
-describe PluginBase, "automsg" do
-  before(:each) do
-    # no matter what, I want a fresh class and instance for these tests
-    begin
-      Object.send(:remove_const, PBC)
-      # Huh?  Constants aren't as constant as you thought, eh?
-    rescue NameError
-      # Happens when undefining a nonexistant constant, like the first time
-      #the test is run
-    ensure
-      # Create a subclass so PluginBase doesn't raise
-      class PBC < PluginBase
-      end
-      
-      @bot = mock('bot')
-      @pbc = PBC.new(@bot)
-    end
-  end
-  
-  # Automsg features
-  it "should call msg :channel if channel is not nil" do
-    @bot.should_receive(:channel).twice.and_return("#Braincloud")
-    @bot.should_receive(:msg).with("#Braincloud", "message")
-    @pbc.method(:automsg).call("message")
-  end
-  
-  it "should call msg :nick if channel is nil" do
-    @bot.should_receive(:nick).and_return("bob")
-    @bot.should_receive(:channel).and_return(nil)
-    @bot.should_receive(:msg).with("bob", "message")
-    @pbc.method(:automsg).call("message")
-  end
-end
