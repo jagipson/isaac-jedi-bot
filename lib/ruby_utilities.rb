@@ -1,5 +1,4 @@
 # Utility methods for Ruby Environment validation
-
 class ThreeSegmentNumericVersion
   include Comparable
   

@@ -1,10 +1,11 @@
+require 'lib/R1.8-Kernel_extension' if defined?(RUBY_VERSION) and RUBY_VERSION =~ /1\.8\.*/
 require_relative '../lib/PluginBase'
 
 describe PluginBase, "automsg" do
   before(:each) do
     # no matter what, I want a fresh class and instance for these tests
     begin
-      Object.send(:remove_const, PBC)
+      Object.send(:remove_const, :PBC)
       # Huh?  Constants aren't as constant as you thought, eh?
     rescue NameError
       # Happens when undefining a nonexistant constant, like the first time

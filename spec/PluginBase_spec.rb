@@ -1,3 +1,5 @@
+require 'lib/R1.8-Kernel_extension' if defined?(RUBY_VERSION) and RUBY_VERSION =~ /1\.8\.*/
+require 'lib/R1.8-Array_extension' if defined?(RUBY_VERSION) and RUBY_VERSION =~ /1\.8\.*/
 require_relative '../lib/PluginBase'
 
 describe PluginBase, "class instances and operations" do
@@ -5,7 +7,7 @@ describe PluginBase, "class instances and operations" do
   before(:each) do
     # no matter what, I want a fresh class and instance for these tests
     begin
-      Object.send(:remove_const, PBC)
+      Object.send(:remove_const, :PBC)
       # Huh?  Constants aren't as constant as you thought, eh?
     rescue NameError
       # Happens when undefining a nonexistant constant, like the first time
@@ -120,7 +122,7 @@ describe PluginBase, "class instances and operations" do
 
      # Factoring out just method names to here: these methods should not appear
      # in commands[], with _any_ context
-     PBC.commands.map{|cp| cp[0] }.should_not include(:initialize)
+     PBC.commands.map{ |cp| cp[0] }.should_not include(:initialize)
    end
 
   it "should wrap each proc sent to @bot#on() in a uniform error handler" do

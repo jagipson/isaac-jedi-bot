@@ -103,7 +103,7 @@ class WX < PluginBase
   end
   
   def bulletin
-    mutex.synchronize do
+    @mutex.synchronize do
       arg = args
       url_arg = URI.escape(arg.to_s.chomp.strip)
       @wx_alerts[arg.to_sym] ||= Wunderground::WXAlert.new("http://api.wunderground.com/auto/wui/geo/AlertsXML/index.txt?query=#{url_arg}")

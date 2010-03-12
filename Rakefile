@@ -27,7 +27,7 @@ desc "Run all examples with RCov"
 Spec::Rake::SpecTask.new('examples_with_rcov') do |t|
   t.spec_files = FileList['spec/**/*.rb']
   t.rcov = true
-  t.rcov_opts = ['--exclude', 'spec']
+  t.rcov_opts = ['--exclude', 'spec', '--exclude', '.rvm/']
 end
 
 desc "Run features and examples"
@@ -75,7 +75,7 @@ task :TODO do
   file "TODO" do
     # remove old TODO file
     todo_file = Dir['TODO']
-    rm(todo_file, verbose:true) unless todo_file.empty?
+    rm(todo_file, verbose => true) unless todo_file.empty?
 
     main_file_heading = "TODO Generated on #{Time.now} by #{ENV["USER"]}"
 
