@@ -75,7 +75,7 @@ task :TODO do
   file "TODO" do
     # remove old TODO file
     todo_file = Dir['TODO']
-    rm(todo_file, verbose:true) unless todo_file.empty?
+    rm(todo_file, verbose => true) unless todo_file.empty?
 
     main_file_heading = "TODO Generated on #{Time.now} by #{ENV["USER"]}"
 

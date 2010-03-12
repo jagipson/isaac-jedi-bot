@@ -2,7 +2,7 @@
 # encoding: utf-8
 
 # includes for Ruby 1.8.x
-require 'lib/require_relative' if defined?(RUBY_VERSION) and RUBY_VERSION =~ /1\.8\.*/
+require 'lib/R1.8-Kernel_extension' if defined?(RUBY_VERSION) and RUBY_VERSION =~ /1\.8\.*/
 
 $system_root = __FILE__.sub(File.basename(__FILE__),"")
 

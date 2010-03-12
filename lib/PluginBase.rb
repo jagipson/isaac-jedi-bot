@@ -448,9 +448,9 @@ class PluginBase
   def self.method_added(method)
     # Maintain a list of added methods and their context
     @context ||= :auto
-    (@commands ||= []) << [method, (@context)] unless @context == :helper or 
-                                                      method =~ /^_/ or
-                                                      method =~ /initialize/
+    (@commands ||= []) << [method.to_sym, (@context)] unless @context == :helper or 
+                                                      method.to_s =~ /^_/ or
+                                                      method.to_s =~ /initialize/
   end
   
   #
