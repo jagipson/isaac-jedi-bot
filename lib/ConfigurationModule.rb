@@ -1,6 +1,8 @@
 require 'yaml'
 # Read the configuration file
 DEFAULT_CONF = 'jedbotcnf.yaml'
+# TODO: Refactor The configuration module into a Class.
+# TODO: Make the config class auto-save data when changed.
 def configuration_from_file(config_file=DEFAULT_CONF)
   
   fatal_errors_occured = false

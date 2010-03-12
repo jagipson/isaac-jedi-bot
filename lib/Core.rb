@@ -120,7 +120,7 @@ class Core < PluginBase
       end
     end
   end
-  # TODO: Plugins are not getting unloaded properly, that is, some info remains and reloads don't reload the new code
+  # TODO: Plugins are not getting unloaded properly, that is, some info remains and reloads don't reload the new code.  Need to UNDEFINE classes as they are unloaded
   def unload_plugin
     @plugins ||= {}
     args.split(" ").each do |plugin|

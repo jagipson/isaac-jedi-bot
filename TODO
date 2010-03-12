@@ -1,7 +1,11 @@
-TODO Generated on 2010-03-11 09:52:27 -0600 by jubesz
+TODO Generated on 2010-03-12 09:38:55 -0600 by jubesz
+
+TODO in lib/ConfigurationModule.rb
+003: Refactor The configuration module into a Class.
+004: Make the config class auto-save data when changed.
 
 TODO in lib/Core.rb
-122: Plugins are not getting unloaded properly, that is, some info remains and reloads don't reload the new code
+122: Plugins are not getting unloaded properly, that is, some info remains and reloads don't reload the new code.  Need to UNDEFINE classes as they are unloaded
 
 TODO in lib/PluginBase.rb
 237: Once tests written, use inherited() hook to initialize token to self.class.to_s.downcase; a sensible default
@@ -10,5 +14,5 @@ TODO in plugins/Banter.rb
 005: Test if fortune command exists, and unload self if it doesn't
 
 TODO in spec/PluginBase_spec.rb
-114: Refactor this test. This test is testing for too many things
-208: Refactor this test. This test is testing for too many things
+049: Refactor this test. This test is testing for too many things
+143: Refactor this test. This test is testing for too many things
