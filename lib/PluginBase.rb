@@ -235,9 +235,9 @@ class PluginBase
     @token = self.validate_token(tok)
     @@global_tokens_catalog[@token] = self
   end
-  # TODO: Once tests written, use inherited() hook to initialize token to self.class.to_s.downcase; a sensible default
+  #use self.class.to_s.downcase as a sensible default
   def self.get_token
-    @token
+    @token ||= self.name.downcase.to_sym
   end
   
   # declare the default default_command as help, in case the subclass forgot to.

@@ -23,8 +23,8 @@ describe PluginBase, "bare subclass, class methods and properties" do
     PBC.desc.should match /new description/
   end
   
-  it "should not provide a default token" do
-    PBC.get_token.should be_nil
+  it "should provide a default token == class name" do
+    PBC.get_token.should == PBC.name.downcase.to_sym
   end
   
   it "should raise if setting a token that's nil" do

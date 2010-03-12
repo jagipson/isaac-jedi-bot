@@ -1,4 +1,4 @@
-TODO Generated on Fri Mar 12 15:44:10 -0600 2010 by jubesz
+TODO Generated on 2010-03-12 16:43:26 -0600 by jubesz
 
 TODO in lib/ConfigurationModule.rb
 003: Refactor The configuration module into a Class.
@@ -7,9 +7,6 @@ TODO in lib/ConfigurationModule.rb
 TODO in lib/Core.rb
 063: persist joins across sessions
 123: Plugins are not getting unloaded properly, that is, some info remains and reloads don't reload the new code.  Need to UNDEFINE classes as they are unloaded
-
-TODO in lib/PluginBase.rb
-237: Once tests written, use inherited() hook to initialize token to self.class.to_s.downcase; a sensible default
 
 TODO in plugins/Banter.rb
 005: Test if fortune command exists, and unload self if it doesn't
