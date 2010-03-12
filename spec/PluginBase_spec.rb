@@ -169,9 +169,9 @@ describe PluginBase, "class instances and operations" do
     @pbc.method(:unregister_commands).call
   end
  
-  test_response = [:config, :irc, :nick, :channel, :message, :user, :host, :error]
+  test_receives = [:config, :irc, :nick, :channel, :message, :user, :host, :error]
 
-  test_response.each do |symbol|
+  test_receives.each do |symbol|
     it "should respond to ##{symbol.to_s} with @bot.#{symbol.to_s}" do
       @bot.should_receive(symbol)
       @pbc.method(symbol).call
@@ -193,40 +193,33 @@ describe PluginBase, "class instances and operations" do
     @pbc.method(:raw).call("Raw server text")
   end
   
-  it "should call @bot.quit when #quit is called" do
-    @bot.should_receive(:quit)
-    @pbc.method(:quit).call("message")
+  test_receives_with_message = [:quit, :join, :part]
+  test_receives_with_message.each do |symbol|
+    it "should call @bot.#{symbol.to_s} when #{symbol.to_s} is called" do
+      @bot.should_receive(symbol)
+      @pbc.method(symbol).call("message")
+    end
   end
-  
-  it "should call @bot.join when #join is called" do
-    @bot.should_receive(:join)
-    @pbc.method(:join).call("message")
-  end
-  
-  it "should call @bot.part when #part is called" do
-    @bot.should_receive(:part)
-    @pbc.method(:part).call("message")
-  end
-  
+
   it "should call @bot.msg when #msg is called" do
     @bot.should_receive(:msg)
     @pbc.method(:msg).call("dest", "message")
   end
-  
+
   it "should call @bot.action when #action is called" do
     @bot.should_receive(:action)
     @pbc.method(:action).call("action", "jackson")
   end
-  
+
   it "should call @bot.topic when #topic is called" do
     @bot.should_receive(:topic)
     @pbc.method(:topic).call("room", "topic")
   end
-  
+
   it "should call @bot.mode when #mode is called" do
     @bot.should_receive(:mode)
     @pbc.method(:mode).call("room", "mode")
   end
-  
+
 end
 
