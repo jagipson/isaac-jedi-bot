@@ -293,8 +293,8 @@ class PluginBase
       begin
         m.call
       rescue Exception => e
-        puts "An error occured:#{e.message}\n#{e.backtrace.join("\n")}"
-        puts "resuming..."
+        warn "An error occured:#{e.message}\n#{e.backtrace.join("\n")}"
+        warn "resuming..."
       end
     end
   end  
@@ -323,7 +323,7 @@ class PluginBase
     # Register defined commands
     self.class.commands.each do |command|
       meth, context = command
-      puts "Registering #{meth} for #{self.class.name} for event #{context}"
+      warn "Registering #{meth} for #{self.class.name} for event #{context}"
     
       # This allows 'auto' for commands to work in channel and private
       if context == :auto
@@ -360,7 +360,7 @@ class PluginBase
     # Register defined commands
     self.class.commands.each do |command|
       meth, context = command
-      puts "Unregistering #{meth} for #{self.class.name} for event #{context}"
+      warn "Unregistering #{meth} for #{self.class.name} for event #{context}"
       
       # This allows 'auto' for commands to work in channel and private
       if context == :auto

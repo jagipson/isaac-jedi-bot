@@ -5,3 +5,4 @@ TestPlug.rb
 html/
 *.html
 coverage/
+stderr.out

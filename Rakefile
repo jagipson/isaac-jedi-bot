@@ -4,6 +4,8 @@ require 'cucumber/rake/task'
 require 'rake'
 require 'spec/rake/spectask'
 
+$stderr.reopen("stderr.out", "w")
+
 Rake::RDocTask.new do |rd|
   rd.main = "README"
   rd.rdoc_files.include("README", "lib/**/*.rb")
