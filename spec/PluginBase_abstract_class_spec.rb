@@ -46,6 +46,10 @@ describe PluginBase, "bare subclass, class methods and properties" do
     PBC.get_default_command_context.should == :auto
   end
   
+  it "should allow setting of default_command_context" do
+    PBC.default_command_context :private
+    PBC.get_default_command_context.should == :private
+  end  
   
   it "should have a default context of :auto" do
     # Context isn't set until the first method is added, so we must add 

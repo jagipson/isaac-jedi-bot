@@ -49,7 +49,6 @@ describe PluginBase, "class instances and operations" do
   end
   
   it "should call @bot#on() for each command when registering commands" do
-   # TODO: Refactor this test. This test is testing for too many things
     class PBC < PluginBase
       # commands take the form of methods defined in the class
       token :pbc1
@@ -72,7 +71,17 @@ describe PluginBase, "class instances and operations" do
     @bot.should_receive(:on).once.with(:channel, /^\s*!pbc1(.*)$/i)
     @bot.should_receive(:on).once.with(:private, /^\s*!pbc1(.*)$/i)
     @pbc.method(:register_commands).call
-         
+  end
+  # That's great, but what if the user specified a default_command_context?
+  
+  it "should use the user-supplied default_command_context" do
+    class PBC < PluginBase
+      token :pbc1a
+      default_command_context   :private
+    end
+    @bot.should_not_receive(:on).with(:channel, /^\s*!pbc1a(.*)$/i)
+    @bot.should_receive(:on).once.with(:private, /^\s*!pbc1a(.*)$/i)
+    @pbc.method(:register_commands).call
   end
   
   it "should add any method defined in subclass to #commands[] unless " \
@@ -143,7 +152,6 @@ describe PluginBase, "class instances and operations" do
   #see "should call @bot#on() for each command when registering commands"
   
   it "should call @bot#off() for each command when unregistering commands" do
-   # TODO: Refactor this test. This test is testing for too many things
     class PBC < PluginBase
       # commands take the form of methods defined in the class
       token :pbc5
@@ -168,6 +176,16 @@ describe PluginBase, "class instances and operations" do
     # Also Bot will register a default command
     @bot.should_receive(:off).once.with(:channel, /^\s*!pbc5(.*)$/i)
     @bot.should_receive(:off).once.with(:private, /^\s*!pbc5(.*)$/i)
+    @pbc.method(:unregister_commands).call
+  end
+  
+  it "should run off with the user-supplied default_command_context" do
+    class PBC < PluginBase
+      token :pbc5a
+      default_command_context   :private
+    end
+    @bot.should_not_receive(:off).with(:channel, /^\s*!pbc5a(.*)$/i)
+    @bot.should_receive(:off).once.with(:private, /^\s*!pbc5a(.*)$/i)
     @pbc.method(:unregister_commands).call
   end
  
@@ -223,5 +241,59 @@ describe PluginBase, "class instances and operations" do
     @pbc.method(:mode).call("room", "mode")
   end
 
+  it "should return self when initialized" do
+    @pbc = PBC.new(@bot)
+    @pbc.should be_a_kind_of(PluginBase)
+  end
+  
+  it "should show publicly available commands in public (default help)" do
+    class PBC < PluginBase
+      # commands take the form of methods defined in the class
+      token :pbc6
+      context :channel
+      def uno
+      end
+      context :private
+      def dos
+      end
+      context :auto
+      def tres
+      end
+    end
+    @bot.should_receive(:on).with(any_args()).any_number_of_times
+    @pbc.method(:register_commands).call
+    @bot.should_receive(:channel).any_number_of_times.and_return("#braincloud")
+    @bot.should_receive(:msg).with("#braincloud", "!pbc6 (uno|tres)")
+    @pbc.help
+  end
+  
+  it "should show privately available commands in priv (default help)" do
+    class PBC < PluginBase
+      # commands take the form of methods defined in the class
+      token :pbc7
+      context :channel
+      def uno
+      end
+      context :private
+      def dos
+      end
+      context :auto
+      def tres
+      end
+    end
+    @bot.should_receive(:on).with(any_args()).any_number_of_times
+    @pbc.method(:register_commands).call
+    @bot.should_receive(:channel).any_number_of_times.and_return(nil)
+    @bot.should_receive(:nick).any_number_of_times.and_return("bob")
+    @bot.should_receive(:msg).with("bob", "!pbc7 (dos|tres)")
+    @pbc.help
+  end
+  
+  after(:all) do
+    # perform cleanup or other tests might fail
+    Object.send(:remove_const, :PBC)
+    class PBC < PluginBase
+    end
+  end
 end
 

@@ -1,4 +1,4 @@
-TODO Generated on 2010-03-12 09:38:55 -0600 by jubesz
+TODO Generated on Fri Mar 12 15:17:32 -0600 2010 by jubesz
 
 TODO in lib/ConfigurationModule.rb
 003: Refactor The configuration module into a Class.
@@ -12,7 +12,3 @@ TODO in lib/PluginBase.rb
 
 TODO in plugins/Banter.rb
 005: Test if fortune command exists, and unload self if it doesn't
-
-TODO in spec/PluginBase_spec.rb
-049: Refactor this test. This test is testing for too many things
-143: Refactor this test. This test is testing for too many things
