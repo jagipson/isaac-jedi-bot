@@ -22,6 +22,7 @@ end
 
 desc "Run all examples"
 Spec::Rake::SpecTask.new('examples') do |t|
+  t.spec_opts = ['--format' , 'nested' ]
   t.spec_files = FileList['spec/**/*.rb']
 end
 
