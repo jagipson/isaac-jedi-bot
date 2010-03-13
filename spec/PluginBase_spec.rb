@@ -293,7 +293,7 @@ describe PluginBase, "class instances and operations" do
     @bot.should_receive(:channel).exactly(2).times.and_return(nil)
     @bot.should_receive(:nick).exactly(1).times.and_return("bob")
     @bot.should_receive(:msg).with("bob", "!pbc7 (dos|tres)").and_return(nil)
-    @pbc.help.should be nil  # REALLY???
+    @pbc.help.should be nil
   end
 
   after(:all) do

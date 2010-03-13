@@ -16,13 +16,13 @@ Cucumber::Rake::Task.new(:features) do |t|
   if File.exist?("cucumber.yml") then
     t.cucumber_opts = nil
   else
-    t.cucumber_opts = "features --format pretty -s "
+    t.cucumber_opts = "-fprogress features "
   end
 end
 
 desc "Run all examples"
 Spec::Rake::SpecTask.new('examples') do |t|
-  t.spec_opts = ['--format' , 'nested' ]
+  t.spec_opts = ['--format' , 'p' ]
   t.spec_files = FileList['spec/**/*.rb']
 end
 
