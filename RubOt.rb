@@ -25,7 +25,8 @@ on :connect do
   if (BOT_CONFIG[:nickserv_secret] and BOT_CONFIG[:nickserv_secret] != "") then
     msg "NickServ", "IDENTIFY #{BOT_CONFIG[:bot_nick]} #{BOT_CONFIG[:nickserv_secret]}" 
   end
-  puts "Connected."
+  msg BOT_CONFIG[:owner_nick], "New RuBot instance connected as #{BOT_CONFIG[:bot_nick]}"
+  warn "Connected."
 end
 
 require_relative 'lib/Core'
