@@ -88,59 +88,59 @@ describe PluginBase, "class instances and operations" do
     # It should also return the proper channel to associate the command with.
     @pbc.method(:register_commands).call.should == [:private]
   end
-  
-  it "should add any method defined in subclass to #commands[] unless \
-     the method begins with underscore or the context is :helper" do
-       # I don't like this test, it's too TDDy and not BDDy enough.  Help?!
-       class PBC < PluginBase
-         # commands take the form of methods defined in the class
-         token :pbc2
-         context :channel
-         def uno
-         end
-         context :helper
-         def dos
-         end
-         context :auto
-         def _tres
-         end
-         def quatro
-         end
-       end
+
+  it "should add any method defined in subclass to #commands[] unless\
+ the method begins with underscore or the context is :helper" do
+    # I don't like this test, it's too TDDy and not BDDy enough.  Help?!
+    class PBC < PluginBase
+      # commands take the form of methods defined in the class
+      token :pbc2
+      context :channel
+      def uno
+      end
+      context :helper
+      def dos
+      end
+      context :auto
+      def _tres
+      end
+      def quatro
+      end
+    end
     @bot.should_receive(:on).with(any_args()).any_number_of_times
     @pbc.method(:register_commands).call
-    
+
     # test for :uno and :quatro in their proper contexts
     PBC.commands.should include([:uno, :channel], [:quatro, :auto])
-    
+
     # Factoring out just method names to here: these methods should not appear
     # in commands[], with _any_ context
     PBC.commands.map{|cp| cp[0] }.should_not include(:_tres, :dos)
-  end
-  
+ end
+
   it "should never register initialize as a command, " \
      "even if context is not :helper"  do
-        class PBC < PluginBase
-          # commands take the form of methods defined in the class
-          token :pbc3
-          
-          # Let's try to expose initialize as a command...
-          public
-          context :auto
-          def initialize
-          end
-        end
-        
-     @bot.should_receive(:on).with(any_args()).exactly(2).times
-     @pbc.method(:register_commands).call.should  == [:channel, :private]
+    class PBC < PluginBase
+      # commands take the form of methods defined in the class
+      token :pbc3
 
-     # Factoring out just method names to here: these methods should not appear
-     # in commands[], with _any_ context
-     PBC.commands.map{ |cp| cp[0] }.should_not include(:initialize)
-   end
+      # Let's try to expose initialize as a command...
+      public
+      context :auto
+      def initialize
+      end
+    end
+
+    @bot.should_receive(:on).with(any_args()).exactly(2).times
+    @pbc.method(:register_commands).call.should  == [:channel, :private]
+
+    # Factoring out just method names to here: these methods should not appear
+    # in commands[], with _any_ context
+    PBC.commands.map{ |cp| cp[0] }.should_not include(:initialize)
+     end
 
   it "should wrap each proc sent to @bot#on() in a uniform error handler" do
-  # This might have said "it should not crash when there's a bug in a command"
+    # This might have said "it should not crash when there's a bug in a command"
     class PBC < PluginBase
       token :pbc4
       context :auto
@@ -148,19 +148,19 @@ describe PluginBase, "class instances and operations" do
         lambda {raise "Oops!  There's a runtime error in here" }
       end
     end
-    
+
     # Now call the buggy code after the wrapper is applied
     lambda { PBC.meth_wrap_proc(@pbc.method(:buggy_command)).call }.should_not raise_error
   end
 
   #it "should register both :channel and :private events when context is :auto"
   #see "should call @bot#on() for each command when registering commands"
-  
+
   it "should call @bot#off() for each command when unregistering commands" do
     class PBC < PluginBase
       # commands take the form of methods defined in the class
       token :pbc5
-      
+
       context :channel
       def uno
       end
@@ -171,10 +171,10 @@ describe PluginBase, "class instances and operations" do
       def tres
       end
     end
-# TODO continue from here.
+    # TODO continue from here.
     @bot.should_receive(:on).with(any_args()).exactly(6).times
     @pbc.method(:register_commands).call
-    
+
     @bot.should_receive(:off).once.with(:channel, /^\s*!pbc5\s+uno\s?(.*)$/i)
     @bot.should_receive(:off).once.with(:private, /^\s*!pbc5\s+dos\s?(.*)$/i)
     @bot.should_receive(:off).once.with(:channel, /^\s*!pbc5\s+tres\s?(.*)$/i)
@@ -185,7 +185,7 @@ describe PluginBase, "class instances and operations" do
     #We are making sure that the methods are unregistered
     @pbc.method(:unregister_commands).call.methods == [] 
   end
-  
+
   it "should run off with the user-supplied default_command_context" do
     class PBC < PluginBase
       token :pbc5a
@@ -195,7 +195,7 @@ describe PluginBase, "class instances and operations" do
     @bot.should_receive(:off).once.with(:private, /^\s*!pbc5a(.*)$/i)
     @pbc.method(:unregister_commands).call.methods == [] 
   end
- 
+
   test_receives = [:config, :irc, :nick, :channel, :message, :user, :host, :error]
 
   test_receives.each do |symbol|
@@ -204,22 +204,22 @@ describe PluginBase, "class instances and operations" do
       @pbc.method(symbol).call
     end
   end
-    
+
   it "should respond to #args with @bot.match[0]" do
     @bot.should_receive(:match).and_return(["pattern", "matches", "array"])
     @pbc.method(:args).call
   end
-  
+
   it "should call @bot.kick when #kick is called" do
     @bot.should_receive(:kick)
     @pbc.method(:kick).call("#channel", "user")
   end
-  
+
   it "should call @bot.raw when #raw is called" do
     @bot.should_receive(:raw)
     @pbc.method(:raw).call("Raw server text")
   end
-  
+
   test_receives_with_message = [:quit, :join, :part]
   test_receives_with_message.each do |symbol|
     it "should call @bot.#{symbol.to_s} when #{symbol.to_s} is called" do
@@ -252,7 +252,7 @@ describe PluginBase, "class instances and operations" do
     @pbc = PBC.new(@bot)
     @pbc.should be_a_kind_of(PluginBase)
   end
-  
+
   it "should show publicly available commands in public (default help)" do
     class PBC < PluginBase
       # commands take the form of methods defined in the class
@@ -273,7 +273,7 @@ describe PluginBase, "class instances and operations" do
     @bot.should_receive(:msg).with("#braincloud", "!pbc6 (uno|tres)")
     @pbc.help
   end
-  
+
   it "should show privately available commands in priv (default help)" do
     class PBC < PluginBase
       # commands take the form of methods defined in the class
@@ -295,13 +295,13 @@ describe PluginBase, "class instances and operations" do
     @bot.should_receive(:msg).with("bob", "!pbc7 (dos|tres)").and_return(nil)
     @pbc.help.should be nil  # REALLY???
   end
-  
+
   after(:all) do
     # perform cleanup or other tests might fail
     Object.send(:remove_const, :PBC) if RUBY_VERSION =~ /1\.8\.\d/
-    # Object.send(:remove_const, :PBC) if RUBY_VERSION =~ /1\.9\.\d/
-    class PBC < PluginBase
-    end
+      # Object.send(:remove_const, :PBC) if RUBY_VERSION =~ /1\.9\.\d/
+      class PBC < PluginBase
+      end
   end
 end
 
