@@ -13,10 +13,11 @@ describe PluginBase, "bare subclass, class methods and properties" do
   # Create a subclass so PluginBase doesn't raise
   class PBC < PluginBase
   end
-
+  
+  # These are describing class methods
   # Pertaining to its behaviour as a class (default behaviour):
   it "should provide a default description" do
-    PBC.desc.should match /PBC is indescribable!/
+    PBC.desc.should be_a(String)
     class PBC < PluginBase
       description         "new description"
     end
@@ -24,7 +25,7 @@ describe PluginBase, "bare subclass, class methods and properties" do
   end
   
   it "should provide a default token == class name" do
-    PBC.get_token.should == PBC.name.downcase.to_sym
+    PBC.get_token.should be PBC.name.downcase.to_sym
   end
   
   it "should raise if setting a token that's nil" do
@@ -43,29 +44,31 @@ describe PluginBase, "bare subclass, class methods and properties" do
   end
     
   it "should have a default_command_context of :auto" do
-    PBC.get_default_command_context.should == :auto
+    PBC.get_default_command_context.should be :auto
   end
   
   it "should allow setting of default_command_context" do
     PBC.default_command_context :private
-    PBC.get_default_command_context.should == :private
+    PBC.get_default_command_context.should be :private
   end  
   
   it "should have a default context of :auto" do
     # Context isn't set until the first method is added, so we must add 
-    # a dummy method on PBC 
+    # a dummy method on PBC (or functionally, we should decide on a default
+    # method on PBC, perhaps a default help
     lambda {
       class PBC < PluginBase
         def useless_method
           nil
         end
-        throw @context
+        # TODO where did this instance variable come from?
+        throw @context 
       end
     }.should throw_symbol :auto
   end
   
   it "should return an array of #commands" do
-    PBC.commands.should be_kind_of(Array)
+    PBC.commands.should == [[:useless_method, :auto]]
   end
   
 end
