@@ -131,7 +131,7 @@ describe PluginBase, "class instances and operations" do
           end
         end
         
-     @bot.should_receive(:on).with(any_args()).any_number_of_times
+     @bot.should_receive(:on).with(any_args()).exactly(2).times
      @pbc.method(:register_commands).call.should  == [:channel, :private]
 
      # Factoring out just method names to here: these methods should not appear
@@ -172,7 +172,7 @@ describe PluginBase, "class instances and operations" do
       end
     end
 # TODO continue from here.
-    @bot.should_receive(:on).with(any_args()).any_number_of_times
+    @bot.should_receive(:on).with(any_args()).exactly(6).times
     @pbc.method(:register_commands).call
     
     @bot.should_receive(:off).once.with(:channel, /^\s*!pbc5\s+uno\s?(.*)$/i)
@@ -267,9 +267,9 @@ describe PluginBase, "class instances and operations" do
       def tres
       end
     end
-    @bot.should_receive(:on).with(any_args()).any_number_of_times
+    @bot.should_receive(:on).with(any_args()).exactly(6).times
     @pbc.method(:register_commands).call
-    @bot.should_receive(:channel).any_number_of_times.and_return("#braincloud")
+    @bot.should_receive(:channel).exactly(3).times.and_return("#braincloud")
     @bot.should_receive(:msg).with("#braincloud", "!pbc6 (uno|tres)")
     @pbc.help
   end
@@ -288,12 +288,12 @@ describe PluginBase, "class instances and operations" do
       def tres
       end
     end
-    @bot.should_receive(:on).with(any_args()).any_number_of_times
+    @bot.should_receive(:on).with(any_args()).exactly(6).times
     @pbc.method(:register_commands).call
-    @bot.should_receive(:channel).any_number_of_times.and_return(nil)
-    @bot.should_receive(:nick).any_number_of_times.and_return("bob")
-    @bot.should_receive(:msg).with("bob", "!pbc7 (dos|tres)")
-    @pbc.help
+    @bot.should_receive(:channel).exactly(2).times.and_return(nil)
+    @bot.should_receive(:nick).exactly(1).times.and_return("bob")
+    @bot.should_receive(:msg).with("bob", "!pbc7 (dos|tres)").and_return(nil)
+    @pbc.help.should be nil  # REALLY???
   end
   
   after(:all) do
