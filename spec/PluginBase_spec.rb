@@ -21,6 +21,10 @@ describe PluginBase, "class instances and operations" do
       @pbc = PBC.new(@bot)
     end
   end
+
+  it "should send a private message to the Bot owner when it connects" do
+   pending("Hello, Honey, I'm Home!") 
+  end
   
   it "should have a default_command of 'help'" do
     @pbc.should respond_to :help
@@ -81,11 +85,12 @@ describe PluginBase, "class instances and operations" do
     end
     @bot.should_not_receive(:on).with(:channel, /^\s*!pbc1a(.*)$/i)
     @bot.should_receive(:on).once.with(:private, /^\s*!pbc1a(.*)$/i)
-    @pbc.method(:register_commands).call
+    # It should also return the proper channel to associate the command with.
+    @pbc.method(:register_commands).call.should == [:private]
   end
   
-  it "should add any method defined in subclass to #commands[] unless " \
-     "the method begins with underscore or the context is :helper" do
+  it "should add any method defined in subclass to #commands[] unless \
+     the method begins with underscore or the context is :helper" do
        # I don't like this test, it's too TDDy and not BDDy enough.  Help?!
        class PBC < PluginBase
          # commands take the form of methods defined in the class
@@ -127,7 +132,7 @@ describe PluginBase, "class instances and operations" do
         end
         
      @bot.should_receive(:on).with(any_args()).any_number_of_times
-     @pbc.method(:register_commands).call
+     @pbc.method(:register_commands).call.should  == [:channel, :private]
 
      # Factoring out just method names to here: these methods should not appear
      # in commands[], with _any_ context
@@ -140,7 +145,7 @@ describe PluginBase, "class instances and operations" do
       token :pbc4
       context :auto
       def buggy_command
-        raise "Oops!  There's a runtime error in here"
+        lambda {raise "Oops!  There's a runtime error in here" }
       end
     end
     
@@ -166,6 +171,7 @@ describe PluginBase, "class instances and operations" do
       def tres
       end
     end
+# TODO continue from here.
     @bot.should_receive(:on).with(any_args()).any_number_of_times
     @pbc.method(:register_commands).call
     
@@ -176,7 +182,8 @@ describe PluginBase, "class instances and operations" do
     # Also Bot will register a default command
     @bot.should_receive(:off).once.with(:channel, /^\s*!pbc5(.*)$/i)
     @bot.should_receive(:off).once.with(:private, /^\s*!pbc5(.*)$/i)
-    @pbc.method(:unregister_commands).call
+    #We are making sure that the methods are unregistered
+    @pbc.method(:unregister_commands).call.methods == [] 
   end
   
   it "should run off with the user-supplied default_command_context" do
@@ -186,7 +193,7 @@ describe PluginBase, "class instances and operations" do
     end
     @bot.should_not_receive(:off).with(:channel, /^\s*!pbc5a(.*)$/i)
     @bot.should_receive(:off).once.with(:private, /^\s*!pbc5a(.*)$/i)
-    @pbc.method(:unregister_commands).call
+    @pbc.method(:unregister_commands).call.methods == [] 
   end
  
   test_receives = [:config, :irc, :nick, :channel, :message, :user, :host, :error]

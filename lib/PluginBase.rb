@@ -383,7 +383,7 @@ class PluginBase
       @bot.off(c.to_sym, /^\s*!#{self.class.get_token.to_s}(.*)$/i)
     end
     # Unregister Token
-    @@global_tokens_catalog.delete(self.class.get_token)
+     @@global_tokens_catalog.delete(self.class.get_token)
   end
   
   protected
