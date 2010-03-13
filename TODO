@@ -1,4 +1,4 @@
-TODO Generated on Sat Mar 13 09:02:18 -0600 2010 by jubesz
+TODO Generated on Sat Mar 13 16:46:37 -0600 2010 by jubesz
 
 TODO in lib/ConfigurationModule.rb
 003: Refactor The configuration module into a Class.
@@ -17,9 +17,6 @@ TODO in plugins/Banter.rb
 
 TODO in plugins/WX.rb
 041: Persist watchers across sessions
-
-TODO in RubOt.rb
-042: trap ^C (SIG_HUP) and require user to HUP again before terminaiton
 
 TODO in spec/PluginBase_spec.rb
 085: now requests that we decide what register_commands
