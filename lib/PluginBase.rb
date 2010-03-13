@@ -316,6 +316,8 @@ class PluginBase
   # for you by the Core plugin when you issue a <tt>!do load_plugin ...</tt> command
   # so, unless you are writing a plugin that manages other plugins, you don't need
   # to run this directly.
+  #--
+  #TODO: decide a reasonable return value for this method 
   def register_commands
     #first revalidate Class for good token, to ensure it was set
     self.class.validate_token self.class.get_token
@@ -356,6 +358,8 @@ class PluginBase
   # for you by the Core plugin when you issue a <tt>!do unload_plugin ...</tt> command
   # so, unless you are writing a plugin that manages other plugins, you don't need
   # to run this directly.
+  #--
+  #TODO: decide a reasonable return value for this method
   def unregister_commands
     # Register defined commands
     self.class.commands.each do |command|

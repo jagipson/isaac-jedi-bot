@@ -21,10 +21,6 @@ describe PluginBase, "class instances and operations" do
       @pbc = PBC.new(@bot)
     end
   end
-
-  it "should send a private message to the Bot owner when it connects" do
-   pending("Hello, Honey, I'm Home!") 
-  end
   
   it "should have a default_command of 'help'" do
     @pbc.should respond_to :help
@@ -49,7 +45,8 @@ describe PluginBase, "class instances and operations" do
     class PBC < PluginBase
       default_command :non_existing_method_name
     end
-    lambda{ @pbc.bogus }.should raise_error
+    # Test MUST call the default_command, which isn't defined
+    lambda{ @pbc.non_existing_method_name }.should raise_error
   end
   
   it "should call @bot#on() for each command when registering commands" do
@@ -86,6 +83,8 @@ describe PluginBase, "class instances and operations" do
     @bot.should_not_receive(:on).with(:channel, /^\s*!pbc1a(.*)$/i)
     @bot.should_receive(:on).once.with(:private, /^\s*!pbc1a(.*)$/i)
     # It should also return the proper channel to associate the command with.
+    # Or should it?  a TODO now requests that we decide what register_commands
+    # should return, and then we need to rewrite this next statement
     @pbc.method(:register_commands).call.should == [:private]
   end
 
@@ -183,6 +182,7 @@ describe PluginBase, "class instances and operations" do
     @bot.should_receive(:off).once.with(:channel, /^\s*!pbc5(.*)$/i)
     @bot.should_receive(:off).once.with(:private, /^\s*!pbc5(.*)$/i)
     #We are making sure that the methods are unregistered
+    # Need to determine what unregister_commands should return and test for that
     @pbc.method(:unregister_commands).call.methods == [] 
   end
 
@@ -193,6 +193,7 @@ describe PluginBase, "class instances and operations" do
     end
     @bot.should_not_receive(:off).with(:channel, /^\s*!pbc5a(.*)$/i)
     @bot.should_receive(:off).once.with(:private, /^\s*!pbc5a(.*)$/i)
+    # Need to determine what unregister_commands should return and test for that
     @pbc.method(:unregister_commands).call.methods == [] 
   end
 
@@ -295,7 +296,7 @@ describe PluginBase, "class instances and operations" do
     @bot.should_receive(:msg).with("bob", "!pbc7 (dos|tres)").and_return(nil)
     @pbc.help.should be nil
   end
-
+  
   after(:all) do
     # perform cleanup or other tests might fail
     Object.send(:remove_const, :PBC) if RUBY_VERSION =~ /1\.8\.\d/

@@ -52,6 +52,17 @@ describe PluginBase, "bare subclass, class methods and properties" do
     PBC.get_default_command_context.should be :private
   end  
   
+  # This test must run before "should have a default context of :auto".
+  # There's something funny about 1.9 vs 1.8 in how the 
+  # "should have a default context of :auto" test effects the commands, and
+  # I suspect it has something to do with using lambda.  At any rate, the
+  # actual contents of commands is a function of the subclass and test for the
+  # contents of PluginBase.commands in PluginBase_spec.rb:113,117,137 so I think
+  # what we are after is:
+  it "#commands should be empty before methods are added to the subclass" do
+    PBC.commands.should == []
+  end
+  
   it "should have a default context of :auto" do
     # Context isn't set until the first method is added, so we must add 
     # a dummy method on PBC (or functionally, we should decide on a default
@@ -61,14 +72,11 @@ describe PluginBase, "bare subclass, class methods and properties" do
         def useless_method
           nil
         end
-        # TODO where did this instance variable come from?
+        # Throw the current Class context to make sure that first method 
+        # defined in PBC is in :auto
         throw @context 
       end
     }.should throw_symbol :auto
-  end
-  
-  it "should return an array of #commands" do
-    PBC.commands.should == [[:useless_method, :auto]]
   end
   
 end
