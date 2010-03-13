@@ -69,7 +69,17 @@ module BotExtensions
 end
 $bot.extend BotExtensions
 
-#-- 
-# I think this next line should be deleted, but I'm waiting until we have
-# tests built
-# require 'PluginBase.rb'
+# Capture ^C, 
+trap "INT" do
+  $interrupts ||= 0 # initialize
+  $interrupts += 1 # increment
+  if $interrupts >= 2 then
+    if $last_interrupt < (Time.now - 10) then # Interrupt was old
+      $interrupts = 1
+    else
+      exit 0
+    end
+  end
+  $last_interrupt = Time.now
+  warn "\nCaught Interrupt.  [CTRL]-C again exits"
+end
