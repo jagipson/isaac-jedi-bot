@@ -5,7 +5,8 @@ default_command :fortune
 
   # TODO: Test if fortune command exists, and unload self if it doesn't
   context :auto
-# Requires fortune to be loaded on your system, but will not cause problems (other than non-functioning) if it is not installed.
+  # Requires fortune to be loaded on your system, but will not cause problems 
+  # (other than non-functioning) if it is not installed.
   def fortune
     fortune_command = "fortune -s"
     fortune_result = `#{fortune_command}`
@@ -14,7 +15,7 @@ default_command :fortune
       automsg fortune_line.chomp    
     end
   end
-  
+
   def help
     automsg args
   end
