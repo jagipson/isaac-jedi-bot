@@ -39,7 +39,7 @@ class Core < PluginBase
       command_lists[:both] = self.class.commands.select {|c| [:channel].include?(c[1]) }
       # only print help for this plugin to private
       # get the length of the longest command
-      cmd_len = command_lists.values.flatten.map { |v| v.size }.max
+      cmd_len = command_lists.values.flatten.map { |v| v.to_s.size }.max
       cmd_len += self.class.get_token.to_s.length # add in length of token
       cmd_len += "! ".length # add in length of bang!-space prefix
       cmd_len = [cmd_len, "Command".length].max # <= decides on column width
@@ -82,7 +82,7 @@ class Core < PluginBase
   end
 
   def hangup 
-    if ($bot.nick =~ /^#{BOT_CONFIG[:owner_nick]}$/i)
+    if (@bot.nick =~ /^#{BOT_CONFIG[:owner_nick]}$/i)
       quit("Disconnecting")
       puts "Owner hangup"
     end
@@ -90,7 +90,7 @@ class Core < PluginBase
 
   def toggle_verbosity 
     if (nick =~ /^#{BOT_CONFIG[:owner_nick]}$/i)
-      $bot.configure do |c|
+      @bot.configure do |c|
         c.verbose = ! c.verbose
         puts "Verbosity:#{c.verbose.to_s}"
       end
@@ -109,7 +109,7 @@ class Core < PluginBase
           load plugin_file
           puts "About to register plugin #{plugin.inspect}"
           sym = plugin.downcase.sub(/.rb$/,"").to_sym
-          self.instance_eval %Q{ @plugins[sym] = #{plugin}.new }
+          self.instance_eval %Q{ @plugins[sym] = #{plugin}.new(@bot) }
           @plugins[sym].register_commands
           msg nick, "#{plugin} loaded.  Default command: !#{@plugins[sym].class.get_token} #{@plugins[sym].class.get_default_command}"
         rescue Exception => e
@@ -131,7 +131,7 @@ class Core < PluginBase
         @plugins.delete(plugin.downcase.to_sym)
         msg nick, "#{plugin} unloaded." 
       rescue => problem
-        puts problem
+        warn problem
         msg nick, "Unable to unload plugin #{plugin}. Check logs"
       end
     end

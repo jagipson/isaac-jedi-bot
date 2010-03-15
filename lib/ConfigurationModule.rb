@@ -77,6 +77,7 @@ trap "INT" do
     if $last_interrupt < (Time.now - 10) then # Interrupt was old
       $interrupts = 1
     else
+      puts ""
       exit 0
     end
   end

@@ -1,7 +1,6 @@
 jedbotcnf.yaml*
 *.tmproj
 depricatedfiles
-TestPlug.rb
 html/
 *.html
 coverage/
