@@ -23,7 +23,7 @@ class Venn < PluginBase
       @querier = channel || nick
       
       puts "Venn request for #{nick}: #{message}" 
-      # parse command for proper format
+      # parse command for proper forargs
       @bot.message.strip!
 
       # reset the hash of sets (arrays), for user names
@@ -56,25 +56,28 @@ class Venn < PluginBase
   
   context :helper
   def _handle_354
-    @userrooms[@bot.mesg.params[1].upcase.to_sym] << @bot.mesg.params[2] if @bot.mesg.params[2] !~ /#{BOT_CONFIG[:bot_nick][0..8]}/i
+    mesg = @bot.msg_obj 
+    @userrooms[mesg.params[1].upcase.to_sym] << mesg.params[2] if mesg.params[2] !~ /#{BOT_CONFIG[:bot_nick][0..8]}/i
   end
   
   def _handle_366
+    mesg = @bot.msg_obj 
     # a 366 received means I had to join the room, no 366 means I was already in the room
     @joined_rooms ||= []
     # Add the room I had to join to the list.
-    @joined_rooms <<  @bot.mesg.params[1].upcase.to_sym
-    puts "completed join to #{@bot.mesg.params[1]}"
+    @joined_rooms <<  mesg.params[1].upcase.to_sym
+    puts "completed join to #{mesg.params[1]}"
   end
   
   def _handle_315
-    puts "Finished tally for #{@bot.mesg.params[1]}"
-    @remaining_room_queries.delete(@bot.mesg.params[1].upcase.to_sym)
+    mesg = @bot.msg_obj 
+    puts "Finished tally for #{mesg.params[1]}"
+    @remaining_room_queries.delete(mesg.params[1].upcase.to_sym)
     
     # Part any rooms I had to join
-    if (@joined_rooms.include?(@bot.mesg.params[1].upcase.to_sym)) then
-          part(@bot.mesg.params[1].upcase.to_sym)
-          puts("leaving #{@bot.mesg.params[1].upcase} - done peeking")
+    if (@joined_rooms.include?(mesg.params[1].upcase.to_sym)) then
+          part(mesg.params[1].upcase.to_sym)
+          puts("leaving #{mesg.params[1].upcase} - done peeking")
     end
 
     if (@remaining_room_queries.empty?) then
@@ -117,14 +120,14 @@ class Venn < PluginBase
     super
 
     m = self.class.meth_wrap_proc(self.method(:_handle_354))
-    @bot.on :"354", //, &m
+    @bot.on :"354", /(.*)/, &m
     
     m = self.class.meth_wrap_proc(self.method(:_handle_366))
-    @bot.on :"366", //, &m
+    @bot.on :"366", /(.*)/, &m
     
     m = self.class.meth_wrap_proc(self.method(:_handle_315))
     #Handle an end of query message
-    @bot.on :"315", //, &m
+    @bot.on :"315", /(.*)/, &m
   end
   def unregister_commands
     @bot.off :"354", //
@@ -132,5 +135,17 @@ class Venn < PluginBase
     @bot.off :"315", //
     
     super
+  end
+end
+
+class Isaac::Bot
+  alias dispatch_aside dispatch
+  def dispatch(event, msg=nil)
+    @msg_obj = msg
+    dispatch_aside(event, msg)
+  end
+  public
+  def msg_obj
+    @msg_obj
   end
 end
