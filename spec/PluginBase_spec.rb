@@ -144,7 +144,7 @@ describe PluginBase, "class instances and operations" do
       token :pbc4
       context :auto
       def buggy_command
-        lambda {raise "Oops!  There's a runtime error in here" }
+        raise "Oops!  There's a runtime error in here"
       end
     end
 
