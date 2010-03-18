@@ -259,4 +259,16 @@ describe Core, "help system" do
     @bot.should_receive(:msg).at_least(2).times
     @core.should_respond_to(:help)
   end
+  
+  it "should provide specific help for each command except help" do
+    @core.class.commands.delete([:help, :auto])
+    @core.class.commands.each do |cmnd|
+      @bot.should_receive(:nick).any_number_of_times.and_return("bob")
+      @bot.should_receive(:match).and_return([ cmnd[0].to_s ])
+      @bot.should_receive(:msg).once.with("bob", /!do #{cmnd[0].to_s}/)
+      @bot.should_receive(:msg).any_number_of_times.with("bob", /^((?!!do).)*$/)
+      @core.help
+    end
+  end
+  
 end
