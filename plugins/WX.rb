@@ -2,8 +2,8 @@ class WX < PluginBase
   token         :wx
   description   "Weather Information"
   
-  def initialize
-    super
+  def initialize(bot)
+    super bot
     require_relative 'wx_alert.rb'
     require 'uri'
     require 'base64'
