@@ -7,7 +7,9 @@ begin
 rescue NoMethodError
   # Happens because non-Class code exists in Core.rb which when normally
   # called in the context of the program works, but because of how we
-  # load it here, it fails
+  # load it here, it fails.
+  
+  # tests for proper file loading behaviour are at the bottom of this file
 end
 
 describe Core, "irc-related commands" do
@@ -203,7 +205,6 @@ describe Core, "unload_plugin command" do
         
   it "has an unload_plugin command that unloads plugin files and \
       unregisters commands via #off() " do
-    # Since Core is already loaded for testing, we will unload it (convenience)
     @bot.should_receive(:nick).and_return("bob")
     @bot.should_receive(:match).and_return(["Trash#{$$}"])
     @bot.should_receive(:off).twice.with(:channel, /^\s*!trash#{$$}\s+test\s?(.*)$/i)
@@ -212,6 +213,24 @@ describe Core, "unload_plugin command" do
     @bot.should_receive(:off).once.with(:private, /^\s*!trash#{$$}(.*)$/i)
     @bot.should_receive(:msg).once.with("bob", /Trash#{$$} unloaded./)
     @core.unload_plugin
+  end
+  
+  it "should catch errors during #unload_plugin and continue to run" do
+    @bot.should_receive(:nick).and_return("bob")
+    @bot.should_receive(:match).and_return(["Trash#{$$}"])
+    @bot.should_receive(:msg).once.with("bob", /Unable to unload plugin Trash#{$$}. Check logs/)
+    # This will cause an error during the unload
+    %Q{
+      class Trash#{$$}
+        def unregister_commands
+          #Overriding the proper unregister_commands with one that will raise
+          raise "This is an evil #unregister_commands method!"
+        end
+      end
+    }
+    
+    @core.unload_plugin
+    
   end
   
   after(:all) do
@@ -270,5 +289,39 @@ describe Core, "help system" do
       @core.help
     end
   end
-  
+end
+
+# Ruby 1.9 test hack.  For some reason, in 1.9, I must insert the 'on' def in 
+# the Object class at the top level.  Doing it in a describe block works for 
+# 1.8, but not 1.9.  This method simulates the environment setup by isaac.rb
+class Object
+  def on(*args, &block)
+    $bot.on(*args, &block)
+  end
+end
+
+describe Object, "Core.rb file loading behaviour" do
+  it "should register the default token !help with the list_plugins command" do
+    
+    require 'isaac/bot'
+    $bot = Isaac::Bot.new  
+    
+    load 'lib/Core.rb'
+    # Expose Bot's find method for testing
+    class Isaac::Bot
+      public :find
+      # Fake the raw output command since the Isaac::IRC object doesn't exist
+      # in this test
+      def raw(command)
+        puts command
+      end
+    end
+    
+    # Make a raw IRC message for the test
+    n = ":bob!localhost@localdomain PRIVMSG #myChannel:  !help"
+    $bot.find(:private, n).should_not be_nil
+    $bot.find(:channel, n).should_not be_nil
+    $bot.dispatch(:private, Isaac::Message.new(n))
+    $bot.dispatch(:channel, Isaac::Message.new(n))
+  end
 end
