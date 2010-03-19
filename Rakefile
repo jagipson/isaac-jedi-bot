@@ -32,7 +32,13 @@ desc "Run all examples with RCov"
 Spec::Rake::SpecTask.new('examples_with_rcov') do |t|
   t.spec_files = FileList['spec/**/*_spec.rb']
   t.rcov = true
-  t.rcov_opts = ['--exclude', 'spec', '--exclude', '.rvm/']
+  t.rcov_opts = ['--exclude', 'spec', 
+                 '--exclude', '.rvm/', 
+                 '--exclude', 'lib/R1.8',
+                 '--exclude', 'lib/ruby_utilities.rb',
+                 '--exclude', 'plugins/Trash',
+                 '--exclude', 'plugins/trash',
+                 '--exclude', 'plugins/TestPlug']
 end
 
 desc "Run Specs, Stories, and Unit Tests"
