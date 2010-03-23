@@ -8,6 +8,8 @@ $system_root = __FILE__.sub(File.basename(__FILE__),"")
 require 'rubygems'
 require 'isaac'
 require_relative 'lib/ConfigurationModule'
+require_relative 'lib/OverridesSTDIO_module'
+include OverridesSTDIO
 
 BOT_CONFIG = configuration_from_file
 

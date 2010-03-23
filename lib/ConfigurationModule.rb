@@ -68,19 +68,3 @@ module BotExtensions
   end
 end
 $bot.extend BotExtensions
-
-# Capture ^C, 
-trap "INT" do
-  $interrupts ||= 0 # initialize
-  $interrupts += 1 # increment
-  if $interrupts >= 2 then
-    if $last_interrupt < (Time.now - 10) then # Interrupt was old
-      $interrupts = 1
-    else
-      puts ""
-      exit 0
-    end
-  end
-  $last_interrupt = Time.now
-  warn "\nCaught Interrupt.  [CTRL]-C again exits"
-end
