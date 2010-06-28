@@ -23,7 +23,7 @@ class WX < PluginBase
           @mutex.synchronize do
             arg = query
             url_arg = URI.escape(arg.to_s.chomp.strip)
-            @wx_alerts[arg.to_sym] ||= Wunderground::WXAlert.new("http://api.wunderground.com/auto/wui/geo/AlertsXML/index.txt?query=#{url_arg}")
+            @wx_alerts[arg.to_sym] ||= Wunderground::WXAlert.new("http://api.wunderground.com/auto/wui/geo/AlertsXML/index.html?query=#{url_arg}")
             @wx_alerts[arg.to_sym].update!
             if @wx_alerts[arg.to_sym].alerts then
               @wx_alerts[arg.to_sym].alerts.each do |a|
