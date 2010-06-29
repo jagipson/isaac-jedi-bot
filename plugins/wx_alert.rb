@@ -37,7 +37,9 @@ module Wunderground
       
         # FIX: using curl, because it's cheap and easy.  Switch to HTTP module if needing
         # to reduce system dependancies to Ruby Only libs.
-        @raw = `curl #{@url}`
+        exec_command = "curl #{@url}"
+        puts "Will run: #{exec_command}"
+        @raw = `#{exec_command}`
         @last_fetch_time = Time.now
         @data = nil
         
