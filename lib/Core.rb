@@ -169,13 +169,13 @@ end
 # it is an exception to the rule.  We instantiate core here.  Don't instantiate
 # any other plugins in any other plugin class definitions, because the object
 # will not be used by the system.
-core = Core.new
+$core = Core.new
 
 # Using isaac events, hook root "!help" and send to core help.
 # Don't do anything like this in non Core plugin
 on :channel, /\s*!help/i do
-  core.list_plugins
+  $core.list_plugins
 end
 on :private, /\s*!help/i do
-  core.list_plugins
+  $core.list_plugins
 end

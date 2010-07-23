@@ -50,6 +50,8 @@ def configuration_from_file(config_file=DEFAULT_CONF)
   end
   
   config_root[:nickserv_secret] ||= ""
+  config_root[:autoload_plugins] ||= ""
+  config_root[:autojoin_rooms] ||= ""
   
   write_configuration(config_root, config_file)
   exit if fatal_errors_occured

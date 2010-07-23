@@ -29,6 +29,18 @@ on :connect do
   end
   msg BOT_CONFIG[:owner_nick], "New RuBot instance connected as #{BOT_CONFIG[:bot_nick]}"
   warn "Connected."
+  
+  # Autoload autoloading plugins
+  if BOT_CONFIG[:autoload_plugins] then
+    puts "Autoload plugins: #{BOT_CONFIG[:autoload_plugins]}"
+    $core.load_plugin(BOT_CONFIG[:autoload_plugins])
+  end
+  
+  # Autojoin rooms
+  if BOT_CONFIG[:autojoin_rooms] then
+    puts "Autojoin Rooms: #{BOT_CONFIG[:autojoin_rooms]}"
+    $core.join(BOT_CONFIG[:autojoin_rooms])
+  end
 end
 
 require_relative 'lib/Core'
