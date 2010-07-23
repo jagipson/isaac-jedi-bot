@@ -31,13 +31,13 @@ on :connect do
   warn "Connected."
   
   # Autoload autoloading plugins
-  if BOT_CONFIG[:autoload_plugins] then
+  if BOT_CONFIG[:autoload_plugins].chomp.length > 0 then
     puts "Autoload plugins: #{BOT_CONFIG[:autoload_plugins]}"
     $core.load_plugin(BOT_CONFIG[:autoload_plugins])
   end
   
   # Autojoin rooms
-  if BOT_CONFIG[:autojoin_rooms] then
+  if BOT_CONFIG[:autojoin_rooms].chomp.length > 0 then
     puts "Autojoin Rooms: #{BOT_CONFIG[:autojoin_rooms]}"
     $core.join(BOT_CONFIG[:autojoin_rooms])
   end
